@@ -1,0 +1,201 @@
+#form-elv{
+	display:none;
+}
+
+/* form validation */
+
+.LV_validation_message{
+    font-weight:bold;
+    margin:0 0 0 5px;
+}
+
+.LV_valid {
+    color:#00CC00;
+}
+	
+.LV_invalid {
+    color:#CC0000;
+}
+    
+.LV_valid_field,
+input.LV_valid_field:hover, 
+input.LV_valid_field:active,
+textarea.LV_valid_field:hover, 
+textarea.LV_valid_field:active {
+    border: 1px solid #00CC00;
+}
+    
+.LV_invalid_field, 
+input.LV_invalid_field:hover, 
+input.LV_invalid_field:active,
+textarea.LV_invalid_field:hover, 
+textarea.LV_invalid_field:active {
+    border: 1px solid #CC0000;
+}
+
+#form-credit, #form-elv{
+	clear:both;
+}
+
+.paymill_form-switch{
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #F5F5F5;
+    background-image: linear-gradient(to bottom, #FFFFFF, #E6E6E6);
+    background-repeat: repeat-x;
+    border-color: #BBBBBB #BBBBBB #A2A2A2;
+    border-image: none;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    padding: 4px 12px;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    vertical-align: middle;
+}
+
+.paymill_form-switch:hover{
+    background-color: #E6E6E6;
+    color: #333333;
+}
+.paymill_form-switch_active, .paymill_form-switch_active:hover{
+    background-color: #EC4F00;
+    background-image: linear-gradient(to bottom, #F05000, #E64D00);
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+#cctype{
+	float:left;
+	width:50px;
+	height:30px;
+	background-repeat:no-repeat;
+	display:none;
+}
+
+/* pay button */
+.paymill_hidden{
+	display:none;
+}
+
+.paymill_pay_button{
+	margin-bottom:50px;
+	border:1px solid #EC4F00;
+	border-radius: 15px;
+	padding:5px;
+	background-color:#E6E6E6;
+}
+
+.paymill_pay_button #place_order{
+	width:100%;
+	font-weight:bold;
+	font-size:120%;
+}
+
+.paymill_products{
+	margin-bottom:20px;
+}
+
+.paymill_pay_button .paymill_product{
+	margin-bottom:5px;
+	padding-bottom:10px;
+	border-bottom:1px dashed #EC4F00;
+}
+
+.paymill_pay_button .paymill_title{
+	font-weight:bold;
+	font-size:120%;
+	margin-bottom:5px;
+}
+
+.paymill_pay_button .paymill_desc{
+	font-size:80%;
+	margin-bottom:5px;
+}
+
+.paymill_pay_button .paymill_quantity{
+	margin-bottom:5px;
+}
+
+.paymill_pay_button .paymill_price{
+	font-weight:bold;
+	font-size:120%;
+	margin-bottom:5px;
+}
+
+.paymill_pay_button .paymill_vat{
+	margin-bottom:5px;
+	font-size:70%;
+}
+
+.paymill_pay_button .paymill_delivery{
+	font-size:70%;
+}
+
+.paymill_pay_button .paymill_total_price{
+	margin-top:15px;
+	font-size:120%;
+	font-weight:bold;
+}
+
+.paymill_pay_button #paymill_payment_form *{
+	font-size:100%;
+}
+.paymill_pay_button #paymill_payment_form label{
+	display:block;
+}
+.paymill_pay_button #paymill_payment_form input{
+	margin-bottom:10px;
+}
+
+.paymill_pay_button .paymill_payment_errors{
+	font-weight:bold;
+	margin-bottom:5px;
+	padding-bottom:5px;
+}
+
+
+.paymill_pay_button .paymill_address .form-row {
+	position:relative;
+}
+
+.paymill_pay_button .paymill_address .form-row label{
+	display:block;
+	height:35px;
+	line-height:35px;
+}
+
+.paymill_pay_button .paymill_address .form-row input{
+	margin-left:auto;
+	margin-right:0px;
+	position:absolute;
+	right:0px;
+	top:0px;
+	width:100px;
+}
+
+.paymill_pay_button .paymill_address .paymill_address_title{
+	font-weight:bold;
+	font-size:120%;
+	border-top:1px solid #EC4F00;
+	margin-top:5px;
+	padding-top:15px;
+}
+
+.paymill_pay_button .paymill_payment_title{
+	font-weight:bold;
+	font-size:120%;
+	border-top:1px solid #EC4F00;
+	margin-top:20px;
+	padding-top:15px;
+}

@@ -1,0 +1,410 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Paymill\n"
+"POT-Creation-Date: 2013-06-07 19:56+0100\n"
+"PO-Revision-Date: 2013-06-07 19:57+0100\n"
+"Last-Translator: Matthias Reuter <reuter@elbnetz.com>\n"
+"Language-Team: Matthias Reuter <reuter@elbnetz.com>\n"
+"Language: EN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: esc_attr__;__;_e\n"
+"X-Poedit-Basepath: d:\\BUSINESS\\KUNDEN\\elbnetz\\paymill\\DEV\\paymill\\\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: d:\\BUSINESS\\KUNDEN\\elbnetz\\paymill\\DEV\\paymill\n"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:115
+msgid "Invalid Credit Card Number"
+msgstr "Invalid Credit Card Number"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:116
+msgid "Invalid Expiration Date"
+msgstr "Invalid Expiration Date"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:117
+msgid "Invalid CVC"
+msgstr "Invalid CVC"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:118
+msgid "Invalid Account Number"
+msgstr "Invalid Account Number"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:119
+msgid "Invalid Bank Code"
+msgstr "Invalid Bank Code"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:128
+msgid "Must be {is} characters long!"
+msgstr "Must be {is} characters long!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:129
+msgid "Must not be less than {minimum} characters long!"
+msgstr "Must not be less than {minimum} characters long!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:130
+msgid "Must not be more than {maximum} characters long!"
+msgstr "Must not be more than {maximum} characters long!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:131
+msgid "Must be a number!"
+msgstr "Must be a number!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:132
+msgid "Must be an integer!"
+msgstr "Must be an integer!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:133
+msgid "Must be {is}!"
+msgstr "Must be {is}!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:134
+msgid "Must not be less than {minimum}!"
+msgstr "Must not be less than {minimum}!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/paymill.php:135
+msgid "Must not be more than {maximum}!"
+msgstr "Must not be more than {maximum}!"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:73
+msgid "Paymill PRIVATE API key"
+msgstr "Paymill PRIVATE API key"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:74
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:146
+msgid "Paymill PUBLIC API key"
+msgstr "Paymill PUBLIC API key"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:75
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:147
+msgid "Paymill API endpoint URL"
+msgstr "Paymill API endpoint URL"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:89
+msgid "Currency"
+msgstr "Currency"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:90
+msgid "Number Format: Decimal Point"
+msgstr "Number Format: Decimal Point"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:91
+msgid "Number Format: Thousands Seperator"
+msgstr "Number Format: Thousands Seperator"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:92
+msgid "Outgoing Email"
+msgstr "Outgoing Email"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:93
+msgid "Incoming Email"
+msgstr "Incoming Email"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:105
+msgid "Product"
+msgstr "Product"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:106
+msgid "Description"
+msgstr "Description"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:107
+msgid "Price"
+msgstr "Price"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:108
+msgid "VAT"
+msgstr "VAT"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:109
+msgid "Delivery Time"
+msgstr "Delivery Time"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:122
+msgid "Shipping Country"
+msgstr "Shipping Country"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:123
+msgid "Shipping Costs"
+msgstr "Shipping Costs"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:124
+msgid "Shipping VAT"
+msgstr "Shipping VAT"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:133
+msgid "Please insert your API settings here."
+msgstr "Please insert your API settings here."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:134
+msgid "Common Settings"
+msgstr "Common Settings"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:134
+msgid ""
+"<p>The Paymill Pay Buton is a simple, independent payment solution.</"
+"p>Configure common settings."
+msgstr ""
+"<p>The Paymill Pay Buton is a simple, independent payment solution.</"
+"p>Configure common settings."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:134
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:135
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:136
+msgid "Toggle View"
+msgstr "Toggle View"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:135
+msgid "Products"
+msgstr "Products"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:135
+msgid ""
+"Configure products for the Pay Button. This list has a dynamic length and "
+"extends for 5 extra slots when last slot is filled and saved."
+msgstr ""
+"Configure products for the Pay Button. This list has a dynamic length and "
+"extends for 5 extra slots when last slot is filled and saved."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:136
+msgid "Shipping"
+msgstr "Shipping"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:136
+msgid ""
+"Set delivery countries and shipping costs. This list has a dynamic length "
+"and extends for 5 extra slots when last slot is filled and saved."
+msgstr ""
+"Set delivery countries and shipping costs. This list has a dynamic length "
+"and extends for 5 extra slots when last slot is filled and saved."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:145
+msgid "Insert your Paymill <strong>PRIVATE</strong> API key."
+msgstr "Insert your Paymill <strong>PRIVATE</strong> API key."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:166
+msgid ""
+"Currency, <a href=\"http://en.wikipedia.org/wiki/ISO_4217#Active_codes\" "
+"target=\"_blank\">ISO 4217</a> e.g. \"EUR\" or \"GBP\""
+msgstr ""
+"Currency, <a href=\"http://en.wikipedia.org/wiki/ISO_4217#Active_codes\" "
+"target=\"_blank\">ISO 4217</a> e.g. \"EUR\" or \"GBP\""
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:167
+msgid "Set a symbol used for decimal point. Default: ."
+msgstr "Set a symbol used for decimal point. Default: ."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:168
+msgid "Set a symbol used for thousands seperator. Default: ,"
+msgstr "Set a symbol used for thousands seperator. Default: ,"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:169
+msgid "Outgoing Emailaddress for customer order confirmation mail."
+msgstr "Outgoing Emailaddress for customer order confirmation mail."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:170
+msgid "Incoming Emailaddress for Copy of customer order confirmation mail."
+msgstr "Incoming Emailaddress for Copy of customer order confirmation mail."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:172
+msgid "Name of the available delivery country, e.g. \"England\""
+msgstr "Name of the available delivery country, e.g. \"England\""
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:173
+msgid "Gross fee for the flat shipping costs., e.g. \"7\" or \"4.90\""
+msgstr "Gross fee for the flat shipping costs., e.g. \"7\" or \"4.90\""
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:174
+#, php-format
+msgid ""
+"Value-Added-Tax Rate in % for the flat shipping costs., e.g. \"19\" or \"7\""
+msgstr ""
+"Value-Added-Tax Rate in % for the flat shipping costs., e.g. \"19\" or \"7\""
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:176
+msgid "Name of the product"
+msgstr "Name of the product"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:177
+msgid "Detailed description of the product"
+msgstr "Detailed description of the product"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:178
+msgid "Gross Price of the product, e.g. \"40\" or \"6.99\""
+msgstr "Gross Price of the product, e.g. \"40\" or \"6.99\""
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:179
+#, php-format
+msgid "Value-Added-Tax Rate in % for the product, e.g. \"19\" or \"7\""
+msgstr "Value-Added-Tax Rate in % for the product, e.g. \"19\" or \"7\""
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/config.inc.php:180
+msgid "Delivery Time of the product, e.g. \"2 Days\" or \"1 Week\""
+msgstr "Delivery Time of the product, e.g. \"2 Days\" or \"1 Week\""
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:63
+msgid "Order"
+msgstr "Order"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:43
+msgid "Company Name"
+msgstr "Company Name"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:47
+msgid "Forename"
+msgstr "Forename"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:51
+msgid "Surname"
+msgstr "Surname"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:55
+msgid "Street"
+msgstr "Street"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:59
+msgid "Number"
+msgstr "Number"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:63
+msgid "ZIP"
+msgstr "ZIP"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:67
+msgid "City"
+msgstr "City"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+msgid "Country"
+msgstr "Country"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:71
+msgid "Email"
+msgstr "Email"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:60
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:75
+msgid "Phone"
+msgstr "Phone"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:82
+msgid "Confirmation of your Order"
+msgstr "Confirmation of your Order"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:83
+msgid "New Order received"
+msgstr "New Order received"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:92
+msgid "Shows a Paymill Payment Button."
+msgstr "Shows a Paymill Payment Button."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:107
+msgid "Thank you for your order."
+msgstr "Thank you for your order."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:117
+msgid "Payment"
+msgstr "Payment"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:119
+msgid "Pay now"
+msgstr "Pay now"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:140
+msgid "Title:"
+msgstr "Title:"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:147
+msgid "Show these products only:"
+msgstr "Show these products only:"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/pay_button.inc.php:150
+msgid "All Products"
+msgstr "All Products"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/woocommerce.inc.php:42
+msgid "Enable/Disable"
+msgstr "Enable/Disable"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/woocommerce.inc.php:44
+msgid "Enable Paymill Payment"
+msgstr "Enable Paymill Payment"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/woocommerce.inc.php:48
+msgid "Title"
+msgstr "Title"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/woocommerce.inc.php:50
+msgid "This controls the title which the user sees during checkout."
+msgstr "This controls the title which the user sees during checkout."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/woocommerce.inc.php:51
+msgid "Paymill Payment"
+msgstr "Paymill Payment"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/integration/woocommerce.inc.php:55
+msgid "Customer Message"
+msgstr "Customer Message"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:8
+msgid "Name"
+msgstr "Name"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:11
+msgid "Credit Card"
+msgstr "Credit Card"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:15
+msgid "Debit Payment"
+msgstr "Debit Payment"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:21
+msgid "Credit Card Number"
+msgstr "Credit Card Number"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:26
+msgid "CVC"
+msgstr "CVC"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:30
+msgid "Expire Date (MM/YYYY)"
+msgstr "Expire Date (MM/YYYY)"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:38
+msgid "Account #"
+msgstr "Account #"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/checkout_form.php:42
+msgid "Bank code"
+msgstr "Bank code"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:17
+msgid "% VAT included."
+msgstr "% VAT included."
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:18
+msgid "Delivery Time: "
+msgstr "Delivery Time: "
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:25
+msgid "Choose Country"
+msgstr "Choose Country"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:36
+msgid "Total Price:"
+msgstr "Total Price:"
+
+#: d:\BUSINESS\KUNDEN\elbnetz\paymill\DEV\paymill/lib/tpl/pay_button.php:41
+msgid "Address"
+msgstr "Address"
