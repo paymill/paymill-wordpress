@@ -64,7 +64,7 @@
 			
 			$params = array(
 				'amount'      => str_replace('.','',"$total"),  // e.g. "4200" for 42.00 EUR
-				'currency'    => $GLOBALS['paymill_settings']->paymill_pay_button_settings['currency'],   // ISO 4217
+				'currency'    => $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
 				'token'       => $_POST['paymillToken'],
 				'client'      => $client['id'],
 				'description' => $order
@@ -106,14 +106,23 @@
 				if($_POST['paymill_pay_button_order'] == 1){
 					echo __('Thank you for your order.', 'paymill');
 				}else{
+					// settings
+					$country = 'DE';
+					$currency = $GLOBALS['paymill_settings']->paymill_general_settings['currency'];
+					$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos.png';
 					$title = apply_filters( 'widget_title', $instance['title'] );
 					$products_whitelist = unserialize($instance['products']);
+					
+					// form ids
+					echo '<script>
+					paymill_form_checkout_id = ".checkout";
+					paymill_form_checkout_submit_id = "#place_order";
+					paymill_shop_name = "paybutton";
+					</script>';
+					
+					// html / icons
 					echo '<div id="payment" class="paymill_pay_button"><form action="#" method="post" class="checkout">';
 					require(PAYMILL_DIR.'lib/tpl/pay_button.php');
-					
-					$country = 'DE';
-					$currency = $GLOBALS['paymill_settings']->paymill_pay_button_settings['currency'];
-					$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos.png';
 					echo '<div class="paymill_payment_title">'.__('Payment', 'paymill').'</div>';
 					require(PAYMILL_DIR.'lib/tpl/checkout_form.php');
 					echo '<input type="submit" id="place_order" value="'.__('Pay now', 'paymill').'"/>';

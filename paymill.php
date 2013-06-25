@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made eady
-Version: 1.1
+Version: 1.2
 Author: Matthias Reuter / Elbnetz
 Author URI: http://elbnetz.com
 */
@@ -11,7 +11,7 @@ Author URI: http://elbnetz.com
 	/*
 		common information
 	*/
-	define('PAYMILL_VERSION',1111);
+	define('PAYMILL_VERSION',1200);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	$GLOBALS['paymill_active'] = false;
 
@@ -59,6 +59,7 @@ $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_transactions (
   paymill_transaction_data varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   woocommerce_order_id int(11) NOT NULL,
   pay_button_order_id int(11) NOT NULL,
+  shopplugin_order_id int(11) NOT NULL,
   PRIMARY KEY  ( paymill_transaction_id),
   KEY  paymill_payment_id ( paymill_payment_id));';
   
@@ -107,6 +108,16 @@ if(!get_option('paymill_db_version')){
 	*/
 	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // pay button
 	require_once(PAYMILL_DIR.'lib/integration/woocommerce.inc.php'); // WooCommerce
+	
+	 // ShopPlugin
+	/*add_action('shopp_init', 'init_paymill_gateway_class_shopp');
+	function init_paymill_gateway_class_shopp() {
+		global $Shopp;
+		
+		// Add the module file to the registry
+		$paymillModule = new ModuleFile(PAYMILL_DIR.'lib/integration/','shopplugin.inc.php');
+		if ($paymillModule->addon)  $Shopp->Gateways->modules[$paymillModule->subpackage] = $paymillModule;
+	}*/
 	
 	function paymill_scripts(){
 		wp_deregister_script(array('paymill_bridge','paymill_bridge_custom'));

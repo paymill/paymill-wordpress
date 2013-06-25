@@ -29,7 +29,7 @@
 		<div class="form-row">
 			<label><?php echo __('Expire Date (MM/YYYY)', 'paymill'); ?></label>
 			<input class="paymill_card-expiry-month" id="card-expiry-month" type="text" size="2" value="" autocomplete="off" />
-			<span> / </span>
+			<p> / </p>
 			<input class="paymill_card-expiry-year" id="card-expiry-year" type="text" size="4" value="" autocomplete="off" />
 		</div>
 	</div>

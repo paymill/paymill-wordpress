@@ -199,3 +199,19 @@ textarea.LV_invalid_field:active {
 	margin-top:20px;
 	padding-top:15px;
 }
+
+#form-credit .form-row p{
+	display: inline;
+}
+
+#card-expiry-month{
+	width:40px !important;
+}
+
+#card-expiry-year{
+	width:80px !important;
+}
+
+#card-cvc{
+	width:60px !important;
+}

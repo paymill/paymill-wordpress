@@ -73,6 +73,7 @@ class paymill_settings{
 		add_settings_field( 'api_key_private', __('Paymill PRIVATE API key', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'api_key_private', 'option' => 'api_key_private'));
 		add_settings_field( 'api_key_public', __('Paymill PUBLIC API key', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'api_key_public', 'option' => 'api_key_public'));
 		add_settings_field( 'api_endpoint', __('Paymill API endpoint URL', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'api_endpoint', 'option' => 'api_endpoint'));
+		add_settings_field( 'currency',  __('Currency', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'currency', 'option' => 'currency'));
 
 	}
 	
@@ -86,11 +87,10 @@ class paymill_settings{
 
 		// common
 		add_settings_section( 'section_pay_button', false, array( &$this, 'section_pay_button_desc' ), $this->setting_keys['paymill_pay_button_settings'] );
-		add_settings_field( 'currency',  __('Currency'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'currency', 'option' => 'currency'));
-		add_settings_field( 'number_decimal',  __('Number Format: Decimal Point'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'number_decimal', 'option' => 'number_decimal'));
-		add_settings_field( 'number_thousands',  __('Number Format: Thousands Seperator'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'number_thousands', 'option' => 'number_thousands'));
-		add_settings_field( 'email_outgoing',  __('Outgoing Email'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_outgoing', 'option' => 'email_outgoing'));
-		add_settings_field( 'email_incoming',  __('Incoming Email'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_incoming', 'option' => 'email_incoming'));
+		add_settings_field( 'number_decimal',  __('Number Format: Decimal Point', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'number_decimal', 'option' => 'number_decimal'));
+		add_settings_field( 'number_thousands',  __('Number Format: Thousands Seperator', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'number_thousands', 'option' => 'number_thousands'));
+		add_settings_field( 'email_outgoing',  __('Outgoing Email', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_outgoing', 'option' => 'email_outgoing'));
+		add_settings_field( 'email_incoming',  __('Incoming Email', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_incoming', 'option' => 'email_incoming'));
 
 		// products
 		add_settings_section( 'section_pay_button_products', false, array( &$this, 'section_pay_button_products_desc' ), $this->setting_keys['paymill_pay_button_settings'] );
@@ -102,11 +102,11 @@ class paymill_settings{
 			$countries = count($this->paymill_pay_button_settings['products']);
 		}
 		for($i = 1; $i <= $countries; $i++){
-			add_settings_field( 'products_title_'.$i, __('Product').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_title', 'option' => 'products', 'id' => $i, 'field' => 'title'));
-			add_settings_field( 'products_desc_'.$i, __('Description'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_desc', 'option' => 'products', 'id' => $i, 'field' => 'desc'));
-			add_settings_field( 'products_price_'.$i, __('Price'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
-			add_settings_field( 'products_vat_'.$i, __('VAT'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_vat', 'option' => 'products', 'id' => $i, 'field' => 'vat'));
-			add_settings_field( 'products_delivery_'.$i, __('Delivery Time'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_delivery', 'option' => 'products', 'id' => $i, 'field' => 'delivery'));
+			add_settings_field( 'products_title_'.$i, __('Product', 'paymill').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_title', 'option' => 'products', 'id' => $i, 'field' => 'title'));
+			add_settings_field( 'products_desc_'.$i, __('Description', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_desc', 'option' => 'products', 'id' => $i, 'field' => 'desc'));
+			add_settings_field( 'products_price_'.$i, __('Price', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
+			add_settings_field( 'products_vat_'.$i, __('VAT', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_vat', 'option' => 'products', 'id' => $i, 'field' => 'vat'));
+			add_settings_field( 'products_delivery_'.$i, __('Delivery Time', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_delivery', 'option' => 'products', 'id' => $i, 'field' => 'delivery'));
 		}
 		
 		// shipping
@@ -119,9 +119,9 @@ class paymill_settings{
 			$countries = count($this->paymill_pay_button_settings['flat_shipping']);
 		}
 		for($i = 1; $i <= $countries; $i++){
-			add_settings_field( 'flat_shipping_country_'.$i, __('Shipping Country').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_country', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'country'));
-			add_settings_field( 'flat_shipping_costs_'.$i, __('Shipping Costs').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_costs', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'costs'));
-			add_settings_field( 'flat_shipping_vat_'.$i, __('Shipping VAT').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_vat', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'vat'));
+			add_settings_field( 'flat_shipping_country_'.$i, __('Shipping Country', 'paymill').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_country', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'country'));
+			add_settings_field( 'flat_shipping_costs_'.$i, __('Shipping Costs', 'paymill').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_costs', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'costs'));
+			add_settings_field( 'flat_shipping_vat_'.$i, __('Shipping VAT', 'paymill').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_vat', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'vat'));
 		}
 	}
 	
@@ -142,6 +142,7 @@ class paymill_settings{
 	function field_general_option($args) {
 	
 		$descriptions = array();
+		$descriptions['currency']			= __('Currency, <a href="http://en.wikipedia.org/wiki/ISO_4217#Active_codes" target="_blank">ISO 4217</a> e.g. "EUR" or "GBP"', 'paymill');
 		$descriptions['api_key_private']	= __('Insert your Paymill <strong>PRIVATE</strong> API key.', 'paymill');
 		$descriptions['api_key_public']		= __('Insert your Paymill <strong>PUBLIC</strong> API key.', 'paymill');
 		$descriptions['api_endpoint']		= __('Insert your Paymill endpoint URL.', 'paymill');
@@ -163,7 +164,6 @@ class paymill_settings{
 	function field_pay_button_option($args) {
 		$descriptions = array();
 		
-		$descriptions['currency']					= __('Currency, <a href="http://en.wikipedia.org/wiki/ISO_4217#Active_codes" target="_blank">ISO 4217</a> e.g. "EUR" or "GBP"', 'paymill');
 		$descriptions['number_decimal']				= __('Set a symbol used for decimal point. Default: .', 'paymill');
 		$descriptions['number_thousands']			= __('Set a symbol used for thousands seperator. Default: ,', 'paymill');
 		$descriptions['email_outgoing']				= __('Outgoing Emailaddress for customer order confirmation mail.', 'paymill');

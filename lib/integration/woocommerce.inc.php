@@ -162,12 +162,20 @@
 				public function payment_fields(){
 					global $woocommerce;
 					if(!$GLOBALS['paymill_active']){
+						// settings
 						$GLOBALS['paymill_active'] = true;
-						
 						$country = $_REQUEST['country'];
-						$cart_total = $woocommerce->cart->total;
+						$cart_total = $woocommerce->cart->total*100;
 						$currency = get_woocommerce_currency();
 						$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos.png';
+						
+						// form ids
+						echo '<script>
+						paymill_form_checkout_id = ".checkout";
+						paymill_form_checkout_submit_id = "#place_order";
+						paymill_shop_name = "woocommerce";
+						</script>';
+			
 						require_once(PAYMILL_DIR.'lib/tpl/checkout_form.php');
 					}else{
 						echo '<div class="paymill_notification paymill_notification_once_only"><strong>Error:</strong> Paymill can be loaded once only on the same page.</div>';
