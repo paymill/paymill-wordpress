@@ -5,12 +5,23 @@
 	<div class="paymill_payment_errors"></div>
 	
 	<div class="form-row">
+		<p class="paymill_payments_allowed"><?php echo __('You can pay with:', 'paymill'); ?></p>
+		<p><?php
+			foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
+				if($type==1){
+					echo '<img src="'.plugins_url('',__FILE__ ).'/../img/logos/'.$name.'.png" style="vertical-align:middle;" alt="'.$name.'" />';
+				}
+			}
+		?></p>
+	</div>
+	
+	<div class="form-row">
 		<label><?php echo __('Name', 'paymill'); ?></label>
 		<input class="paymill_holdername" id="holdername" type="text" size="20" value="" autocomplete="off" />
 	</div>
 	<div id="form-switch-credit" class="paymill_form-switch paymill_form-switch_active"><?php echo __('Credit Card', 'paymill'); ?></div>
 	<?php
-		if($country == 'DE'){
+		if($country == 'DE' && esc_attr( $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) == 1){
 	?>
 	<div id="form-switch-elv" class="paymill_form-switch"><?php echo __('Debit Payment', 'paymill'); ?></div>
 	<?php

@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made eady
-Version: 1.2
+Version: 1.2.1
 Author: Matthias Reuter / Elbnetz
 Author URI: http://elbnetz.com
 */
@@ -11,7 +11,7 @@ Author URI: http://elbnetz.com
 	/*
 		common information
 	*/
-	define('PAYMILL_VERSION',1200);
+	define('PAYMILL_VERSION',1201);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	$GLOBALS['paymill_active'] = false;
 
@@ -22,7 +22,6 @@ Author URI: http://elbnetz.com
 		error_reporting(E_ALL);
 		ini_set('log_errors',1);
 		ini_set('error_log',PAYMILL_DIR.'lib/debug/PHP_errors.log');
-		define('ipbwi_BENCHMARK',true);
 	}
 	
 
@@ -39,7 +38,6 @@ Author URI: http://elbnetz.com
 	*/
 function paymill_install() {
 	global $wpdb;
-	global $jal_db_version;
 	
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	
@@ -89,7 +87,7 @@ if(!get_option('paymill_db_version')){
 		load admin scripts
 	*/
 	function pw_load_scripts($hook) {
-		if(!in_array($_GET['tab'],$GLOBALS['paymill_settings']->setting_keys)){
+		if(isset($_GET['tab']) && !in_array($_GET['tab'],$GLOBALS['paymill_settings']->setting_keys)){
 			return;
 		}
 
@@ -108,16 +106,6 @@ if(!get_option('paymill_db_version')){
 	*/
 	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // pay button
 	require_once(PAYMILL_DIR.'lib/integration/woocommerce.inc.php'); // WooCommerce
-	
-	 // ShopPlugin
-	/*add_action('shopp_init', 'init_paymill_gateway_class_shopp');
-	function init_paymill_gateway_class_shopp() {
-		global $Shopp;
-		
-		// Add the module file to the registry
-		$paymillModule = new ModuleFile(PAYMILL_DIR.'lib/integration/','shopplugin.inc.php');
-		if ($paymillModule->addon)  $Shopp->Gateways->modules[$paymillModule->subpackage] = $paymillModule;
-	}*/
 	
 	function paymill_scripts(){
 		wp_deregister_script(array('paymill_bridge','paymill_bridge_custom'));
@@ -147,7 +135,7 @@ if(!get_option('paymill_db_version')){
 			'tooHigh'					=> esc_attr__('Must not be more than {maximum}!', 'paymill'),
 		));
 		
-		wp_enqueue_style('paymill', plugins_url( '/lib/css/paymill.css' , __FILE__ ), $deps, PAYMILL_VERSION, $media);
+		wp_enqueue_style('paymill', plugins_url( '/lib/css/paymill.css' , __FILE__ ), false, PAYMILL_VERSION, false);
 	}
 	add_action('wp_enqueue_scripts', 'paymill_scripts');
 

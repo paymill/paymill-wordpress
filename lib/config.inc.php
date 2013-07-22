@@ -47,7 +47,7 @@ class paymill_settings{
 			'number_thousands' => ','
 		), $this->paymill_pay_button_settings );
 		
-		if($this->paymill_general_settings['api_key_private'] != '' && $this->paymill_general_settings['api_key_public'] != '' && $this->paymill_general_settings['api_endpoint'] != ''){
+		if(isset($this->paymill_general_settings['api_key_private']) && isset($this->paymill_general_settings['api_key_public']) && $this->paymill_general_settings['api_key_private'] != '' && $this->paymill_general_settings['api_key_public'] != '' && $this->paymill_general_settings['api_endpoint'] != ''){
 			define('PAYMILL_ACTIVE',true);
 		}else{
 			define('PAYMILL_ACTIVE',false);
@@ -74,7 +74,7 @@ class paymill_settings{
 		add_settings_field( 'api_key_public', __('Paymill PUBLIC API key', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'api_key_public', 'option' => 'api_key_public'));
 		add_settings_field( 'api_endpoint', __('Paymill API endpoint URL', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'api_endpoint', 'option' => 'api_endpoint'));
 		add_settings_field( 'currency',  __('Currency', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'currency', 'option' => 'currency'));
-
+		add_settings_field( 'payments_display',  __('Display Payment Types', 'paymill'), array( &$this, 'field_general_option' ), $this->setting_keys['paymill_general_settings'], 'section_general',array('desc' => 'payments_display', 'option' => 'payments_display'));
 	}
 	
 	/*
@@ -143,19 +143,53 @@ class paymill_settings{
 	
 		$descriptions = array();
 		$descriptions['currency']			= __('Currency, <a href="http://en.wikipedia.org/wiki/ISO_4217#Active_codes" target="_blank">ISO 4217</a> e.g. "EUR" or "GBP"', 'paymill');
+		$descriptions['payments_display']	= __('Check the boxes which payment types should be announced on payment form', 'paymill');
 		$descriptions['api_key_private']	= __('Insert your Paymill <strong>PRIVATE</strong> API key.', 'paymill');
 		$descriptions['api_key_public']		= __('Insert your Paymill <strong>PUBLIC</strong> API key.', 'paymill');
 		$descriptions['api_endpoint']		= __('Insert your Paymill endpoint URL.', 'paymill');
 	
-		echo '
-			<input
-			type="text"
-			name="'.$this->setting_keys['paymill_general_settings'].'['.$args['option'].']"
-			value="'.esc_attr( $this->paymill_general_settings[$args['option']] ).'"
-			class="regular-text code" />
-			<span class="setting-description">'.$descriptions[$args['desc']].'</span>
-		';
-
+		if($args['desc'] == 'payments_display'){
+			echo $descriptions[$args['desc']].'<br />';
+		
+			$payment_types = array(
+			'amex',		
+			'dc',		
+			'discover',		
+			'elv',		
+			'jcb',		
+			'maestro',		
+			'mastercard',		
+			'unionpay',		
+			'visa',		
+			);
+			foreach($payment_types as $type){
+				$checked = esc_attr( $this->paymill_general_settings[$args['option']][$type] );
+				
+				echo '
+				<fieldset style="float:left;margin-right:20px;">
+					<label for="'.$this->setting_keys['paymill_general_settings'].'['.$args['option'].']['.$type.']">
+					<input
+						'.(($checked == 1) ? 'checked="checked"' : '').'
+						type="checkbox"
+						name="'.$this->setting_keys['paymill_general_settings'].'['.$args['option'].']['.$type.']"
+						id="'.$this->setting_keys['paymill_general_settings'].'['.$args['option'].']['.$type.']"
+						value="1" />
+						
+						<img src="'.plugins_url('',__FILE__ ).'/img/logos/'.$type.'.png" style="vertical-align:middle;" alt="'.$type.'" />
+					</label><br />
+				</fieldset>
+				';
+			}
+		}else{
+			echo '
+				<input
+				type="text"
+				name="'.$this->setting_keys['paymill_general_settings'].'['.$args['option'].']"
+				value="'.esc_attr( $this->paymill_general_settings[$args['option']] ).'"
+				class="regular-text code" />
+				<span class="setting-description">'.$descriptions[$args['desc']].'</span>
+			';
+		}
 	}
 	
 	/*
