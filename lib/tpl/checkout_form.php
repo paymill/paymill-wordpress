@@ -55,6 +55,6 @@
 		</div>
 	</div>
 		
-		<input class="paymill_amount" type="hidden" size="5" value="<?php echo $cart_total; ?>"/>
+		<input class="paymill_amount" type="hidden" size="5" value="<?php if(isset($cart_total)){ echo $cart_total; } ?>"/>
 		<input class="paymill_currency" type="hidden" size="3" value="<?php echo $currency; ?>"/>
 </div>

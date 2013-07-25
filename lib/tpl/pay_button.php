@@ -6,6 +6,24 @@
 		<div class="paymill_product paymill_product_<?php echo $id; ?>">
 			<div class="paymill_title"><?php echo $product['title']; ?></div>
 			<?php if(strlen($product['desc']) > 0){ ?><div class="paymill_desc"><?php echo $product['desc']; ?></div><?php } ?>
+
+			
+<?php
+			if($product['offer'] != ''){
+?>
+			<div class="paymill_quantity">
+				<select name="paymill_quantity[<?php echo $id; ?>]">
+					<option value="">0</option>
+					<option value="1">1</option>
+				</select>
+			</div>
+			<input type="hidden" name="paymill_offer[<?php echo $id; ?>]" value="<?php echo $offers[$product['offer']]['id']; ?>" />
+			<div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo ($offers[$product['offer']]['amount']/100); ?></div><div class="paymill_price"><?php echo number_format(($offers[$product['offer']]['amount']/100),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><div class="paymmill_subscription"> / <?php echo $offers[$product['offer']]['interval']; ?></div>
+			<?php if(strlen($product['vat']) > 0){ ?><div class="paymill_vat"><?php echo $product['vat'].__('% VAT included.', 'paymill'); ?></div><?php } ?>
+			<?php if(strlen($product['delivery']) > 0){ ?><div class="paymill_delivery"><?php echo __('Delivery Time: ', 'paymill').$product['delivery']; ?></div><?php } ?>
+<?php
+			}else{
+?>
 			<div class="paymill_quantity">
 				<select name="paymill_quantity[<?php echo $id; ?>]">
 				<?php for($i = 0; $i <= 10; $i++){ ?>
@@ -13,9 +31,12 @@
 				<?php } ?>
 				</select>
 			</div>
-			<?php if(strlen($product['price']) > 0){ ?><div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo $product['price']; ?></div><div class="paymill_price"><?php echo number_format($product['price'],2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']).' '.$GLOBALS['paymill_settings']->paymill_pay_button_settings['currency']; ?></div><?php } ?>
+			<?php if(strlen($product['price']) > 0){ ?><div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo $product['price']; ?></div><div class="paymill_price"><?php echo number_format($product['price'],2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><?php } ?>
 			<?php if(strlen($product['vat']) > 0){ ?><div class="paymill_vat"><?php echo $product['vat'].__('% VAT included.', 'paymill'); ?></div><?php } ?>
 			<?php if(strlen($product['delivery']) > 0){ ?><div class="paymill_delivery"><?php echo __('Delivery Time: ', 'paymill').$product['delivery']; ?></div><?php } ?>
+<?php
+			}
+?>
 		</div>
 	<?php
 		}

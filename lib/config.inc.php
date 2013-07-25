@@ -39,12 +39,13 @@ class paymill_settings{
 		
 		// Merge with defaults
 		$this->paymill_general_settings = array_merge( array(
-			'api_endpoint' => 'https://api.paymill.com/v2/'
+			'api_endpoint' => 'https://api.paymill.com/v2/',
+			'currency' => 'EUR'
 		), $this->paymill_general_settings );
 		
 		$this->paymill_pay_button_settings = array_merge( array(
 			'number_decimal' => '.',
-			'number_thousands' => ','
+			'number_thousands' => ',',
 		), $this->paymill_pay_button_settings );
 		
 		if(isset($this->paymill_general_settings['api_key_private']) && isset($this->paymill_general_settings['api_key_public']) && $this->paymill_general_settings['api_key_private'] != '' && $this->paymill_general_settings['api_key_public'] != '' && $this->paymill_general_settings['api_endpoint'] != ''){
@@ -104,10 +105,14 @@ class paymill_settings{
 		for($i = 1; $i <= $countries; $i++){
 			add_settings_field( 'products_title_'.$i, __('Product', 'paymill').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_title', 'option' => 'products', 'id' => $i, 'field' => 'title'));
 			add_settings_field( 'products_desc_'.$i, __('Description', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_desc', 'option' => 'products', 'id' => $i, 'field' => 'desc'));
-			add_settings_field( 'products_price_'.$i, __('Price', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
 			add_settings_field( 'products_vat_'.$i, __('VAT', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_vat', 'option' => 'products', 'id' => $i, 'field' => 'vat'));
+
+			add_settings_field( 'products_offer_'.$i, __('Subscription Offer', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_offer', 'option' => 'products', 'id' => $i, 'field' => 'offer'));
+			
+			add_settings_field( 'products_price_'.$i, __('Price', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
 			add_settings_field( 'products_delivery_'.$i, __('Delivery Time', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_delivery', 'option' => 'products', 'id' => $i, 'field' => 'delivery'));
-		}
+
+			}
 		
 		// shipping
 		add_settings_section( 'section_pay_button_shipping', false, array( &$this, 'section_pay_button_shipping_desc' ), $this->setting_keys['paymill_pay_button_settings'] );
@@ -210,6 +215,7 @@ class paymill_settings{
 		$descriptions['products_title']				= __('Name of the product', 'paymill');
 		$descriptions['products_desc']				= __('Detailed description of the product', 'paymill');
 		$descriptions['products_price']				= __('Gross Price of the product, e.g. "40" or "6.99"', 'paymill');
+		$descriptions['products_offer']				= __('If you have created a subscription in your Paymill Cockpit, can select it here. If selected, it will overwrite the following settings for this product. <strong>Important: For Performance purposes, subscription plans will be cached. Open this page to recache it.</strong>', 'paymill');
 		$descriptions['products_vat']				= __('Value-Added-Tax Rate in % for the product, e.g. "19" or "7"', 'paymill');
 		$descriptions['products_delivery']			= __('Delivery Time of the product, e.g. "2 Days" or "1 Week"', 'paymill');
 
@@ -243,6 +249,22 @@ class paymill_settings{
 				class="regular-text code" style="width:300px;">'.$value.'</textarea>
 				<span class="setting-description">'.$descriptions[$args['desc']].'</span>
 			';
+		}elseif($args['desc'] == 'products_offer'){
+			$subscriptions = new paymill_subscriptions('pay_button');
+			$offers = $subscriptions->offerGetList(true);
+			echo '<select class="regular-text code" name="'.$this->setting_keys['paymill_pay_button_settings'].$option.$id.$field.'">';
+			echo '<option value="">'.__('Optional: Select Subscription Plan', 'paymill').'</option>';
+			foreach($offers as $offer){
+				if($value == $offer['id']){
+					$selected =' selected="selected"';
+				}else{
+					$selected ='';
+				}
+			echo '
+				<option value="'.$offer['id'].'"'.$selected.'>'.$offer['name'].' / '.$offer['amount'].' '.$offer['currency'].' / '.$offer['interval'].'</option>
+			';
+			}
+			echo '</select><span class="setting-description">'.$descriptions[$args['desc']].'</span>';
 		}else{
 			echo '
 				<input

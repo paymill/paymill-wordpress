@@ -14,6 +14,8 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 		}
 		
 		add_action('shopp_paymillshopp_sale',array(&$this,'sale')); // Process sales
+		
+		$GLOBALS['paymill_source']['shopp_version'] = SHOPP_VERSION;
 	}
 
 	/**
@@ -124,11 +126,12 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 		$ordermsg = __('Order', 'paymill').' #'.$order_id.'<br />'.__('Forename', 'paymill').': '.strip_tags($order->Customer->firstname).'<br />'.__('Surname', 'paymill').': '.strip_tags($order->Customer->lastname);
 		
 		$params = array(
-			'amount'      => str_replace('.','',"$total"),  // e.g. "4200" for 42.00 EUR
-			'currency'    => $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
-			'token'       => $_POST['paymillToken'],
-			'client'      => $client['id'],
-			'description' => $ordermsg
+			'amount'		=> str_replace('.','',"$total"),  // e.g. "4200" for 42.00 EUR
+			'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
+			'token'			=> $_POST['paymillToken'],
+			'client'		=> $client['id'],
+			'description'	=> $ordermsg,
+			'source'		=> serialize($GLOBALS['paymill_source'])
 		);				
 		$transaction        = $transactionsObject->create($params);
 		

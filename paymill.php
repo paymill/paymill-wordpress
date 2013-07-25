@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made eady
-Version: 1.2.1
+Version: 1.3
 Author: Matthias Reuter / Elbnetz
 Author URI: http://elbnetz.com
 */
@@ -11,7 +11,7 @@ Author URI: http://elbnetz.com
 	/*
 		common information
 	*/
-	define('PAYMILL_VERSION',1201);
+	define('PAYMILL_VERSION',1300);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	$GLOBALS['paymill_active'] = false;
 
@@ -44,7 +44,7 @@ function paymill_install() {
 $sql = 'CREATE TABLE '.$wpdb->prefix.'paymill_clients (
   paymill_client_id varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   paymill_client_email varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  paymill_client_description varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  paymill_client_description longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   wp_member_id int(11) NOT NULL,
   PRIMARY KEY  ( paymill_client_id),
   KEY  paymill_client_email ( paymill_client_email));';
@@ -54,12 +54,17 @@ $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_transactions (
   paymill_payment_id varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   paymill_client_id varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   paymill_transaction_time int(11) NOT NULL,
-  paymill_transaction_data varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  paymill_transaction_data longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   woocommerce_order_id int(11) NOT NULL,
   pay_button_order_id int(11) NOT NULL,
   shopplugin_order_id int(11) NOT NULL,
   PRIMARY KEY  ( paymill_transaction_id),
   KEY  paymill_payment_id ( paymill_payment_id));';
+  
+$sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_cache (
+  cache_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  cache_content longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  UNIQUE KEY  cache_id ( cache_id));';
   
 	dbDelta($sql);
 	
@@ -79,9 +84,22 @@ if(!get_option('paymill_db_version')){
 }
 
 	/*
+		load Paymill API
+	*/
+	require_once(PAYMILL_DIR.'lib/api/Transactions.php');
+	require_once(PAYMILL_DIR.'lib/api/Clients.php');
+	require_once(PAYMILL_DIR.'lib/integration/subscriptions.inc.php');
+
+	/*
 		load config
 	*/	
 	require_once('lib/config.inc.php');
+	
+	/* gather source info for security purposes and optimization */
+	$GLOBALS['paymill_source'] = array(
+		'wordpress_version'			=> get_bloginfo('version'),
+		'paymill_version'	=> PAYMILL_VERSION
+	);
 	
 	/*
 		load admin scripts
@@ -96,17 +114,11 @@ if(!get_option('paymill_db_version')){
 	add_action('admin_enqueue_scripts', 'pw_load_scripts');
 	
 	/*
-		load Paymill API
-	*/
-	require_once('lib/api/Transactions.php');
-	require_once('lib/api/Clients.php');
-	
-	/*
 		load payment forms
 	*/
 	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // pay button
 	require_once(PAYMILL_DIR.'lib/integration/woocommerce.inc.php'); // WooCommerce
-	
+
 	function paymill_scripts(){
 		wp_deregister_script(array('paymill_bridge','paymill_bridge_custom'));
 		wp_enqueue_script('jquery.formatCurrency-1.4.0.js', plugins_url( '/lib/js/jquery.formatCurrency-1.4.0.js' , __FILE__ ), array('jquery'), PAYMILL_VERSION);
@@ -119,7 +131,7 @@ if(!get_option('paymill_db_version')){
 			'validateBankCode'			=> esc_attr__('Invalid Bank Code', 'paymill'),
 			'decimalSymbol'				=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'], 'paymill'),
 			'digitGroupSymbol'			=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands'], 'paymill'),
-			'symbol'					=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['currency'], 'paymill'),
+			'symbol'					=> esc_attr__($GLOBALS['paymill_settings']->paymill_general_settings['currency'], 'paymill'),
 		));
 		wp_enqueue_script('paymill_bridge_custom', plugins_url( '/lib/js/paymill.js' , __FILE__ ), array('paymill_bridge'), PAYMILL_VERSION);
 		wp_enqueue_script('livevalidation', plugins_url( '/lib/js/livevalidation_standalone.compressed.js' , __FILE__ ), array('paymill_bridge_custom'), PAYMILL_VERSION);

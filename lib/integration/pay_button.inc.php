@@ -3,6 +3,8 @@
 	function paymill_pay_button_process_payment(){
 		global $wpdb;
 		
+		$GLOBALS['paymill_source']['pay_button_version'] = PAYMILL_VERSION;
+		
 		if(isset($_REQUEST['paymill_pay_button_order']) && $_REQUEST['paymill_pay_button_order'] == 1){				
 			$clientsObject = new Services_Paymill_Clients($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
 			$transactionsObject = new Services_Paymill_Transactions($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
@@ -63,11 +65,12 @@
 			$order = __('Order', 'paymill').' #'.$order_id;
 			
 			$params = array(
-				'amount'      => str_replace('.','',"$total"),  // e.g. "4200" for 42.00 EUR
-				'currency'    => $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
-				'token'       => $_POST['paymillToken'],
-				'client'      => $client['id'],
-				'description' => $order
+				'amount'		=> str_replace('.','',"$total"),  // e.g. "4200" for 42.00 EUR
+				'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
+				'token'			=> $_POST['paymillToken'],
+				'client'		=> $client['id'],
+				'description'	=> $order,
+				'source'		=> serialize($GLOBALS['paymill_source'])
 			);				
 			$transaction        = $transactionsObject->create($params);
 
@@ -79,6 +82,19 @@
 				die();
 			}
 			
+			/* create subscription */
+			$subscriptions = false;
+			if(isset($_POST['paymill_offer'])){
+				foreach($_POST['paymill_offer'] as $product_id => $offer_id){
+					if(isset($_POST['paymill_quantity'][$product_id]) && $_POST['paymill_quantity'][$product_id] == 1){
+						if($subscriptions === false){
+							$subscriptions = new paymill_subscriptions('pay_button');
+						}
+						$offers = $subscriptions->create($transaction['client']['id'], $offer_id, $transaction['payment']['id']);
+					}
+				}
+			}
+			
 			wp_mail($client_new_email, __('Confirmation of your Order', 'paymill'), $order_mail, 'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>');
 			wp_mail($GLOBALS['paymill_settings']->paymill_pay_button_settings['email_incoming'], __('New Order received', 'paymill'), $order_mail, 'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>');
 		}
@@ -87,6 +103,8 @@
 	add_action('plugins_loaded', 'paymill_pay_button_process_payment');
 
 	class paymill_pay_button_widget extends WP_Widget{
+		var $subscriptions = false;
+		
 		/** constructor */
 		function __construct() {
 			parent::WP_Widget('paymill_pay_button_widget', 'Paymill Pay Button', array( 'description' => __('Shows a Paymill Payment Button.', 'paymill')));
@@ -103,7 +121,7 @@
 					echo $args['before_title']; ?><?php echo $instance['title']; ?><?php echo $args['after_title'];
 				}
 				
-				if($_POST['paymill_pay_button_order'] == 1){
+				if(isset($_POST['paymill_pay_button_order']) && $_POST['paymill_pay_button_order'] == 1){
 					echo __('Thank you for your order.', 'paymill');
 				}else{
 					// settings
@@ -119,6 +137,11 @@
 					paymill_form_checkout_submit_id = "#place_order";
 					paymill_shop_name = "paybutton";
 					</script>';
+					
+					if($this->subscriptions === false){
+						$this->subscriptions = new paymill_subscriptions('pay_button');
+					}
+					$offers = $this->subscriptions->offerGetList();
 					
 					// html / icons
 					echo '<div id="payment" class="paymill_pay_button"><form action="#" method="post" class="checkout">';
@@ -136,7 +159,6 @@
 		}
 		function update($new_instance, $old_instance){
 			$instance = $old_instance;
-			var_dump($new_instance);
 			$instance['title']			= strip_tags($new_instance['title']);
 			$instance['products']		= serialize($new_instance['products']);
 			

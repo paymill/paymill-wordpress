@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce
 Requires at least: 3.5
 Tested up to: 3.5.2
-Stable tag: 1.2
+Stable tag: 1.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -76,6 +76,12 @@ ELV is a German banking service and stands for "Elektronisches Lastschriftverfah
 
 == Changelog ==
 
+= 1.3 =
+
+* several PHP notices fixed
+* WooCommerce issue fixed (selection of other payment gateway didn't work on checkout page)
+* Subscription Support for Pay Button
+
 = 1.2.1 =
 
 * several PHP notices fixed
@@ -93,6 +99,9 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.3 =
+Several bugs fixed, subscription support added
 
 = 1.2.1 =
 Several Bugs fixed and Payment Type Logo Selection added

@@ -17,6 +17,8 @@
 		if(class_exists('WC_Payment_Gateway')){
 			class WC_Gateway_Paymill_Gateway extends WC_Payment_Gateway{
 				public function __construct(){
+				
+					$GLOBALS['paymill_source']['woocommerce_version'] = ((isset($GLOBALS['woocommerce']) && is_object($GLOBALS['woocommerce']) && isset($GLOBALS['woocommerce']->version)) ? $GLOBALS['woocommerce']->version : 0);
 					
 					$this->id					= 'paymill';
 					$this->icon					= plugins_url('',__FILE__ ).'/../img/icon.png';
@@ -118,7 +120,8 @@
 						'currency'    => get_woocommerce_currency(),   // ISO 4217
 						'token'       => $_POST['paymillToken'],
 						'client'      => $client['id'],
-						'description' => 'Order #'.$order_id
+						'description' => 'Order #'.$order_id,
+						'source'		=> serialize($GLOBALS['paymill_source'])
 					);				
 					$transaction        = $transactionsObject->create($params);
 					
