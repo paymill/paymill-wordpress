@@ -1,10 +1,10 @@
 === Paymill for WordPress ===
 Contributors: Matthias Reuter
 Donate link: 
-Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce
+Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard
 Requires at least: 3.5
-Tested up to: 3.5.2
-Stable tag: 1.3
+Tested up to: 3.6
+Stable tag: 1.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -76,6 +76,13 @@ ELV is a German banking service and stands for "Elektronisches Lastschriftverfah
 
 == Changelog ==
 
+= 1.3.1 =
+
+* MasterCard Logo and Payment Bug fixed
+* error reporting fixed (thanks to Jan R.)
+* notifies with wrong payment data in Pay Button fixed
+* credit card button visibility fixed
+
 = 1.3 =
 
 * several PHP notices fixed
@@ -99,6 +106,9 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.3.1 =
+Several bugs fixed
 
 = 1.3 =
 Several bugs fixed, subscription support added

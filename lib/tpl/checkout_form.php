@@ -19,10 +19,10 @@
 		<label><?php echo __('Name', 'paymill'); ?></label>
 		<input class="paymill_holdername" id="holdername" type="text" size="20" value="" autocomplete="off" />
 	</div>
-	<div id="form-switch-credit" class="paymill_form-switch paymill_form-switch_active"><?php echo __('Credit Card', 'paymill'); ?></div>
 	<?php
 		if($country == 'DE' && esc_attr( $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) == 1){
 	?>
+	<div id="form-switch-credit" class="paymill_form-switch paymill_form-switch_active"><?php echo __('Credit Card', 'paymill'); ?></div>
 	<div id="form-switch-elv" class="paymill_form-switch"><?php echo __('Debit Payment', 'paymill'); ?></div>
 	<?php
 		}

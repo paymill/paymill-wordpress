@@ -1,4 +1,4 @@
-<div class="paymill_products">
+<div class="paymill_products paybutton">
 <?php
 	foreach($GLOBALS['paymill_settings']->paymill_pay_button_settings['products'] as $id => $product){
 		if(strlen($product['title']) > 0 && (!is_array($products_whitelist) || $products_whitelist[0] == '' || in_array($id,$products_whitelist))){
@@ -55,6 +55,7 @@
 ?>
 		</select>
 		<div class="paymill_total_price"><?php echo __('Total Price:', 'paymill'); ?> <span id="paymill_total_number">0</span></div>
+		<input type="checkbox" id="payment_method_paymill" checked="checked" />
 		<input class="paymill_amount" id="paymill_total" type="hidden" name="paymill_total" value="0" />
 		<input type="hidden" name="paymill_pay_button_order" value="1" />
 </div>

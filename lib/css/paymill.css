@@ -215,3 +215,7 @@ textarea.LV_invalid_field:active {
 #card-cvc{
 	width:60px !important;
 }
+
+.paybutton #payment_method_paymill{
+	display:none;
+}

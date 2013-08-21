@@ -95,38 +95,41 @@ class paymill_settings{
 
 		// products
 		add_settings_section( 'section_pay_button_products', false, array( &$this, 'section_pay_button_products_desc' ), $this->setting_keys['paymill_pay_button_settings'] );
-		if(strlen($this->paymill_pay_button_settings['products'][count($this->paymill_pay_button_settings['products'])]['title']) > 0){
-			$countries = count($this->paymill_pay_button_settings['products'])+5;
-		}elseif(count($this->paymill_pay_button_settings['products']) < 5){
-			$countries = 5;
-		}else{
-			$countries = count($this->paymill_pay_button_settings['products']);
-		}
-		for($i = 1; $i <= $countries; $i++){
-			add_settings_field( 'products_title_'.$i, __('Product', 'paymill').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_title', 'option' => 'products', 'id' => $i, 'field' => 'title'));
-			add_settings_field( 'products_desc_'.$i, __('Description', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_desc', 'option' => 'products', 'id' => $i, 'field' => 'desc'));
-			add_settings_field( 'products_vat_'.$i, __('VAT', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_vat', 'option' => 'products', 'id' => $i, 'field' => 'vat'));
-
-			add_settings_field( 'products_offer_'.$i, __('Subscription Offer', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_offer', 'option' => 'products', 'id' => $i, 'field' => 'offer'));
-			
-			add_settings_field( 'products_price_'.$i, __('Price', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
-			add_settings_field( 'products_delivery_'.$i, __('Delivery Time', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_delivery', 'option' => 'products', 'id' => $i, 'field' => 'delivery'));
-
+		if (isset($this->paymill_pay_button_settings['products'])) {
+			if(strlen($this->paymill_pay_button_settings['products'][count($this->paymill_pay_button_settings['products'])]['title']) > 0){
+				$countries = count($this->paymill_pay_button_settings['products'])+5;
+			}elseif(count($this->paymill_pay_button_settings['products']) < 5){
+				$countries = 5;
+			}else{
+				$countries = count($this->paymill_pay_button_settings['products']);
 			}
-		
+			for($i = 1; $i <= $countries; $i++){
+				add_settings_field( 'products_title_'.$i, __('Product', 'paymill').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_title', 'option' => 'products', 'id' => $i, 'field' => 'title'));
+				add_settings_field( 'products_desc_'.$i, __('Description', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_desc', 'option' => 'products', 'id' => $i, 'field' => 'desc'));
+				add_settings_field( 'products_vat_'.$i, __('VAT', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_vat', 'option' => 'products', 'id' => $i, 'field' => 'vat'));
+
+				add_settings_field( 'products_offer_'.$i, __('Subscription Offer', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_offer', 'option' => 'products', 'id' => $i, 'field' => 'offer'));
+				
+				add_settings_field( 'products_price_'.$i, __('Price', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
+				add_settings_field( 'products_delivery_'.$i, __('Delivery Time', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_delivery', 'option' => 'products', 'id' => $i, 'field' => 'delivery'));
+			}
+		}
+
 		// shipping
 		add_settings_section( 'section_pay_button_shipping', false, array( &$this, 'section_pay_button_shipping_desc' ), $this->setting_keys['paymill_pay_button_settings'] );
-		if(strlen($this->paymill_pay_button_settings['flat_shipping'][count($this->paymill_pay_button_settings['flat_shipping'])]['country']) > 0){
-			$countries = count($this->paymill_pay_button_settings['flat_shipping'])+5;
-		}elseif(count($this->paymill_pay_button_settings['flat_shipping']) < 5){
-			$countries = 5;
-		}else{
-			$countries = count($this->paymill_pay_button_settings['flat_shipping']);
-		}
-		for($i = 1; $i <= $countries; $i++){
-			add_settings_field( 'flat_shipping_country_'.$i, __('Shipping Country', 'paymill').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_country', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'country'));
-			add_settings_field( 'flat_shipping_costs_'.$i, __('Shipping Costs', 'paymill').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_costs', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'costs'));
-			add_settings_field( 'flat_shipping_vat_'.$i, __('Shipping VAT', 'paymill').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_vat', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'vat'));
+		if(isset($this->paymill_pay_button_settings['flat_shipping'])) {
+			if(strlen($this->paymill_pay_button_settings['flat_shipping'][count($this->paymill_pay_button_settings['flat_shipping'])]['country']) > 0){
+				$countries = count($this->paymill_pay_button_settings['flat_shipping'])+5;
+			}elseif(count($this->paymill_pay_button_settings['flat_shipping']) < 5){
+				$countries = 5;
+			}else{
+				$countries = count($this->paymill_pay_button_settings['flat_shipping']);
+			}
+			for($i = 1; $i <= $countries; $i++){
+				add_settings_field( 'flat_shipping_country_'.$i, __('Shipping Country', 'paymill').' #'.$i, array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_country', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'country'));
+				add_settings_field( 'flat_shipping_costs_'.$i, __('Shipping Costs', 'paymill').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_costs', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'costs'));
+				add_settings_field( 'flat_shipping_vat_'.$i, __('Shipping VAT', 'paymill').' '.esc_attr( $this->paymill_pay_button_settings['flat_shipping'][$i]['country'] ), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_shipping',array('desc' => 'flat_shipping_vat', 'option' => 'flat_shipping', 'id' => $i, 'field' => 'vat'));
+			}
 		}
 	}
 	

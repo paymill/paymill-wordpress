@@ -128,7 +128,7 @@
 					// save data to transaction table
 					$query = 'INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, woocommerce_order_id) VALUES ("'.$transaction['id'].'", "'.$transaction['payment']['id'].'", "'.$transaction['client']['id'].'", "'.$order_id.'")';
 					$wpdb->query($query);
-					
+
 					if(isset($transaction['error']['messages'])){
 						foreach($transaction['error']['messages'] as $field => $msg){
 							$woocommerce->add_error($field.': '.$msg);
