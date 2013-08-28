@@ -20,7 +20,7 @@ class paymill_subscriptions{
 		//$subscription				= $this->subscriptionsObject->get();
 	}
 	public function details(){
-		$subscription				= $this->subscriptionsObject->getOne('sub_dc180b755d10da324864');
+		$subscription				= $this->subscriptionsObject->getOne('');
 	}
 	public function create($client, $offer, $payment){
 	
@@ -36,16 +36,14 @@ class paymill_subscriptions{
 	}
 	public function update(){
 		$params = array(
-			'id'					=> 'sub_dc180b755d10da324864',
+			'id'					=> '',
 			'cancel_at_period_end'	=> true,
-			'offer'					=> 'offer_40237e20a7d5a231d99b',
-			'payment'				=> 'pay_95ba26ba2c613ebb0ca8'
+			'offer'					=> '',
+			'payment'				=> ''
 		);
 		$subscription				= $this->subscriptionsObject->update($params);
 	}
 	public function remove(){
-		$apiKey						= 'b07e13ad0641f21da3e346cf792b488c';
-		$apiEndpoint				= 'https://api.paymill.com/v2/';
 		$subscription				= $this->subscriptionsObject->delete('sub_012db05186ccfe22d86c');
 	}
 	

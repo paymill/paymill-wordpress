@@ -129,7 +129,13 @@
 					$currency = $GLOBALS['paymill_settings']->paymill_general_settings['currency'];
 					$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos.png';
 					$title = apply_filters( 'widget_title', $instance['title'] );
-					$products_whitelist = unserialize($instance['products']);
+					
+					if(isset($instance['products_list']) && strlen($instance['products_list']) > 0){
+					
+						$products_whitelist = explode(',',$instance['products_list']);
+					}else{
+						$products_whitelist = unserialize($instance['products']);
+					}
 					
 					// form ids
 					echo '<script>

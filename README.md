@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard
 Requires at least: 3.5
 Tested up to: 3.6
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -69,12 +69,23 @@ Depending on your country and account status, the following credit card provider
 
 ELV is a German banking service and stands for "Elektronisches Lastschriftverfahren". This is a very convenience payment solution for German users, as credit cards are not very common in Germany compared to e.g. USA.
 
+= Can I use shortcodes to display the Pay Button? =
+
+Yes, here's an example shortcode with all currently available parameters: [paymill_pb title="test title" products_list="1,2"]
+
 == Screenshots ==
 
 1. Common Settings
 2. Payment Form
 
 == Changelog ==
+
+= 1.3.2 =
+
+* Creditcard / ELV Switch Display issue fixed
+* Translating issues fixed
+* WooCommerce Bug on checkout page fixed
+* Pay Button show/hide blocks links fixed
 
 = 1.3.1 =
 
@@ -106,6 +117,9 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.3.2 =
+Several bugs fixed, shortcode support for Pay Button
 
 = 1.3.1 =
 Several bugs fixed

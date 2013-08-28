@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made eady
-Version: 1.3.1
+Version: 1.3.2
 Author: Matthias Reuter / Elbnetz
 Author URI: http://elbnetz.com
 */
@@ -11,7 +11,7 @@ Author URI: http://elbnetz.com
 	/*
 		common information
 	*/
-	define('PAYMILL_VERSION',1300);
+	define('PAYMILL_VERSION',1302);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	$GLOBALS['paymill_active'] = false;
 
