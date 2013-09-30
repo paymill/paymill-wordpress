@@ -112,6 +112,7 @@ class paymill_settings{
 				add_settings_field( 'products_offer_'.$i, __('Subscription Offer', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_offer', 'option' => 'products', 'id' => $i, 'field' => 'offer'));
 				
 				add_settings_field( 'products_price_'.$i, __('Price', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
+				add_settings_field( 'products_quantityhide_'.$i, __('Hide Quantity', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_quantityhide', 'option' => 'products', 'id' => $i, 'field' => 'quantityhide'));
 				add_settings_field( 'products_delivery_'.$i, __('Delivery Time', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_delivery', 'option' => 'products', 'id' => $i, 'field' => 'delivery'));
 			}
 		//}
@@ -207,21 +208,22 @@ class paymill_settings{
 	function field_pay_button_option($args) {
 		$descriptions = array();
 		
-		$descriptions['number_decimal']				= __('Set a symbol used for decimal point. Default: .', 'paymill');
-		$descriptions['number_thousands']			= __('Set a symbol used for thousands seperator. Default: ,', 'paymill');
-		$descriptions['email_outgoing']				= __('Outgoing Emailaddress for customer order confirmation mail.', 'paymill');
-		$descriptions['email_incoming']				= __('Incoming Emailaddress for Copy of customer order confirmation mail.');
+		$descriptions['number_decimal']					= __('Set a symbol used for decimal point. Default: .', 'paymill');
+		$descriptions['number_thousands']				= __('Set a symbol used for thousands seperator. Default: ,', 'paymill');
+		$descriptions['email_outgoing']					= __('Outgoing Emailaddress for customer order confirmation mail.', 'paymill');
+		$descriptions['email_incoming']					= __('Incoming Emailaddress for Copy of customer order confirmation mail.');
 
-		$descriptions['flat_shipping_country']		= __('Name of the available delivery country, e.g. "England"');
-		$descriptions['flat_shipping_costs']		= __('Gross fee for the flat shipping costs., e.g. "7" or "4.90"', 'paymill');
-		$descriptions['flat_shipping_vat']			= __('Value-Added-Tax Rate in % for the flat shipping costs., e.g. "19" or "7"', 'paymill');
+		$descriptions['flat_shipping_country']			= __('Name of the available delivery country, e.g. "England"');
+		$descriptions['flat_shipping_costs']			= __('Gross fee for the flat shipping costs., e.g. "7" or "4.90"', 'paymill');
+		$descriptions['flat_shipping_vat']				= __('Value-Added-Tax Rate in % for the flat shipping costs., e.g. "19" or "7"', 'paymill');
 
-		$descriptions['products_title']				= __('Name of the product', 'paymill');
-		$descriptions['products_desc']				= __('Detailed description of the product', 'paymill');
-		$descriptions['products_price']				= __('Gross Price of the product, e.g. "40" or "6.99"', 'paymill');
-		$descriptions['products_offer']				= __('If you have created a subscription in your Paymill Cockpit, can select it here. If selected, it will overwrite the following settings for this product. <strong>Important: For Performance purposes, subscription plans will be cached. Open this page to recache it.</strong>', 'paymill');
-		$descriptions['products_vat']				= __('Value-Added-Tax Rate in % for the product, e.g. "19" or "7"', 'paymill');
-		$descriptions['products_delivery']			= __('Delivery Time of the product, e.g. "2 Days" or "1 Week"', 'paymill');
+		$descriptions['products_title']					= __('Name of the product', 'paymill');
+		$descriptions['products_desc']					= __('Detailed description of the product', 'paymill');
+		$descriptions['products_price']					= __('Gross Price of the product, e.g. "40" or "6.99"', 'paymill');
+		$descriptions['products_offer']					= __('If you have created a subscription in your Paymill Cockpit, can select it here. If selected, it will overwrite the following settings for this product. <strong>Important: For Performance purposes, subscription plans will be cached. Open this page to recache it.</strong>', 'paymill');
+		$descriptions['products_vat']					= __('Value-Added-Tax Rate in % for the product, e.g. "19" or "7"', 'paymill');
+		$descriptions['products_delivery']				= __('Delivery Time of the product, e.g. "2 Days" or "1 Week"', 'paymill');
+		$descriptions['products_quantityhide']			= __('Hide quantity select field, quantity will be set to 1', 'paymill');
 
 		
 		if(strlen($args['option']) > 0){
@@ -265,10 +267,19 @@ class paymill_settings{
 					$selected ='';
 				}
 			echo '
-				<option value="'.$offer['id'].'"'.$selected.'>'.$offer['name'].' / '.$offer['amount'].' '.$offer['currency'].' / '.$offer['interval'].'</option>
+				<option value="'.$offer['id'].'"'.$selected.'>'.$offer['name'].' / '.($offer['amount']/100).' '.$offer['currency'].' / '.$offer['interval'].'</option>
 			';
 			}
 			echo '</select><span class="setting-description">'.$descriptions[$args['desc']].'</span>';
+		}elseif($args['desc'] == 'products_quantityhide'){
+			echo '
+				<input
+				type="checkbox"
+				name="'.$this->setting_keys['paymill_pay_button_settings'].$option.$id.$field.'"
+				value="1"
+				class="regular-text code" '.($value ? 'checked="checked"' : '').' />
+				<span class="setting-description">'.$descriptions[$args['desc']].'</span>
+			';
 		}else{
 			echo '
 				<input

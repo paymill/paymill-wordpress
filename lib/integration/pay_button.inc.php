@@ -111,8 +111,11 @@
 		}
 		function widget($args, $instance){
 			global $wpdb;
-
-			if(!$GLOBALS['paymill_active'] && isset($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) && count($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) > 0){
+			if(
+				!$GLOBALS['paymill_active'] &&
+				isset($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) &&
+				count($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) > 0
+			){
 				$GLOBALS['paymill_active'] = true;
 				
 				echo $args['before_widget'];
@@ -159,9 +162,12 @@
 				}
 				
 				echo $args['after_widget'];
+			}elseif(empty($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) || count($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) == 0){
+				echo '<div class="paymill_notification paymill_notification_once_only"><strong>Error:</strong> You must have set at least one product.</div>';
 			}else{
 				echo '<div class="paymill_notification paymill_notification_once_only"><strong>Error:</strong> Paymill can be loaded once only on the same page.</div>';
 			}
+
 		}
 		function update($new_instance, $old_instance){
 			$instance = $old_instance;

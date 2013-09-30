@@ -1,10 +1,10 @@
 === Paymill for WordPress ===
 Contributors: Matthias Reuter
 Donate link: 
-Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard
+Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.5
-Tested up to: 3.6
-Stable tag: 1.3.2
+Tested up to: 3.6.1
+Stable tag: 1.4.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,9 +14,9 @@ With Paymill you are able to provide credit card based payments for your custome
 
 This plugin currently allows:
 
-* Payment Gateway for WooCommerce
+* Payment Gateway for WooCommerce - incl. subscription support (BETA)
 * Payment Gateway for ShopPlugin
-* Pay Button
+* Pay Button - incl. subscription support
 
 Features in Development:
 
@@ -80,6 +80,11 @@ Yes, here's an example shortcode with all currently available parameters: [paymi
 
 == Changelog ==
 
+= 1.4.0 =
+
+* Subscription support added for WooCommerce Subscriptions addon
+* Allows hiding quantity field in pay button widget
+
 = 1.3.2 =
 
 * Creditcard / ELV Switch Display issue fixed
@@ -117,6 +122,9 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.4.0 =
+WooCommerce Subscription Support (beta!), minor improvements
 
 = 1.3.2 =
 Several bugs fixed, shortcode support for Pay Button

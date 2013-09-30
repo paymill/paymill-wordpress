@@ -25,11 +25,17 @@
 			}else{
 ?>
 			<div class="paymill_quantity">
+			<?php if($product['quantityhide'] == '1'){ ?>
+				<select name="paymill_quantity[<?php echo $id; ?>]" style="display:none;">
+					<option value="1">1</option>
+				</select>
+			<?php }else{ ?>
 				<select name="paymill_quantity[<?php echo $id; ?>]">
 				<?php for($i = 0; $i <= 10; $i++){ ?>
 					<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
 				<?php } ?>
 				</select>
+			<?php } ?>
 			</div>
 			<?php if(strlen($product['price']) > 0){ ?><div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo $product['price']; ?></div><div class="paymill_price"><?php echo number_format($product['price'],2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><?php } ?>
 			<?php if(strlen($product['vat']) > 0){ ?><div class="paymill_vat"><?php echo $product['vat'].__('% VAT included.', 'paymill'); ?></div><?php } ?>
@@ -59,6 +65,9 @@
 		<input class="paymill_amount" id="paymill_total" type="hidden" name="paymill_total" value="0" />
 		<input type="hidden" name="paymill_pay_button_order" value="1" />
 </div>
+<?php
+	
+?>
 <div class="paymill_address">
 	<div class="paymill_address_title"><?php echo __('Address', 'paymill'); ?></div>
 	<div class="form-row">
@@ -98,3 +107,6 @@
 		<input type="text" name="phone" value="" size="20" />
 	</div>
 </div>
+<?php
+
+?>

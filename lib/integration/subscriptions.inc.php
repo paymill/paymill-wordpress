@@ -16,11 +16,11 @@ class paymill_subscriptions{
 		$this->store				= $store;
 	}
 
-	public function getList($offer_id){
-		//$subscription				= $this->subscriptionsObject->get();
+	public function getList(){
+		return						$this->subscriptionsObject->get();
 	}
-	public function details(){
-		$subscription				= $this->subscriptionsObject->getOne('');
+	public function details($sub_id){
+		return						$this->subscriptionsObject->getOne($sub_id);
 	}
 	public function create($client, $offer, $payment){
 	
@@ -43,8 +43,8 @@ class paymill_subscriptions{
 		);
 		$subscription				= $this->subscriptionsObject->update($params);
 	}
-	public function remove(){
-		$subscription				= $this->subscriptionsObject->delete('sub_012db05186ccfe22d86c');
+	public function remove($subscriptionid){
+		$this->subscriptionsObject->delete($subscriptionid);
 	}
 	
 	public function offerGetList($reCache=false){
@@ -66,7 +66,7 @@ class paymill_subscriptions{
 			return $this->cache['subscription_plans'];
 		}else{
 			$query				= 'SELECT * FROM '.$wpdb->prefix.'paymill_cache WHERE cache_id="subscription_plans"';
-			$offersList		= $wpdb->get_results($query,ARRAY_A);
+			$offersList			= $wpdb->get_results($query,ARRAY_A);
 			
 			$offersList = unserialize($offersList[0]['cache_content']);
 			$this->cache['subscription_plans'] = $offersList;
@@ -81,5 +81,19 @@ class paymill_subscriptions{
 			$this->offerGetList($reCache);
 			return (isset($this->cache[$offer_id]) ? $this->cache[$offer_id] : false);
 		}
+	}
+	public function offerGetDetailByName($name){
+		return $this->offersObject->get(array('name' => $name));
+	}
+	
+	public function offerCreate($params){
+		/*$params = array(
+			'amount'   => '4200',       // E.g. "4200" for 42.00 EUR
+			'currency' => 'EUR',        // ISO 4217
+			'interval' => '1 MONTH',
+			'name'     => 'Test Offer'
+		);*/
+		
+		return $this->offersObject->create($params);
 	}
 }

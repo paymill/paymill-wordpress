@@ -3,15 +3,19 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made eady
-Version: 1.3.2
+Version: 1.4.0
 Author: Matthias Reuter / Elbnetz
 Author URI: http://elbnetz.com
 */
-
+/*
+add_action( 'plugins_loaded', 'paymill_test' );
+function paymill_test(){
+WC_Subscriptions_Manager::cancel_subscription('1', '144_91');
+}*/
 	/*
 		common information
 	*/
-	define('PAYMILL_VERSION',1302);
+	define('PAYMILL_VERSION',1401);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	$GLOBALS['paymill_active'] = false;
 
@@ -24,7 +28,6 @@ Author URI: http://elbnetz.com
 		ini_set('display_errors',0); 
 		ini_set('error_log',PAYMILL_DIR.'lib/debug/PHP_errors.log');
 	}
-	
 
 	/*
 		load translation
@@ -34,13 +37,34 @@ Author URI: http://elbnetz.com
 	}
 	add_action('plugins_loaded', 'paymill_init');
 	
+	register_activation_hook(__FILE__,'paymill_install');
+
+	/*
+		load Paymill API
+	*/
+	require_once(PAYMILL_DIR.'lib/api/Transactions.php');
+	require_once(PAYMILL_DIR.'lib/api/Clients.php');
+	require_once(PAYMILL_DIR.'lib/api/Webhooks.php');
+	require_once(PAYMILL_DIR.'lib/integration/subscriptions.inc.php');
+
+	/*
+		load config
+	*/	
+	require_once('lib/config.inc.php');
+	
+	/* gather source info for security purposes and optimization */
+	$GLOBALS['paymill_source'] = array(
+		'wordpress_version'			=> get_bloginfo('version'),
+		'paymill_version'			=> PAYMILL_VERSION
+	);
+	
 	/*
 		install the tables
 	*/
-function paymill_install() {
-	global $wpdb;
-	
-	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	function paymill_install() {
+		global $wpdb;
+		
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	
 $sql = 'CREATE TABLE '.$wpdb->prefix.'paymill_clients (
   paymill_client_id varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -67,41 +91,43 @@ $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_cache (
   cache_content longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   UNIQUE KEY  cache_id ( cache_id));';
   
-	dbDelta($sql);
-	
-	if(!get_option('paymill_db_version')){
-		add_option('paymill_db_version', PAYMILL_VERSION);
-	}elseif(get_option('paymill_db_version') != PAYMILL_VERSION){
-		update_option('paymill_db_version', PAYMILL_VERSION);
+$sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_subscriptions (
+  paymill_sub_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  woo_user_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  woo_offer_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  UNIQUE KEY  paymill_sub_id ( paymill_sub_id));';
+  
+		dbDelta($sql);
+		
+		// paymill webhooks
+		
+		// get webhooks list
+		$srv = new Services_Paymill_Webhooks($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'],$GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
+
+		$webhook = $srv->getOne(get_option('paymill_webhook_id'));
+		
+		if(!$webhook){
+			$webhook = $srv->create(array(
+				'url'         => get_site_url().'/?paymill_webhook=1',
+				'event_types' => array('subscription.deleted')
+			));
+		
+			add_option('paymill_webhook_id', $webhook['id']);
+		}
+		
+		if(!get_option('paymill_db_version')){
+			add_option('paymill_db_version', PAYMILL_VERSION);
+		}elseif(get_option('paymill_db_version') != PAYMILL_VERSION){
+			update_option('paymill_db_version', PAYMILL_VERSION);
+		}
 	}
-}
 
-register_activation_hook(__FILE__,'paymill_install');
+	if(!get_option('paymill_db_version')){
+		paymill_install();
+	}elseif(get_option('paymill_db_version') != PAYMILL_VERSION){
+		paymill_install();
+	}
 
-if(!get_option('paymill_db_version')){
-	paymill_install();
-}elseif(get_option('paymill_db_version') != PAYMILL_VERSION){
-	paymill_install();
-}
-
-	/*
-		load Paymill API
-	*/
-	require_once(PAYMILL_DIR.'lib/api/Transactions.php');
-	require_once(PAYMILL_DIR.'lib/api/Clients.php');
-	require_once(PAYMILL_DIR.'lib/integration/subscriptions.inc.php');
-
-	/*
-		load config
-	*/	
-	require_once('lib/config.inc.php');
-	
-	/* gather source info for security purposes and optimization */
-	$GLOBALS['paymill_source'] = array(
-		'wordpress_version'			=> get_bloginfo('version'),
-		'paymill_version'	=> PAYMILL_VERSION
-	);
-	
 	/*
 		load admin scripts
 	*/
