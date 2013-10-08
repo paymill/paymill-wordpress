@@ -15,7 +15,7 @@ abstract class Services_Paymill_Base
 
     /**
      * Paymill HTTP client class
-     * 
+     *
      * @var Services_Paymill_Apiclient_Interface
      */
     protected $_httpClient;
@@ -26,15 +26,16 @@ abstract class Services_Paymill_Base
      *
      * @param string $apiKey merchant api key
      * @param string $apiEndpoint endpoint URL for the api
+     * @param array $extraData extra data for the client, e.g., proxy settings.
      */
-    public function __construct($apiKey, $apiEndpoint)
+    public function __construct($apiKey, $apiEndpoint, $extraData = array())
     {
-        $this->_httpClient = new Services_Paymill_Apiclient_Curl($apiKey, $apiEndpoint);
+        $this->_httpClient = new Services_Paymill_Apiclient_Curl($apiKey, $apiEndpoint, $extraData);
     }
 
     /**
      * General REST GET verb
-     * 
+     *
      * @param array  $filters    e.g. count,offest
      * @param string $identifier resource id
      *
@@ -54,7 +55,7 @@ abstract class Services_Paymill_Base
     /**
      * General REST GET verb
      * returns one item or null
-     * 
+     *
      * @param string $identifier resource id
      *
      * @return array resource item | null
@@ -64,16 +65,16 @@ abstract class Services_Paymill_Base
         if (!$identifier) {
             return null;
         }
-        
+
         $filters = array("count" => 1, 'offset' => 0);
-        
+
         return $this->get($filters, $identifier);
     }
 
     /**
      * General REST DELETE verb
      * Delete or inactivate/cancel resource item
-     * 
+     *
      * @param string $clientId
      *
      * @return array item deleted
@@ -132,5 +133,14 @@ abstract class Services_Paymill_Base
         );
 
         return $response['data'];
+    }
+
+    /**
+     * Returns the response of the last request as an array
+     * @return mixed Response
+     * @todo Add Unit test
+     */
+    public function getResponse(){
+        return $this->_httpClient->getResponse();
     }
 }

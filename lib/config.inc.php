@@ -59,6 +59,53 @@ class paymill_settings{
 			add_action( 'admin_init', array( &$this, 'register_pay_button_settings' ) );
 		}
 		add_action( 'admin_menu', array( &$this, 'add_admin_menus' ) );
+		
+		// prepare dynamic language strings
+		__('DAY', 'paymill');
+		__('WEEK', 'paymill');
+		__('MONTH', 'paymill');
+		__('YEAR', 'paymill');
+		__('DAYS', 'paymill');
+		__('WEEKS', 'paymill');
+		__('MONTHS', 'paymill');
+		__('YEARS', 'paymill');
+		
+		__('50501','paymill');
+		__('50001','paymill');
+		__('50201','paymill');
+		__('40103','paymill');
+		__('50102','paymill');
+		__('50103','paymill');
+		__('40105','paymill');
+		__('40101','paymill');
+		__('40100','paymill');
+		__('40104','paymill');
+		__('40001','paymill');
+		__('40102','paymill');
+		__('40106','paymill');
+		__('40201','paymill');
+		__('50300','paymill');
+		__('40202','paymill');
+		__('50502','paymill');
+		__('40301','paymill');
+		__('40401','paymill');
+		__('40402','paymill');
+		__('40403','paymill');
+		__('50104','paymill');
+		__('50105','paymill');
+		__('50600','paymill');
+		
+		__('shipping');
+		__('company_name');
+		__('forename');
+		__('surname');
+		__('street');
+		__('number');
+		__('zip');
+		__('city');
+		__('email');
+		__('phone');
+		
 	}
 	
 	/*
@@ -92,7 +139,9 @@ class paymill_settings{
 		add_settings_field( 'number_thousands',  __('Number Format: Thousands Seperator', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'number_thousands', 'option' => 'number_thousands'));
 		add_settings_field( 'email_outgoing',  __('Outgoing Email', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_outgoing', 'option' => 'email_outgoing'));
 		add_settings_field( 'email_incoming',  __('Incoming Email', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_incoming', 'option' => 'email_incoming'));
-
+		add_settings_field( 'fields_hide',  __('Hide Fields', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'fields_hide', 'option' => 'fields_hide'));
+		add_settings_field( 'no_default_css',  __('Do not load default CSS', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'no_default_css', 'option' => 'no_default_css'));
+		
 		// products
 		add_settings_section( 'section_pay_button_products', false, array( &$this, 'section_pay_button_products_desc' ), $this->setting_keys['paymill_pay_button_settings'] );
 		//if (isset($this->paymill_pay_button_settings['products'])) {
@@ -113,6 +162,7 @@ class paymill_settings{
 				
 				add_settings_field( 'products_price_'.$i, __('Price', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_price', 'option' => 'products', 'id' => $i, 'field' => 'price'));
 				add_settings_field( 'products_quantityhide_'.$i, __('Hide Quantity', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_quantityhide', 'option' => 'products', 'id' => $i, 'field' => 'quantityhide'));
+				//add_settings_field( 'products_freeamount_'.$i, __('Free Amount', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_freeamount', 'option' => 'products', 'id' => $i, 'field' => 'freeamount'));
 				add_settings_field( 'products_delivery_'.$i, __('Delivery Time', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button_products',array('desc' => 'products_delivery', 'option' => 'products', 'id' => $i, 'field' => 'delivery'));
 			}
 		//}
@@ -213,6 +263,9 @@ class paymill_settings{
 		$descriptions['email_outgoing']					= __('Outgoing Emailaddress for customer order confirmation mail.', 'paymill');
 		$descriptions['email_incoming']					= __('Incoming Emailaddress for Copy of customer order confirmation mail.');
 
+		$descriptions['fields_hide']					= __('You may want to hide certain fields. Select them here:');
+		$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.');
+		
 		$descriptions['flat_shipping_country']			= __('Name of the available delivery country, e.g. "England"');
 		$descriptions['flat_shipping_costs']			= __('Gross fee for the flat shipping costs., e.g. "7" or "4.90"', 'paymill');
 		$descriptions['flat_shipping_vat']				= __('Value-Added-Tax Rate in % for the flat shipping costs., e.g. "19" or "7"', 'paymill');
@@ -224,6 +277,7 @@ class paymill_settings{
 		$descriptions['products_vat']					= __('Value-Added-Tax Rate in % for the product, e.g. "19" or "7"', 'paymill');
 		$descriptions['products_delivery']				= __('Delivery Time of the product, e.g. "2 Days" or "1 Week"', 'paymill');
 		$descriptions['products_quantityhide']			= __('Hide quantity select field, quantity will be set to 1', 'paymill');
+		$descriptions['products_freeamount']			= __('Allow free amounts (donation feature)', 'paymill');
 
 		
 		if(strlen($args['option']) > 0){
@@ -267,11 +321,11 @@ class paymill_settings{
 					$selected ='';
 				}
 			echo '
-				<option value="'.$offer['id'].'"'.$selected.'>'.$offer['name'].' / '.($offer['amount']/100).' '.$offer['currency'].' / '.$offer['interval'].'</option>
+				<option value="'.$offer['id'].'"'.$selected.'>'.$offer['name'].' / '.($offer['amount']/100).' '.$offer['currency'].' / '.__($offer['interval'], 'paymill').'</option>
 			';
 			}
 			echo '</select><span class="setting-description">'.$descriptions[$args['desc']].'</span>';
-		}elseif($args['desc'] == 'products_quantityhide'){
+		}elseif($args['desc'] == 'products_quantityhide' || $args['desc'] == 'products_freeamount' || $args['desc'] == 'no_default_css'){
 			echo '
 				<input
 				type="checkbox"
@@ -280,6 +334,39 @@ class paymill_settings{
 				class="regular-text code" '.($value ? 'checked="checked"' : '').' />
 				<span class="setting-description">'.$descriptions[$args['desc']].'</span>
 			';
+		}elseif($args['desc'] == 'fields_hide'){
+			echo $descriptions[$args['desc']].'<br />';
+		
+			$fields_hide = array(
+			'shipping',
+			'company_name',
+			'forename',
+			'surname',
+			'street',
+			'number',
+			'zip',
+			'city',
+			'email',
+			'phone',
+			);
+			foreach($fields_hide as $field){
+				$checked = esc_attr( $this->paymill_pay_button_settings[$args['option']][$field] );
+				
+				echo '
+				<fieldset style="float:left;margin-right:20px;">
+					<label for="'.$this->setting_keys['paymill_pay_button_settings'].'['.$args['option'].']['.$field.']">
+					<input
+						'.(($checked == 1) ? 'checked="checked"' : '').'
+						type="checkbox"
+						name="'.$this->setting_keys['paymill_pay_button_settings'].'['.$args['option'].']['.$field.']"
+						id="'.$this->setting_keys['paymill_pay_button_settings'].'['.$args['option'].']['.$field.']"
+						value="1" />
+						
+						'.__($field, 'paymill').'
+					</label><br />
+				</fieldset>
+				';
+			}
 		}else{
 			echo '
 				<input

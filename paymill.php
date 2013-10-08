@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made eady
-Version: 1.4.0
+Version: 1.4.1
 Author: Matthias Reuter / Elbnetz
 Author URI: http://elbnetz.com
 */
@@ -172,9 +172,12 @@ $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_subscriptions (
 			'wrongNumber'				=> esc_attr__('Must be {is}!', 'paymill'),
 			'tooLow'					=> esc_attr__('Must not be less than {minimum}!', 'paymill'),
 			'tooHigh'					=> esc_attr__('Must not be more than {maximum}!', 'paymill'),
+			'notEmpty'					=> esc_attr__('Supply a value!', 'paymill'),
 		));
 		
-		wp_enqueue_style('paymill', plugins_url( '/lib/css/paymill.css' , __FILE__ ), false, PAYMILL_VERSION, false);
+		if(empty($GLOBALS['paymill_settings']->paymill_pay_button_settings['no_default_css']) || $GLOBALS['paymill_settings']->paymill_pay_button_settings['no_default_css'] != '1'){
+			wp_enqueue_style('paymill', plugins_url( '/lib/css/paymill.css' , __FILE__ ), false, PAYMILL_VERSION, false);
+		}
 	}
 	add_action('wp_enqueue_scripts', 'paymill_scripts');
 

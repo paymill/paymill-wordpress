@@ -1,7 +1,7 @@
 <?php
 	/*
 	
-	Paymill Payment Class
+	PAYMILL Payment Class
 	
 	*/
 	add_action( 'plugins_loaded', 'init_paymill_gateway_class' );
@@ -60,8 +60,8 @@
 				$query				= 'DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id="'.$sub_cache[0]['woo_user_id'].'" AND woo_offer_id="'.$sub_cache[0]['woo_offer_id'].'"';
 				$wpdb->query($query);
 				
-				error_log("\n\n".$query."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
-				error_log($sub_cache[0]['woo_user_id']."\n\n".$sub_cache[0]['woo_offer_id']."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+				//error_log("\n\n".$query."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+				//error_log($sub_cache[0]['woo_user_id']."\n\n".$sub_cache[0]['woo_offer_id']."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
 				
 				WC_Subscriptions_Manager::cancel_subscription($sub_cache[0]['woo_user_id'], $sub_cache[0]['woo_offer_id']);
 			}
@@ -112,14 +112,14 @@
 						'enabled' => array(
 							'title' => __( 'Enable/Disable', 'woocommerce' ),
 							'type' => 'checkbox',
-							'label' => __( 'Enable Paymill Payment', 'woocommerce' ),
+							'label' => __( 'Enable PAYMILL Payment', 'woocommerce' ),
 							'default' => 'yes'
 						),
 						'title' => array(
 							'title' => __( 'Title', 'woocommerce' ),
 							'type' => 'text',
 							'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
-							'default' => __( 'Paymill Payment', 'woocommerce' ),
+							'default' => __( 'PAYMILL Payment', 'woocommerce' ),
 							'desc_tip'      => true,
 						),
 						'description' => array(
@@ -188,16 +188,16 @@
 					);				
 					$transaction        = $transactionsObject->create($params);
 					
+					// error
+					$response = $transactionsObject->getResponse();
+					if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
+						$woocommerce->add_error(__($response['body']['data']['response_code'], 'paymill'));
+						return;
+					}
+
 					// save data to transaction table
 					$query = 'INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, woocommerce_order_id) VALUES ("'.$transaction['id'].'", "'.$transaction['payment']['id'].'", "'.$transaction['client']['id'].'", "'.$order_id.'")';
 					$wpdb->query($query);
-
-					if(isset($transaction['error']['messages'])){
-						foreach($transaction['error']['messages'] as $field => $msg){
-							$woocommerce->add_error($field.': '.$msg);
-						}
-						return;
-					}
 				
 					$order = new WC_Order( $order_id );
 					//ob_start(); var_dump($total); $var = ob_get_flush();
@@ -314,7 +314,7 @@
 						$country = $_REQUEST['country'];
 						$cart_total = $woocommerce->cart->total*100;
 						$currency = get_woocommerce_currency();
-						$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos.png';
+						$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos_v.png';
 						
 						// form ids
 						echo '<script>

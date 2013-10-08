@@ -73,14 +73,16 @@
 				'source'		=> serialize($GLOBALS['paymill_source'])
 			);				
 			$transaction        = $transactionsObject->create($params);
+			
+			$response = $transactionsObject->getResponse();
+			if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
+				echo __($response['body']['data']['response_code'], 'paymill');
+				die();
+			}
 
 			// save data to transaction table
 			$query = 'INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, pay_button_order_id, paymill_transaction_time, paymill_transaction_data) VALUES ("'.$transaction['id'].'", "'.$transaction['payment']['id'].'", "'.$transaction['client']['id'].'", "'.$order_id.'", "'.$order_id.'", "'.$wpdb->escape(serialize($_POST)).'")';
 			$wpdb->query($query);
-			if(isset($transaction['error']) && (strlen($transaction['error']) > 0 || count($transaction['error']) > 0)){
-				echo var_dump($transaction['error']);
-				die();
-			}
 			
 			/* create subscription */
 			$subscriptions = false;
@@ -94,6 +96,8 @@
 					}
 				}
 			}
+			
+			do_action( 'paymill_paybutton_order_complete', $order_id, $transaction, $_POST );
 			
 			wp_mail($client_new_email, __('Confirmation of your Order', 'paymill'), $order_mail, 'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>');
 			wp_mail($GLOBALS['paymill_settings']->paymill_pay_button_settings['email_incoming'], __('New Order received', 'paymill'), $order_mail, 'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>');
@@ -130,7 +134,7 @@
 					// settings
 					$country = 'DE';
 					$currency = $GLOBALS['paymill_settings']->paymill_general_settings['currency'];
-					$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos.png';
+					$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos_v.png';
 					$title = apply_filters( 'widget_title', $instance['title'] );
 					
 					if(isset($instance['products_list']) && strlen($instance['products_list']) > 0){
@@ -154,7 +158,12 @@
 					
 					// html / icons
 					echo '<div id="payment" class="paymill_pay_button"><form action="#" method="post" class="checkout">';
-					require(PAYMILL_DIR.'lib/tpl/pay_button.php');
+
+					if(file_exists(get_template_directory().'/paymill/pay_button.php')){
+						require(get_template_directory().'/paymill/pay_button.php');
+					}else{
+						require(PAYMILL_DIR.'lib/tpl/pay_button.php');
+					}
 					echo '<div class="paymill_payment_title">'.__('Payment', 'paymill').'</div>';
 					require(PAYMILL_DIR.'lib/tpl/checkout_form.php');
 					echo '<input type="submit" id="place_order" value="'.__('Pay now', 'paymill').'"/>';

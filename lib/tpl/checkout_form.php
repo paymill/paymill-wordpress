@@ -5,7 +5,6 @@
 	<div class="paymill_payment_errors"></div>
 	
 	<div class="form-row">
-		<p class="paymill_payments_allowed"><?php echo __('You can pay with:', 'paymill'); ?></p>
 		<p><?php
 			foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
 				if($type==1){
@@ -15,10 +14,6 @@
 		?></p>
 	</div>
 	
-	<div class="form-row">
-		<label><?php echo __('Name', 'paymill'); ?></label>
-		<input class="paymill_holdername" id="holdername" type="text" size="20" value="" autocomplete="off" />
-	</div>
 	<?php
 
 		if(
@@ -31,21 +26,21 @@
 	<?php
 		}
 	?>
+	<div class="form-row">
+		<label><?php echo __('Name', 'paymill'); ?></label>
+		<input class="paymill_holdername" id="holdername" type="text" size="20" value="" autocomplete="off" />
+	</div>
 	<div id="form-credit">	
 		<div class="form-row">
 			<label><?php echo __('Credit Card Number', 'paymill'); ?></label>
 			<input class="paymill_card-number" id="card-number" type="text" size="20" value="" autocomplete="off" />
-			<div id="cctype" style="background-image:url(<?php echo $cc_logo; ?>);"></div>
-		</div>
-		<div class="form-row">
-			<label><?php echo __('CVC', 'paymill'); ?></label>
-			<input class="paymill_card-cvc" id="card-cvc" type="text" size="4" value="" autocomplete="off" />
 		</div>
 		<div class="form-row">
 			<label><?php echo __('Expire Date (MM/YYYY)', 'paymill'); ?></label>
 			<input class="paymill_card-expiry-month" id="card-expiry-month" type="text" size="2" value="" autocomplete="off" />
 			<p> / </p>
 			<input class="paymill_card-expiry-year" id="card-expiry-year" type="text" size="4" value="" autocomplete="off" />
+			<?php echo __('CVC', 'paymill'); ?>: <input class="paymill_card-cvc" id="card-cvc" type="text" size="4" value="" autocomplete="off" />
 		</div>
 	</div>
 	<div id="form-elv">	

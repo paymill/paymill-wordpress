@@ -43,7 +43,7 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 			$country = 'DE';
 			$cart_total = $this->amount('total')*100;
 			$currency = $GLOBALS['paymill_settings']->paymill_general_settings['currency'];
-			$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos.png';
+			$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos_v.png';
 			
 			// form ids
 			echo '<script>
@@ -135,11 +135,12 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 		);				
 		$transaction        = $transactionsObject->create($params);
 		
-		if(isset($transaction['error']) && (strlen($transaction['error']) > 0 || count($transaction['error']) > 0)){
+		$response = $transactionsObject->getResponse();
+		if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
 				shopp_add_order_event($Purchase->id, 'auth-fail', array(
 					'amount' => $orderTotals->total,	// Amount to be authorized
 					'gateway' => $Event->gateway,		// Gateway handler name (module name from @subpackage)
-					'message' => $transaction['error'],
+					'message' => $response['body']['data']['response_code'], 'paymill'),
 				));
 		}else{
 			// save data to transaction table
