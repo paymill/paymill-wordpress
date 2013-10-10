@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.5
 Tested up to: 3.6.1
-Stable tag: 1.4.1
+Stable tag: 1.4.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -108,6 +108,10 @@ custom theme file on THEME_DIR/paymill/pay_button.php (it will replace /paymill/
 
 == Changelog ==
 
+= 1.4.2 =
+
+* Common: Critical Fix when using 1.4.1, please update immediately to 1.4.2.
+
 = 1.4.1 =
 
 * Common: Javascript-Handling on Checkout-Process optimized making it more robust
@@ -164,6 +168,10 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.4.2 =
+
+* Common: Critical Fix when using 1.4.1, please update immediately to 1.4.2.
 
 = 1.4.1 =
 Maintenance Update with a hugh load of minor improvements and bugfixes
