@@ -53,7 +53,7 @@
 			}else{
 				$client = $clientsObject->getOne($client_cache[0]['paymill_client_id']);
 			}
-			var_dump($transaction);
+
 			// make transaction
 			$order = '';
 			foreach($_POST['paymill_quantity'] as $product => $quantity){
@@ -73,7 +73,7 @@
 				'source'		=> serialize($GLOBALS['paymill_source'])
 			);				
 			$transaction        = $transactionsObject->create($params);
-			var_dump($transaction);
+
 			$response = $transactionsObject->getResponse();
 			if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
 				echo __($response['body']['data']['response_code'], 'paymill');
