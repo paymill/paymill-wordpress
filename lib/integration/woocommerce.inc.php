@@ -176,8 +176,10 @@
 							$client = $clientsObject->getOne($client_cache[0]['paymill_client_id']);
 						}
 					}
+					
 					// make transaction
-					$total = (intval($woocommerce->cart->total)*100);
+					$total = (floatval($woocommerce->cart->total)*100);
+					
 					$params = array(
 						'amount'      => $total,  // e.g. "4200" for 42.00 EUR
 						'currency'    => get_woocommerce_currency(),   // ISO 4217

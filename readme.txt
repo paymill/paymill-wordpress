@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.5
 Tested up to: 3.6.1
-Stable tag: 1.4.3
+Stable tag: 1.4.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -43,9 +43,10 @@ This plugin is for free and licensed to GPL. It's open source following the GPL 
 
 = Does this plugin calls to another server? =
 Yes. As Pamill is a payment service provider, it is absolutely required to call home to make sure that the payments are valid. We are talking about three different reasons for calling home:
+
 * 1. PAYMILL Javascript Bridge makes sure that payment data is correct and creates a payment token delivered to your server after checkout. This avoids delivering payment data to your server, what is -in most cases- absolutely prohibited by all common credit card providers.
 * 2. PAYMILL PHP Bridge finishes the order and delivers the generated token to the PAYMILL server.
-* 3. (planned) For security purposes we will implement a feature which delivers WordPress version number and PAYMILL Plugin version number upon payment process. This will give us the ability to warn paymill merchants who are using a very outdated WordPress version or about known security holes in specific version when still using them.
+* 3. For security purposes we will implement a feature which delivers WordPress version number and PAYMILL Plugin version number upon payment process. This will give us the ability to warn paymill merchants who are using a very outdated WordPress version or about known security holes in specific version when still using them.
 
 = Are there any fees for payments? =
 
@@ -107,6 +108,9 @@ custom theme file on THEME_DIR/paymill/pay_button.php (it will replace /paymill/
 6. Pay Button Shipping Settings
 
 == Changelog ==
+= 1.4.4 =
+
+* WooCommerce: Rounding issue fixed
 
 = 1.4.3 =
 
@@ -172,6 +176,10 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.4.4 =
+
+* WooCommerce: Rounding issue fixed
 
 = 1.4.3 =
 
