@@ -11,7 +11,7 @@
 			
 			$client_new_email		= $_POST['email'];
 			$client_new_description	= $_POST['forename'].' '.$_POST['surname'];
-			$total					= intval($_REQUEST['paymill_total']);
+			$total					= floatval($_REQUEST['paymill_total']);
 			$order_id				= time();
 
 			if(get_current_user_id()){

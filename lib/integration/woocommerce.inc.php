@@ -219,7 +219,7 @@
 							if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
 							
 								// required vars
-								$amount			= (intval(WC_Subscriptions_Order::get_item_recurring_amount( $order,$product['product_id'] ))*100);
+								$amount			= (floatval(WC_Subscriptions_Order::get_item_recurring_amount( $order,$product['product_id'] ))*100);
 								$currency		= get_woocommerce_currency();
 								$interval		= '1 '.strtoupper(WC_Subscriptions_Order::get_subscription_period( $order,$product['product_id'] ));
 								
