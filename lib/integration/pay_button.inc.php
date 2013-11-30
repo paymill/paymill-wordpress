@@ -5,102 +5,151 @@
 		
 		$GLOBALS['paymill_source']['pay_button_version'] = PAYMILL_VERSION;
 		
-		if(isset($_REQUEST['paymill_pay_button_order']) && $_REQUEST['paymill_pay_button_order'] == 1){				
-			$clientsObject = new Services_Paymill_Clients($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
-			$transactionsObject = new Services_Paymill_Transactions($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
+		if(isset($_REQUEST['paymill_pay_button_order']) && $_REQUEST['paymill_pay_button_order'] == 1){
+		
+			// first retrieve client data, either from cache or from API
+			require_once(PAYMILL_DIR.'lib/integration/client.inc.php');
+			$clientClass			= new paymill_client(
+										$_POST['email'],
+										$_POST['forename'].' '.$_POST['surname']
+									);
 			
-			$client_new_email		= $_POST['email'];
-			$client_new_description	= $_POST['forename'].' '.$_POST['surname'];
-			$total					= floatval($_REQUEST['paymill_total']);
-			$order_id				= time();
+			$client					= $clientClass->getCurrentClient();
+			
+			// client retrieved, now we are ready to process the payment
+			if($client['id'] !== false && strlen($client['id']) > 0){
+				require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
+				
+				$paymentClass		= new paymill_payment($client['id']);
+				// calculate total based on product settings
+				if(isset($_POST['paymill_quantity']) && count($_POST['paymill_quantity']) > 0){
+					$total			= 0;
+					$subscriptions	= false;
+					foreach($_POST['paymill_quantity'] as $id => $quantity){
+						// item is subscription, so don't add amount to total calculation
+						if(isset($_POST['paymill_offer'][$id])){
+							// create subscription
+							if(isset($_POST['paymill_quantity'][$id]) && $_POST['paymill_quantity'][$id] == 1){
+								if($subscriptions === false){
+									$subscriptions = new paymill_subscriptions('pay_button');
+								}
 
-			if(get_current_user_id()){
-				$user_id = get_current_user_id();
+								$offer = $subscriptions->create($client['id'], $_POST['paymill_offer'][$id], $paymentClass->getPaymentID());
+
+								//var_dump($offer);
+								// offer cannot be subscribed.
+								if(isset($offer['error']) && strlen($offer['error']) > 0){
+									echo __($offer['error'], 'paymill');
+									die();
+								}else{ // subscription successful
+									do_action('paymill_paybutton_subscription_created', array(
+										'product_id'	=> $id,
+										'offer_id'		=> $_POST['paymill_offer'][$id],
+										'offer_data'	=> $offer
+									));
+								}
+							}
+						}else{
+							// retrieve product price and add to total
+							$total	= ($total+floatval($GLOBALS['paymill_settings']->paymill_pay_button_settings['products'][$id]['price'])*intval($quantity));
+						}
+					}
+					// now we have total amount of all non-subscription products. Time to make transaction.
+					if($total > 0){
+						$transactionsObject = new Services_Paymill_Transactions($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
+
+						$order_id				= time();
+
+						// make transaction
+						$order_desc = apply_filters( 'paymill_paybutton_order_desc', __('Order', 'paymill').' #'.$order_id."\n\n", array($order_id, $transaction, $_POST, $order_mail));
+						
+						$params = array(
+							'amount'		=> $total*100,  // e.g. "4200" for 42.00 EUR
+							'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
+							'payment'		=> $paymentClass->getPaymentID(),
+							'client'		=> $client['id'],
+							'description'	=> $order_desc,
+							'source'		=> serialize($GLOBALS['paymill_source'])
+						);				
+						$transaction        = $transactionsObject->create($params);
+
+						$response = $transactionsObject->getResponse();
+						if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
+							echo __($response['body']['data']['response_code'], 'paymill');
+							die();
+						}
+
+						// save data to transaction table
+						$query = 'INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, pay_button_order_id, paymill_transaction_time, paymill_transaction_data) VALUES ("'.$transaction['id'].'", "'.$transaction['payment']['id'].'", "'.$transaction['client']['id'].'", "'.$order_id.'", "'.$order_id.'", "'.$wpdb->escape(serialize($_POST)).'")';
+						$wpdb->query($query);
+						
+						do_action('paymill_paybutton_products_paid', array(
+							'total'			=> $total,
+							'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],
+							'client'		=> $client['id']
+						));
+					}
+
+				}
 			}else{
-				$user_id = 0;
-			}
-			
-			$query				= 'SELECT * FROM '.$wpdb->prefix.'paymill_clients WHERE paymill_client_email="'.$client_new_email.'"';
-			$client_cache		= $wpdb->get_results($query,ARRAY_A);
-			
-			// check wether it's a new client
-			if(intval($client_cache[0]['wp_member_id']) == 0){
-				// create new client in paymill
-				$client        = $clientsObject->create(array(
-					'email'       => $client_new_email, 
-					'description' => $client_new_description
-					));
-				
-				// insert new client in local cache
-				$query = 'INSERT INTO '.$wpdb->prefix.'paymill_clients (paymill_client_id, paymill_client_email, paymill_client_description, wp_member_id) VALUES ("'.$client['id'].'", "'.$client_new_email.'", "'.$client_new_description.'", "'.$user_id.'")';
-				$wpdb->query($query);
-				
-			// check wether cached userdata is still correct
-			}elseif($client_cache[0]['paymill_client_email'] != $client_new_email || $client_cache[0]['paymill_client_description'] != $client_new_description){
-				// update client in paymill
-				$params = array(
-					'id'          => $client_cache[0]['paymill_client_id'],
-					'email'       => $client_new_email,
-					'description' => $client_new_description
-				);
-				$client = $clientsObject->update($params);
-				
-				// update local cache
-				$query = 'UPDATE '.$wpdb->prefix.'paymill_clients SET paymill_client_description="'.$client_new_description.'" WHERE paymill_client_email="'.$client_new_email.'"';
-				$wpdb->query($query);
-			
-			// all still synced, just load client object for safety purposes
-			}else{
-				$client = $clientsObject->getOne($client_cache[0]['paymill_client_id']);
-			}
-
-			// make transaction
-			$order = '';
-			foreach($_POST['paymill_quantity'] as $product => $quantity){
-				$order .= $quantity.'x '.$GLOBALS['paymill_settings']->paymill_pay_button_settings['products'][$product]['title'].'<br />';
-			}
-			$order = __('Order', 'paymill').' #'.$order_id.'<br />'.__('Company Name', 'paymill').': '.strip_tags($_POST['company_name']).'<br />'.__('Forename', 'paymill').': '.strip_tags($_POST['forename']).'<br />'.__('Surname', 'paymill').': '.strip_tags($_POST['surname']).'<br />'.__('Street', 'paymill').': '.strip_tags($_POST['street']).'<br />'.__('Number', 'paymill').': '.strip_tags($_POST['number']).'<br />'.__('ZIP', 'paymill').': '.strip_tags($_POST['zip']).'<br />'.__('City', 'paymill').': '.strip_tags($_POST['city']).'<br />'.__('Country', 'paymill').': '.strip_tags($_POST['paymill_shipping']).'<br />'.__('Email', 'paymill').': '.strip_tags($_POST['email']).'<br />'.__('Phone', 'paymill').': '.strip_tags($_POST['phone']).'<br /><br />'.$order;
-			
-			$order_mail = str_replace('<br />',"\n",$order);
-			$order = __('Order', 'paymill').' #'.$order_id;
-			
-			$params = array(
-				'amount'		=> str_replace('.','',"$total"),  // e.g. "4200" for 42.00 EUR
-				'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
-				'token'			=> $_POST['paymillToken'],
-				'client'		=> $client['id'],
-				'description'	=> $order,
-				'source'		=> serialize($GLOBALS['paymill_source'])
-			);				
-			$transaction        = $transactionsObject->create($params);
-
-			$response = $transactionsObject->getResponse();
-			if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
-				echo __($response['body']['data']['response_code'], 'paymill');
+				echo __('There was an issue with adding you as client for the payment process.', 'paymill');
 				die();
 			}
-
-			// save data to transaction table
-			$query = 'INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, pay_button_order_id, paymill_transaction_time, paymill_transaction_data) VALUES ("'.$transaction['id'].'", "'.$transaction['payment']['id'].'", "'.$transaction['client']['id'].'", "'.$order_id.'", "'.$order_id.'", "'.$wpdb->escape(serialize($_POST)).'")';
-			$wpdb->query($query);
 			
-			/* create subscription */
-			$subscriptions = false;
-			if(isset($_POST['paymill_offer'])){
-				foreach($_POST['paymill_offer'] as $product_id => $offer_id){
-					if(isset($_POST['paymill_quantity'][$product_id]) && $_POST['paymill_quantity'][$product_id] == 1){
-						if($subscriptions === false){
-							$subscriptions = new paymill_subscriptions('pay_button');
-						}
-						$offers = $subscriptions->create($transaction['client']['id'], $offer_id, $transaction['payment']['id']);
-					}
+			// order complete
+			do_action( 'paymill_paybutton_order_complete', array($order_id, $transaction, $_POST) );
+			
+			// prepare order confirmation mail
+			if(!isset($order_desc)){
+				$order_desc = '';
+			}
+			
+			// customer details
+			$email_customer_desc = __('Company Name', 'paymill').': '.strip_tags($_POST['company_name'])."\n".
+			__('Forename', 'paymill').': '.strip_tags($_POST['forename'])."\n".
+			__('Surname', 'paymill').': '.strip_tags($_POST['surname'])."\n".
+			__('Street', 'paymill').': '.strip_tags($_POST['street'])."\n".
+			__('Number', 'paymill').': '.strip_tags($_POST['number'])."\n".
+			__('ZIP', 'paymill').': '.strip_tags($_POST['zip'])."\n".
+			__('City', 'paymill').': '.strip_tags($_POST['city'])."\n".
+			__('Country', 'paymill').': '.strip_tags($_POST['paymill_shipping'])."\n".
+			__('Email', 'paymill').': '.strip_tags($_POST['email'])."\n".
+			__('Phone', 'paymill').': '.strip_tags($_POST['phone'])."\n\n";
+			
+			// products details
+			foreach($_POST['paymill_quantity'] as $product => $quantity){
+				if(intval($quantity) > 0){
+					$order_products .= $quantity.'x '.$GLOBALS['paymill_settings']->paymill_pay_button_settings['products'][$product]['title']."\n";
 				}
 			}
 			
-			do_action( 'paymill_paybutton_order_complete', $order_id, $transaction, $_POST );
+			$order_mail = $order_desc.$email_customer_desc.$order_products;
 			
-			wp_mail($client_new_email, __('Confirmation of your Order', 'paymill'), $order_mail, 'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>');
-			wp_mail($GLOBALS['paymill_settings']->paymill_pay_button_settings['email_incoming'], __('New Order received', 'paymill'), $order_mail, 'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>');
+			// allow filtering the order email
+			$order_mail = apply_filters( 'paymill_paybutton_email_text', $order_mail, array($order_id, $transaction, $_POST, $order_mail));
+			
+			// send confirmation mail
+			wp_mail(
+				$_POST['email'],
+				__('Confirmation of your Order', 'paymill'),
+				$order_mail,
+				'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>'
+			);
+			wp_mail(
+				$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_incoming'],
+				__('New Order received', 'paymill'),
+				$order_mail,
+				'From: "'.get_option('blogname').'" <'.$GLOBALS['paymill_settings']->paymill_pay_button_settings['email_outgoing'].'>'
+			);
+		
+			// order complete
+			do_action( 'paymill_paybutton_email_sent', array($order_id, $transaction, $_POST, $order_mail) );
+		
+			// success, redirect if thankyou url is set
+			if(isset($GLOBALS['paymill_settings']->paymill_pay_button_settings['thankyou_url']) && strlen($GLOBALS['paymill_settings']->paymill_pay_button_settings['thankyou_url']) > 0){
+				header('Location: '.$GLOBALS['paymill_settings']->paymill_pay_button_settings['thankyou_url']);
+				die();
+			}
 		}
 	}
 	
@@ -132,7 +181,6 @@
 					echo __('Thank you for your order.', 'paymill');
 				}else{
 					// settings
-					$country = 'DE';
 					$currency = $GLOBALS['paymill_settings']->paymill_general_settings['currency'];
 					$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos_v.png';
 					$title = apply_filters( 'widget_title', $instance['title'] );

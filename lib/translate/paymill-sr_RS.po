@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Paymill\n"
-"POT-Creation-Date: 2013-11-08 01:38+0100\n"
-"PO-Revision-Date: 2013-11-08 01:39+0100\n"
-"Last-Translator: Matthias Reuter <info@straightvisions.com>\n"
+"POT-Creation-Date: 2013-10-08 04:54+0100\n"
+"PO-Revision-Date: 2013-11-12 15:22+0100\n"
+"Last-Translator: Borisa Djuraskovic <borisad@webhostinghub.com>\n"
 "Language-Team: Matthias Reuter <reuter@elbnetz.com>\n"
-"Language: EN\n"
+"Language: DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,535 +15,515 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: paymill.php:153
-msgid "Invalid Credit Card Number"
-msgstr "Invalid Credit Card Number"
-
 #: paymill.php:154
-msgid "Invalid Expiration Date"
-msgstr "Invalid Expiration Date"
+msgid "Invalid Credit Card Number"
+msgstr "Nepostojeći  broj kreditne kartice"
 
 #: paymill.php:155
-msgid "Invalid CVC"
-msgstr "Invalid CVC"
+msgid "Invalid Expiration Date"
+msgstr "Nepostojeći rok isteka"
 
 #: paymill.php:156
-msgid "Invalid Account Number"
-msgstr "Invalid Account Number"
+msgid "Invalid CVC"
+msgstr "Nepostojeći CVC"
 
 #: paymill.php:157
-msgid "Invalid Bank Code"
-msgstr "Invalid Bank Code"
+msgid "Invalid Account Number"
+msgstr "Nepostojeći broj računa"
 
-#: paymill.php:166
-msgid "Must be {is} characters long!"
-msgstr "Must be {is} characters long!"
+#: paymill.php:158
+msgid "Invalid Bank Code"
+msgstr "Nepostojeći kod banke"
 
 #: paymill.php:167
-msgid "Must not be less than {minimum} characters long!"
-msgstr "Must not be less than {minimum} characters long!"
+msgid "Must be {is} characters long!"
+msgstr "Mora imati {is} characters long! karaktera!"
 
 #: paymill.php:168
-msgid "Must not be more than {maximum} characters long!"
-msgstr "Must not be more than {maximum} characters long!"
+msgid "Must not be less than {minimum} characters long!"
+msgstr "Ne sme imati manje od {minimum} karaktera!"
 
 #: paymill.php:169
-msgid "Must be a number!"
-msgstr "Must be a number!"
+msgid "Must not be more than {maximum} characters long!"
+msgstr "Ne sme imati više od {maksimum} karaktera"
 
 #: paymill.php:170
-msgid "Must be an integer!"
-msgstr "Must be an integer!"
+msgid "Must be a number!"
+msgstr "Mora biti broj!"
 
 #: paymill.php:171
-msgid "Must be {is}!"
-msgstr "Must be {is}!"
+msgid "Must be an integer!"
+msgstr "Mora biti integer!"
 
 #: paymill.php:172
-msgid "Must not be less than {minimum}!"
-msgstr "Must not be less than {minimum}!"
+msgid "Must be {is}!"
+msgstr "Mora biti  {is}!"
 
 #: paymill.php:173
-msgid "Must not be more than {maximum}!"
-msgstr "Must not be more than {maximum}!"
+msgid "Must not be less than {minimum}!"
+msgstr "Ne sme biti manje od {minimum}!"
 
 #: paymill.php:174
+msgid "Must not be more than {maximum}!"
+msgstr "Ne sme biti  više od {maksimum}!"
+
+#: paymill.php:175
 msgid "Supply a value!"
-msgstr "Supply a value!"
+msgstr "Omogući vrednost!"
 
 #: lib/config.inc.php:64
 msgid "DAY"
-msgstr "Day"
+msgstr "DAN"
 
 #: lib/config.inc.php:65
 msgid "WEEK"
-msgstr "Week"
+msgstr "NEDELJA"
 
 #: lib/config.inc.php:66
 msgid "MONTH"
-msgstr "Month"
+msgstr "MESEC"
 
 #: lib/config.inc.php:67
 msgid "YEAR"
-msgstr "Year"
+msgstr "GODINA"
 
 #: lib/config.inc.php:68
 msgid "DAYS"
-msgstr "Days"
+msgstr "DANI"
 
 #: lib/config.inc.php:69
 msgid "WEEKS"
-msgstr "Weeks"
+msgstr "NEDELJE"
 
 #: lib/config.inc.php:70
 msgid "MONTHS"
-msgstr "Months"
+msgstr "MESECI"
 
 #: lib/config.inc.php:71
 msgid "YEARS"
-msgstr "Years"
+msgstr "GODINE"
 
 #: lib/config.inc.php:73
 msgid "50501"
-msgstr ""
-"The interface to the acquirer does not respond, so we get no response if the "
-"transaction was completed successfully"
+msgstr "50501"
 
 #: lib/config.inc.php:74
 msgid "50001"
-msgstr "The credit card is on a blacklist"
+msgstr "50001"
 
 #: lib/config.inc.php:75
 msgid "50201"
-msgstr "This customer account is on a black list"
+msgstr "50201"
 
 #: lib/config.inc.php:76
 msgid "40103"
-msgstr ""
-"The credit card limit was exceeded with this transaction, or has already "
-"exceeded"
+msgstr "40103"
 
 #: lib/config.inc.php:77
 msgid "50102"
-msgstr "This card was rejected without reasons"
+msgstr "50102"
 
 #: lib/config.inc.php:78
 msgid "50103"
-msgstr "The credit card might be manipulated or stolen"
+msgstr "50103"
 
 #: lib/config.inc.php:79
 msgid "40105"
-msgstr "The credit card expiration date is incorrect"
+msgstr "40105"
 
 #: lib/config.inc.php:80
 msgid "40101"
-msgstr "The CVV is incorrect"
+msgstr "40101"
 
 #: lib/config.inc.php:81
 msgid "40100"
-msgstr ""
-"There are problems with the credit card. Further details can not be passed"
+msgstr "40100"
 
 #: lib/config.inc.php:82
 msgid "40104"
-msgstr "The credit card is invalid"
+msgstr "40104"
 
 #: lib/config.inc.php:83
 msgid "40001"
-msgstr "There is a general problem with the payment data"
+msgstr "40001"
 
 #: lib/config.inc.php:84
 msgid "40102"
-msgstr "The credit card expired or is not yet valid"
+msgstr "40102"
 
 #: lib/config.inc.php:85
 msgid "40106"
-msgstr "Credit card brand is required"
+msgstr "40106"
 
 #: lib/config.inc.php:86
 msgid "40201"
-msgstr "Mismatch with the bank account data combination"
+msgstr "40201"
 
 #: lib/config.inc.php:87
 msgid "50300"
-msgstr "There is a technical error with 3-D Secure"
+msgstr "50300"
 
 #: lib/config.inc.php:88
 msgid "40202"
-msgstr "The user authentication failed"
+msgstr "40202"
 
 #: lib/config.inc.php:89
 msgid "50502"
-msgstr "There is a risk management transaction timeout"
+msgstr "50502"
 
 #: lib/config.inc.php:90
 msgid "40301"
-msgstr "Currency or amount mismatch"
+msgstr "40301"
 
 #: lib/config.inc.php:91
 msgid "40401"
-msgstr "The amount is too low or zero"
+msgstr "40401"
 
 #: lib/config.inc.php:92
 msgid "40402"
-msgstr "The usage field is too long"
+msgstr "40402"
 
 #: lib/config.inc.php:93
 msgid "40403"
-msgstr "The currency is not configured for the customer"
+msgstr "40403"
 
 #: lib/config.inc.php:94
 msgid "50104"
-msgstr ""
-"The transaction is declined by the authorization system (card restricted by "
-"bank)"
+msgstr "50104"
 
 #: lib/config.inc.php:95
 msgid "50105"
-msgstr "The configuration data is invalid"
+msgstr "50105"
 
 #: lib/config.inc.php:96
 msgid "50600"
-msgstr "Duplicate transaction"
+msgstr "50600"
 
 #: lib/config.inc.php:98
 msgid "shipping"
-msgstr "Shipping"
+msgstr "slanje"
 
 #: lib/config.inc.php:99
 msgid "company_name"
-msgstr "Company Name"
+msgstr "ime_kompanije"
 
 #: lib/config.inc.php:100
 msgid "forename"
-msgstr "Forename"
+msgstr "ime"
 
 #: lib/config.inc.php:101
 msgid "surname"
-msgstr "Surname"
+msgstr "prezime"
 
 #: lib/config.inc.php:102
 msgid "street"
-msgstr "Street"
+msgstr "ulica"
 
 #: lib/config.inc.php:103
 msgid "number"
-msgstr "Number"
+msgstr "broj"
 
 #: lib/config.inc.php:104
 msgid "zip"
-msgstr "ZIP"
+msgstr "poštanski broj"
 
 #: lib/config.inc.php:105
 msgid "city"
-msgstr "City"
+msgstr "grad"
 
 #: lib/config.inc.php:106
 msgid "email"
-msgstr "Email"
+msgstr "email"
 
 #: lib/config.inc.php:107
 msgid "phone"
-msgstr "Phone"
+msgstr "telefon"
 
 #: lib/config.inc.php:119
 msgid "General Plugin Settings"
-msgstr "General Plugin Settings"
+msgstr "Opšte postavke plugina"
 
 #: lib/config.inc.php:121
 msgid "Paymill PRIVATE API key"
-msgstr "Paymill PRIVATE API key"
+msgstr "Paymill PRIVATNI API ključ"
 
 #: lib/config.inc.php:122
 msgid "Paymill PUBLIC API key"
-msgstr "Paymill PUBLIC API key"
+msgstr "Paymill JAVNI API ključ"
 
 #: lib/config.inc.php:123
 msgid "Paymill API endpoint URL"
-msgstr "Paymill API endpoint URL"
+msgstr "Paymill URL API krajnja tačka"
 
 #: lib/config.inc.php:124
 msgid "Currency"
-msgstr "Currency"
+msgstr "Valuta"
 
 #: lib/config.inc.php:125
 msgid "Display Payment Types"
-msgstr "Display Payment Types"
+msgstr "Prikazati tipove plaćanja"
 
 #: lib/config.inc.php:138
 msgid "Number Format: Decimal Point"
-msgstr "Number Format: Decimal Point"
+msgstr "Broj formata:decimalni"
 
 #: lib/config.inc.php:139
 msgid "Number Format: Thousands Seperator"
-msgstr "Number Format: Thousands Seperator"
+msgstr "Broj formata: odvajanje hiljada"
 
 #: lib/config.inc.php:140
 msgid "Outgoing Email"
-msgstr "Outgoing Email"
+msgstr "Odlazeći email"
 
 #: lib/config.inc.php:141
 msgid "Incoming Email"
-msgstr "Incoming Email"
+msgstr "Dolazeći emai"
 
 #: lib/config.inc.php:142
-msgid "Thank You URL"
-msgstr ""
-
-#: lib/config.inc.php:143
 msgid "Hide Fields"
-msgstr "Hide Fields"
+msgstr "Sakriti polja"
 
-#: lib/config.inc.php:144
-msgid "Do not load default CSS"
-msgstr ""
+#: lib/config.inc.php:157
+msgid "Product"
+msgstr "Proizvod"
 
 #: lib/config.inc.php:158
-msgid "Product"
-msgstr "Product"
+msgid "Description"
+msgstr "Opis"
 
 #: lib/config.inc.php:159
-msgid "Description"
-msgstr "Description"
-
-#: lib/config.inc.php:160
 msgid "VAT"
 msgstr "VAT"
 
-#: lib/config.inc.php:162
+#: lib/config.inc.php:161
 msgid "Subscription Offer"
-msgstr "Subscription Offer"
+msgstr "Ponuda za pretplatu"
+
+#: lib/config.inc.php:163
+msgid "Price"
+msgstr "Cena"
 
 #: lib/config.inc.php:164
-msgid "Price"
-msgstr "Price"
+msgid "Hide Quantity"
+msgstr "Sakriti kvantitet"
 
 #: lib/config.inc.php:165
-msgid "Hide Quantity"
-msgstr "Hide Quantity"
+msgid "Free Amount"
+msgstr "Besplatna količina"
 
-#: lib/config.inc.php:167
+#: lib/config.inc.php:166
 msgid "Delivery Time"
-msgstr "Delivery Time"
+msgstr "Vreme dostave"
+
+#: lib/config.inc.php:181
+msgid "Shipping Country"
+msgstr "Zemlja za slanje"
 
 #: lib/config.inc.php:182
-msgid "Shipping Country"
-msgstr "Shipping Country"
+msgid "Shipping Costs"
+msgstr "Cena slanja"
 
 #: lib/config.inc.php:183
-msgid "Shipping Costs"
-msgstr "Shipping Costs"
-
-#: lib/config.inc.php:184
 msgid "Shipping VAT"
-msgstr "Shipping VAT"
+msgstr "VAT slanja"
+
+#: lib/config.inc.php:193
+msgid "Please insert your API settings here."
+msgstr "Unesite vaše API postavke ovde."
 
 #: lib/config.inc.php:194
-msgid "Please insert your API settings here."
-msgstr "Please insert your API settings here."
-
-#: lib/config.inc.php:195
 msgid "Common Settings"
-msgstr "Common Settings"
+msgstr "Uobičajne postavke"
 
-#: lib/config.inc.php:195
+#: lib/config.inc.php:194
 msgid "The Paymill Pay Buton is a simple, independent payment solution."
-msgstr "The Paymill Pay Buton is a simple, independent payment solution."
+msgstr "Paymill Pay Buton je jednostavno nezavisno rešenje za plaćanje."
+
+#: lib/config.inc.php:194
+msgid "Configure common settings"
+msgstr "Konfigurisati uobičajne postavke"
+
+#: lib/config.inc.php:194 lib/config.inc.php:195 lib/config.inc.php:196
+msgid "Toggle View"
+msgstr "Toggle pregled"
 
 #: lib/config.inc.php:195
-msgid "Configure common settings"
-msgstr "Configure common settings"
-
-#: lib/config.inc.php:195 lib/config.inc.php:196 lib/config.inc.php:197
-msgid "Toggle View"
-msgstr "Toggle View"
-
-#: lib/config.inc.php:196
 msgid "Products"
-msgstr "Products"
+msgstr "Proizvodi"
+
+#: lib/config.inc.php:195
+msgid ""
+"Configure products for the Pay Button. This list has a dynamic length and "
+"extends for 5 extra slots when last slot is filled and saved."
+msgstr ""
+"Konfigurisati proizvode za Pay Button.  Ova lista ima dinamičnu dužinu i "
+"proširenje za 5 dodatnih slotova kada je poslednji popunjen i sačuvan."
+
+#: lib/config.inc.php:196
+msgid "Shipping"
+msgstr "Slanje"
 
 #: lib/config.inc.php:196
 msgid ""
-"Configure products for the Pay Button. This list has a dynamic length and "
-"extends for 5 extra slots when last slot is filled and saved."
+"Set delivery countries and shipping costs. This list has a dynamic length "
+"and extends for 5 extra slots when last slot is filled and saved."
 msgstr ""
-"Configure products for the Pay Button. This list has a dynamic length and "
-"extends for 5 extra slots when last slot is filled and saved."
+"Podesiti šemlje za slanje i cenu slanja. Ova lista ima dinamičnu dužinu i "
+"proširenje za 5 dodatnih slotova kada je poslednji popunjen i sačuvan."
 
-#: lib/config.inc.php:197
-msgid "Shipping"
-msgstr "Shipping"
-
-#: lib/config.inc.php:197
+#: lib/config.inc.php:205
 msgid ""
-"Set delivery countries and shipping costs. This list has a dynamic length "
-"and extends for 5 extra slots when last slot is filled and saved."
+"Currency, <a href=\"http://en.wikipedia.org/wiki/ISO_4217#Active_codes\" "
+"target=\"_blank\">ISO 4217</a> e.g. \"EUR\" or \"GBP\""
 msgstr ""
-"Set delivery countries and shipping costs. This list has a dynamic length "
-"and extends for 5 extra slots when last slot is filled and saved."
+"Valuta<a href=\"http://en.wikipedia.org/wiki/ISO_4217#Active_codes\" target="
+"\"_blank\">ISO 4217</a> e.g. \"EUR\" or \"GBP\""
 
 #: lib/config.inc.php:206
-msgid ""
-"Currency, <a href=\"http://en.wikipedia.org/wiki/ISO_4217#Active_codes\" "
-"target=\"_blank\">ISO 4217</a> e.g. \"EUR\" or \"GBP\""
-msgstr ""
-"Currency, <a href=\"http://en.wikipedia.org/wiki/ISO_4217#Active_codes\" "
-"target=\"_blank\">ISO 4217</a> e.g. \"EUR\" or \"GBP\""
-
-#: lib/config.inc.php:207
 msgid "Check the boxes which payment types should be announced on payment form"
 msgstr ""
-"Check the boxes which payment types should be announced on payment form"
+"Čekirati kvadrate koji tipovi plaćanja bi trebali da budu objavljeni u formi "
+"plaćanja"
+
+#: lib/config.inc.php:207
+msgid "Insert your Paymill <strong>PRIVATE</strong> API key."
+msgstr "Unsite vaš Paymill <strong>PRIVATNI</strong> API ključ."
 
 #: lib/config.inc.php:208
-msgid "Insert your Paymill <strong>PRIVATE</strong> API key."
-msgstr "Insert your Paymill <strong>PRIVATE</strong> API key."
+msgid "Insert your Paymill <strong>PUBLIC</strong> API key."
+msgstr "Unsite vaš Paymill <strong>JAVNI</strong> API ključ."
 
 #: lib/config.inc.php:209
-msgid "Insert your Paymill <strong>PUBLIC</strong> API key."
-msgstr "Insert your Paymill <strong>PUBLIC</strong> API key."
-
-#: lib/config.inc.php:210
 msgid "Insert your Paymill endpoint URL."
-msgstr "Insert your Paymill endpoint URL."
+msgstr "Unesite vaš Paymill URL krajnje tačke."
+
+#: lib/config.inc.php:261
+msgid "Set a symbol used for decimal point. Default: ."
+msgstr "Podesite simbol za decimalu. Default:"
 
 #: lib/config.inc.php:262
-msgid "Set a symbol used for decimal point. Default: ."
-msgstr "Set a symbol used for decimal point. Default: ."
+msgid "Set a symbol used for thousands seperator. Default: ,"
+msgstr "Podesite simbol za razdvajanje hiljada. Defaut:"
 
 #: lib/config.inc.php:263
-msgid "Set a symbol used for thousands seperator. Default: ,"
-msgstr "Set a symbol used for thousands seperator. Default: ,"
+msgid "Outgoing Emailaddress for customer order confirmation mail."
+msgstr "Odlazeća email adresa za potvrdni mail kupca."
 
 #: lib/config.inc.php:264
-msgid "Outgoing Emailaddress for customer order confirmation mail."
-msgstr "Outgoing Emailaddress for customer order confirmation mail."
-
-#: lib/config.inc.php:265
 msgid "Incoming Emailaddress for Copy of customer order confirmation mail."
-msgstr "Incoming Emailaddress for Copy of customer order confirmation mail."
+msgstr "Dolazeća email adresa za kopiju potvrdnog maila kupca."
 
 #: lib/config.inc.php:266
-msgid "Redirect URL for custom thank your page."
-msgstr ""
+msgid "You may want to hide certain fields. Select them here:"
+msgstr "Možda ćete želeti da sakrijete odredjena polja. Selektujte ih ovde:"
 
 #: lib/config.inc.php:268
-msgid "You may want to hide certain fields. Select them here:"
-msgstr "You may want to hide certain fields. Select them here:"
+msgid "Name of the available delivery country, e.g. \"England\""
+msgstr "Ime zemlje zadostavu, npr:  \"Engleska\""
 
 #: lib/config.inc.php:269
-msgid ""
-"Advanced users want to fully customize the payment button. Disabling default "
-"CSS from Pay Button will make that much easier."
-msgstr ""
-
-#: lib/config.inc.php:271
-msgid "Name of the available delivery country, e.g. \"England\""
-msgstr "Name of the available delivery country, e.g. \"England\""
-
-#: lib/config.inc.php:272
 msgid "Gross fee for the flat shipping costs., e.g. \"7\" or \"4.90\""
-msgstr "Gross fee for the flat shipping costs., e.g. \"7\" or \"4.90\""
+msgstr "Bruto naknada za troškove slanja e.g. \"7\" or \"4.90\""
 
-#: lib/config.inc.php:273
+#: lib/config.inc.php:270
 #, php-format
 msgid ""
 "Value-Added-Tax Rate in % for the flat shipping costs., e.g. \"19\" or \"7\""
 msgstr ""
 "Value-Added-Tax Rate in % for the flat shipping costs., e.g. \"19\" or \"7\""
 
-#: lib/config.inc.php:275
+#: lib/config.inc.php:272
 msgid "Name of the product"
-msgstr "Name of the product"
+msgstr "Ime proizvoda"
 
-#: lib/config.inc.php:276
+#: lib/config.inc.php:273
 msgid "Detailed description of the product"
-msgstr "Detailed description of the product"
+msgstr "Detaljni opis proizvoda"
 
-#: lib/config.inc.php:277
+#: lib/config.inc.php:274
 msgid "Gross Price of the product, e.g. \"40\" or \"6.99\""
-msgstr "Gross Price of the product, e.g. \"40\" or \"6.99\""
+msgstr "Bruto naknada proizvoda  e.g. \"40\" or \"6.99\""
 
-#: lib/config.inc.php:278
+#: lib/config.inc.php:275
 msgid ""
 "If you have created a subscription in your Paymill Cockpit, can select it "
 "here. If selected, it will overwrite the following settings for this "
 "product. <strong>Important: For Performance purposes, subscription plans "
 "will be cached. Open this page to recache it.</strong>"
 msgstr ""
-"If you have created a subscription in your Paymill Cockpit, can select it "
-"here. If selected, it will overwrite the following settings for this "
-"product. <strong>Important: For Performance purposes, subscription plans "
-"will be cached. Open this page to recache it.</strong>"
+"Ako ste napravili pretplatu u vašem Paymill Cockpit, selektujte ga ovde. Ako "
+"je selektovanno, pisaće preko sledećih postavki ovog proizvoda."
+"<strong>Important: Za potrebe performansi, plan pretplate će biti cache-"
+"iran. Otvorite ovu stranicu i  recache-irajte ga.</strong>"
 
-#: lib/config.inc.php:279
+#: lib/config.inc.php:276
 #, php-format
 msgid "Value-Added-Tax Rate in % for the product, e.g. \"19\" or \"7\""
 msgstr "Value-Added-Tax Rate in % for the product, e.g. \"19\" or \"7\""
 
-#: lib/config.inc.php:280
+#: lib/config.inc.php:277
 msgid "Delivery Time of the product, e.g. \"2 Days\" or \"1 Week\""
-msgstr "Delivery Time of the product, e.g. \"2 Days\" or \"1 Week\""
+msgstr "Vreme dostave proizvoda  e.g. \"2 Days\" or \"1 Week\""
 
-#: lib/config.inc.php:281
+#: lib/config.inc.php:278
 msgid "Hide quantity select field, quantity will be set to 1"
-msgstr "Hide quantity select field, quantity will be set to 1"
+msgstr "Sakriti kvanititet izabranog polja, kvantitet će biti namešten na 1"
 
-#: lib/config.inc.php:282
+#: lib/config.inc.php:279
 msgid "Allow free amounts (donation feature)"
-msgstr "Allow free amounts (donation feature)"
+msgstr "Dozvoliti bespatne količine (karakteristika donacije)"
 
-#: lib/config.inc.php:318
+#: lib/config.inc.php:315
 msgid "Optional: Select Subscription Plan"
-msgstr "Optional: Select Subscription Plan"
+msgstr "Opcionalno: Izabrati plan pretplate"
 
 #: lib/integration/magicmembers.inc.php:64
 msgid "Paymill - Online payments made easy"
-msgstr "Paymill - Online payments made easy"
+msgstr "Paymill - Lako online plaćanje"
 
 #: lib/integration/magicmembers.inc.php:188
 #, php-format
 msgid "%s logo updated"
-msgstr ""
+msgstr "%s logo updated-ovan"
 
 #: lib/integration/magicmembers.inc.php:222
 #, php-format
 msgid "%s module has been %s"
-msgstr ""
+msgstr "%s module je %s"
 
 #: lib/integration/magicmembers.inc.php:312
 #, php-format
 msgid "%s settings updated"
-msgstr ""
+msgstr "%s postavke update-ovane"
 
 #: lib/integration/magicmembers.inc.php:584
 msgid "Error while cancelling subscription"
-msgstr ""
+msgstr "Greška prilikom ukidanja pretlate"
 
 #: lib/integration/magicmembers.inc.php:610
 #: lib/integration/magicmembers.inc.php:894
 msgid "Transaction Id invalid"
-msgstr ""
+msgstr "Transakcija id-a nepostojeća"
 
 #: lib/integration/magicmembers.inc.php:620
 #: lib/integration/magicmembers.inc.php:904
 msgid "Transaction invalid"
-msgstr ""
+msgstr "Transakcija nepostojeća"
 
 #: lib/integration/magicmembers.inc.php:632
 #: lib/integration/magicmembers.inc.php:914
 msgid "Transaction invalid . User id field is empty"
-msgstr ""
+msgstr "Transakcija nepostojeća. Polje id korisnika je prazno"
 
 #: lib/integration/magicmembers.inc.php:985
-#: lib/integration/pay_button.inc.php:184
+#: lib/integration/pay_button.inc.php:169
 msgid "Pay now"
-msgstr "Pay now"
+msgstr "Platiti sada"
 
 #: lib/integration/magicmembers.inc.php:1019
 #: lib/integration/magicmembers.inc.php:1050
 msgid "You can pay with:"
-msgstr "You can pay with:"
+msgstr "Možete platiti sa:"
 
 #: lib/integration/magicmembers.inc.php:1086
 #, php-format
@@ -551,84 +531,88 @@ msgid ""
 "You have subscribed to <b>%s</b> via <b>%s</b>, if you wish to unsubscribe, "
 "please click the following link. <br>"
 msgstr ""
+"Pretplatili ste se na <b>%s</b> via <b>%s</b>, ako ne želite pretplatu "
+"kliknite na ovaj link. <br>"
 
 #: lib/integration/magicmembers.inc.php:1092
 #: lib/integration/magicmembers.inc.php:1104
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Ukinuti pretplatu"
 
 #: lib/integration/magicmembers.inc.php:1138
 msgid "SimpleXML PHP extension must be loaded for Paymill ARB"
-msgstr ""
+msgstr "SimpleXML PHP ekstenzima mora biti učitana za Paymill ARB"
 
 #: lib/integration/magicmembers.inc.php:1144
 msgid ""
 "Transaction Details API in Paymill must be enabled for Rebill Status Query"
 msgstr ""
+"Detalji  API transakcije u Paymill moraju biti omogućeni za  Rebill Status "
+"Query"
 
 #: lib/integration/magicmembers.inc.php:1170
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: lib/integration/magicmembers.inc.php:1182
 msgid "AUTHORIZE.NET INFO"
-msgstr ""
+msgstr "AUTHORIZE.NET INFO"
 
 #: lib/integration/magicmembers.inc.php:1182
 msgid "SUBSCRIPTION ID"
-msgstr ""
+msgstr "ID PRETPLATE "
 
 #: lib/integration/magicmembers.inc.php:1184
 msgid "TRANSACTION ID"
-msgstr ""
+msgstr "ID TRANSAKCIJE"
 
 #: lib/integration/magicmembers.inc.php:1218
 msgid "Subscription ID"
-msgstr "Subscription ID"
+msgstr "ID pretplate"
 
 #: lib/integration/magicmembers.inc.php:1218
 msgid "Transaction ID"
-msgstr ""
+msgstr "ID transakcije"
 
 #: lib/integration/magicmembers.inc.php:1500
 #: lib/integration/magicmembers.inc.php:1964
 msgid "Last payment was successful"
-msgstr ""
+msgstr "Poslednja uplata je bila uspešna"
 
 #: lib/integration/magicmembers.inc.php:1548
 #: lib/integration/magicmembers.inc.php:2188
 msgid "Last payment was refunded or denied"
-msgstr ""
+msgstr "Poslednja uplata je refundirana ili odbijena"
 
 #: lib/integration/magicmembers.inc.php:1570
 #: lib/integration/magicmembers.inc.php:2206
 #, php-format
 msgid "Last payment is pending. Reason: %s"
-msgstr ""
+msgstr "Čeka se poslednja uplata. Razlog:  %s"
 
 #: lib/integration/magicmembers.inc.php:1590
 #: lib/integration/magicmembers.inc.php:2220
 #, php-format
 msgid "Last payment status: %s"
-msgstr ""
+msgstr "Status poslednje uplate:  %s"
 
 #: lib/integration/magicmembers.inc.php:1618
 msgid "Failed join"
-msgstr ""
+msgstr "Nije uspelo pridruživanje"
 
 #: lib/integration/magicmembers.inc.php:1668
 msgid "The post was purchased successfully"
-msgstr ""
+msgstr "Post je kupljen uspešno"
 
 #: lib/integration/magicmembers.inc.php:2516
 msgid "Subscription cancelled"
-msgstr "Subscription cancelled"
+msgstr "Pretplata ukinuta"
 
 #: lib/integration/magicmembers.inc.php:2542
 #: lib/integration/magicmembers.inc.php:3028
 #, php-format
 msgid "Subscription awaiting cancellation on %s"
-msgstr ""
+msgstr "Preplagta čeka ukisanje na  %s"
 
 #: lib/integration/magicmembers.inc.php:2622
 #, php-format
@@ -636,196 +620,189 @@ msgid ""
 "You have successfully unsubscribed. Your account has been marked for "
 "cancellation on %s"
 msgstr ""
+"Uspešno ste ukinuli pretplatu. Vaš nalog je markiran za ukisnaje na  %s"
 
 #: lib/integration/magicmembers.inc.php:2918
 msgid "Last payment cycle processed successfully"
-msgstr ""
+msgstr "Poslednja uplata je bila uspešna"
 
 #: lib/integration/magicmembers.inc.php:3048
 msgid "Last payment cycle cancelled"
-msgstr ""
+msgstr "Poslednja uplata je ukinuta"
 
 #: lib/integration/magicmembers.inc.php:3082
 msgid "Last payment cycle expired"
-msgstr ""
+msgstr "Poslednja uplata je istekla"
 
 #: lib/integration/magicmembers.inc.php:3771
 msgid "Error occured"
-msgstr ""
+msgstr "Greška se pojavila"
 
-#: lib/integration/pay_button.inc.php:40
-msgid "Subscription already connected"
-msgstr "Subscription already connected"
-
-#: lib/integration/pay_button.inc.php:68 lib/integration/pay_button.inc.php:71
+#: lib/integration/pay_button.inc.php:62 lib/integration/pay_button.inc.php:65
 #: lib/integration/shopplugin.inc.php:126
 msgid "Order"
-msgstr "Order"
+msgstr "Naručiti"
 
-#: lib/integration/pay_button.inc.php:68 lib/tpl/pay_button.php:114
+#: lib/integration/pay_button.inc.php:62 lib/tpl/pay_button.php:89
 msgid "Company Name"
-msgstr "Company Name"
+msgstr "ime kompanije"
 
-#: lib/integration/pay_button.inc.php:68
-#: lib/integration/shopplugin.inc.php:126 lib/tpl/pay_button.php:120
+#: lib/integration/pay_button.inc.php:62
+#: lib/integration/shopplugin.inc.php:126 lib/tpl/pay_button.php:93
 msgid "Forename"
-msgstr "Forename"
+msgstr "ime"
 
-#: lib/integration/pay_button.inc.php:68
-#: lib/integration/shopplugin.inc.php:126 lib/tpl/pay_button.php:126
+#: lib/integration/pay_button.inc.php:62
+#: lib/integration/shopplugin.inc.php:126 lib/tpl/pay_button.php:97
 msgid "Surname"
-msgstr "Surname"
+msgstr "prezime"
 
-#: lib/integration/pay_button.inc.php:68 lib/tpl/pay_button.php:132
+#: lib/integration/pay_button.inc.php:62 lib/tpl/pay_button.php:101
 msgid "Street"
-msgstr "Street"
+msgstr "ulica"
 
-#: lib/integration/pay_button.inc.php:68 lib/tpl/pay_button.php:138
+#: lib/integration/pay_button.inc.php:62 lib/tpl/pay_button.php:105
 msgid "Number"
-msgstr "Number"
+msgstr "broj"
 
-#: lib/integration/pay_button.inc.php:68 lib/tpl/pay_button.php:144
+#: lib/integration/pay_button.inc.php:62 lib/tpl/pay_button.php:109
 msgid "ZIP"
-msgstr "ZIP"
+msgstr "poštanski broj"
 
-#: lib/integration/pay_button.inc.php:68 lib/tpl/pay_button.php:150
+#: lib/integration/pay_button.inc.php:62 lib/tpl/pay_button.php:113
 msgid "City"
-msgstr "City"
+msgstr "grad"
 
-#: lib/integration/pay_button.inc.php:68
+#: lib/integration/pay_button.inc.php:62
 msgid "Country"
-msgstr "Country"
+msgstr "zemlja"
 
-#: lib/integration/pay_button.inc.php:68 lib/tpl/pay_button.php:156
+#: lib/integration/pay_button.inc.php:62 lib/tpl/pay_button.php:117
 msgid "Email"
 msgstr "Email"
 
-#: lib/integration/pay_button.inc.php:68 lib/tpl/pay_button.php:162
+#: lib/integration/pay_button.inc.php:62 lib/tpl/pay_button.php:121
 msgid "Phone"
-msgstr "Phone"
+msgstr "telefon"
+
+#: lib/integration/pay_button.inc.php:102
+msgid "Confirmation of your Order"
+msgstr "Potvrda vaše porudžbine"
 
 #: lib/integration/pay_button.inc.php:103
-msgid "There was an issue with adding you as client for the payment process."
-msgstr ""
-
-#: lib/integration/pay_button.inc.php:111
-msgid "Confirmation of your Order"
-msgstr "Confirmation of your Order"
-
-#: lib/integration/pay_button.inc.php:112
 msgid "New Order received"
-msgstr "New Order received"
+msgstr "Primljena je nova porudžbina"
 
-#: lib/integration/pay_button.inc.php:129
+#: lib/integration/pay_button.inc.php:114
 msgid "Shows a Paymill Payment Button."
-msgstr "Shows a Paymill Payment Button."
+msgstr "Prikazati Paymill Payment Button."
 
-#: lib/integration/pay_button.inc.php:147
+#: lib/integration/pay_button.inc.php:132
 msgid "Thank you for your order."
-msgstr "Thank you for your order."
+msgstr "Hvala na porudžbini"
 
-#: lib/integration/pay_button.inc.php:182
+#: lib/integration/pay_button.inc.php:167
 msgid "Payment"
-msgstr "Payment"
+msgstr "Plaćanje"
 
-#: lib/integration/pay_button.inc.php:207
+#: lib/integration/pay_button.inc.php:192
 msgid "Title:"
-msgstr "Title:"
+msgstr "Naslov:"
 
-#: lib/integration/pay_button.inc.php:214
+#: lib/integration/pay_button.inc.php:199
 msgid "Show these products only:"
-msgstr "Show these products only:"
+msgstr "Prikazati samo ove proizvode:"
 
-#: lib/integration/pay_button.inc.php:217
+#: lib/integration/pay_button.inc.php:202
 msgid "All Products"
-msgstr "All Products"
+msgstr "Svi proizvodi"
 
 #: lib/integration/woocommerce.inc.php:113
 msgid "Enable/Disable"
-msgstr "Enable/Disable"
+msgstr "Omogući/Onemogući"
 
 #: lib/integration/woocommerce.inc.php:115
 msgid "Enable PAYMILL Payment"
-msgstr "Enable PAYMILL Payment"
+msgstr "Omogući PAYMILL plaćanjeNaslov"
 
 #: lib/integration/woocommerce.inc.php:119
 msgid "Title"
-msgstr "Title"
+msgstr "Naslov"
 
 #: lib/integration/woocommerce.inc.php:121
 msgid "This controls the title which the user sees during checkout."
-msgstr "This controls the title which the user sees during checkout."
+msgstr "Ovo kontroliše naslov koji korisnik vidi prilikom izlogovanja."
 
 #: lib/integration/woocommerce.inc.php:122
 msgid "PAYMILL Payment"
-msgstr "PAYMILL Payment"
+msgstr "PAYMILL plaćanje"
 
 #: lib/integration/woocommerce.inc.php:126
 msgid "Customer Message"
-msgstr "Customer Message"
+msgstr "Poruka mušterije"
 
-#: lib/integration/woocommerce.inc.php:272
+#: lib/integration/woocommerce.inc.php:270
 msgid "Subscription already ordered and cannot be purchased twice."
-msgstr "Subscription already ordered and cannot be purchased twice."
+msgstr "Pretplata je već naručena i ne može se kupiti dva puta."
 
-#: lib/tpl/checkout_form.php:26
+#: lib/tpl/checkout_form.php:24
 msgid "Credit Card"
-msgstr "Credit Card"
+msgstr "Kreditna kartica"
 
-#: lib/tpl/checkout_form.php:27
+#: lib/tpl/checkout_form.php:25
 msgid "Debit Payment"
-msgstr "Debit Payment"
+msgstr "Debitno plaćanje"
 
-#: lib/tpl/checkout_form.php:32
+#: lib/tpl/checkout_form.php:30
 msgid "Name"
-msgstr "Name"
+msgstr "Ime"
 
-#: lib/tpl/checkout_form.php:37
+#: lib/tpl/checkout_form.php:35
 msgid "Credit Card Number"
-msgstr "Credit Card Number"
+msgstr "Broj kreditne kartice"
 
-#: lib/tpl/checkout_form.php:41
+#: lib/tpl/checkout_form.php:39
 msgid "Expire Date (MM/YYYY)"
-msgstr "Expire Date"
+msgstr "Datum isteka (M-GOD)"
 
-#: lib/tpl/checkout_form.php:45
+#: lib/tpl/checkout_form.php:43
 msgid "CVC"
 msgstr "CVC"
 
-#: lib/tpl/checkout_form.php:50
+#: lib/tpl/checkout_form.php:48
 msgid "Account #"
-msgstr "Account #"
+msgstr "Nalog #"
 
-#: lib/tpl/checkout_form.php:54
+#: lib/tpl/checkout_form.php:52
 msgid "Bank code"
-msgstr "Bank code"
+msgstr "Kod banke"
 
-#: lib/tpl/pay_button.php:35
+#: lib/tpl/pay_button.php:33
 msgid "S"
-msgstr ""
+msgstr "S"
 
-#: lib/tpl/pay_button.php:38 lib/tpl/pay_button.php:63
+#: lib/tpl/pay_button.php:36 lib/tpl/pay_button.php:55
 msgid "% VAT included."
-msgstr "% VAT included."
+msgstr "% VAT uključeno."
 
-#: lib/tpl/pay_button.php:39 lib/tpl/pay_button.php:64
+#: lib/tpl/pay_button.php:37 lib/tpl/pay_button.php:56
 msgid "Delivery Time: "
-msgstr "Delivery Time: "
+msgstr "Vreme dostave"
 
-#: lib/tpl/pay_button.php:81
+#: lib/tpl/pay_button.php:66
 msgid "Choose Country"
-msgstr "Choose Country"
+msgstr "Izaberite zemlju"
 
-#: lib/tpl/pay_button.php:93
+#: lib/tpl/pay_button.php:78
 msgid "Total Price:"
-msgstr "Total Price:"
+msgstr "Ukupna cena:"
 
-#: lib/tpl/pay_button.php:111
+#: lib/tpl/pay_button.php:87
 msgid "Address"
-msgstr "Address"
-
-#~ msgid "Free Amount"
-#~ msgstr "Free Amount"
+msgstr "Adresa"
 
 #~ msgid "Paymill Payment"
 #~ msgstr "Paymill Payment"
+
+#~ msgid "%s DAY"
+#~ msgstr "%s Tage"

@@ -106,6 +106,11 @@ class paymill_settings{
 		__('email');
 		__('phone');
 		
+		 // common errors, for translation purposes
+		__('Token or Payment required', 'paymill');
+		__('Subscription already connected', 'paymill');
+
+		
 	}
 	
 	/*
@@ -139,9 +144,10 @@ class paymill_settings{
 		add_settings_field( 'number_thousands',  __('Number Format: Thousands Seperator', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'number_thousands', 'option' => 'number_thousands'));
 		add_settings_field( 'email_outgoing',  __('Outgoing Email', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_outgoing', 'option' => 'email_outgoing'));
 		add_settings_field( 'email_incoming',  __('Incoming Email', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'email_incoming', 'option' => 'email_incoming'));
+		add_settings_field( 'thankyou_url',  __('Thank You URL', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'thankyou_url', 'option' => 'thankyou_url'));
 		add_settings_field( 'fields_hide',  __('Hide Fields', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'fields_hide', 'option' => 'fields_hide'));
 		add_settings_field( 'no_default_css',  __('Do not load default CSS', 'paymill'), array( &$this, 'field_pay_button_option' ), $this->setting_keys['paymill_pay_button_settings'], 'section_pay_button',array('desc' => 'no_default_css', 'option' => 'no_default_css'));
-		
+
 		// products
 		add_settings_section( 'section_pay_button_products', false, array( &$this, 'section_pay_button_products_desc' ), $this->setting_keys['paymill_pay_button_settings'] );
 		//if (isset($this->paymill_pay_button_settings['products'])) {
@@ -261,12 +267,13 @@ class paymill_settings{
 		$descriptions['number_decimal']					= __('Set a symbol used for decimal point. Default: .', 'paymill');
 		$descriptions['number_thousands']				= __('Set a symbol used for thousands seperator. Default: ,', 'paymill');
 		$descriptions['email_outgoing']					= __('Outgoing Emailaddress for customer order confirmation mail.', 'paymill');
-		$descriptions['email_incoming']					= __('Incoming Emailaddress for Copy of customer order confirmation mail.');
+		$descriptions['email_incoming']					= __('Incoming Emailaddress for Copy of customer order confirmation mail.', 'paymill');
+		$descriptions['thankyou_url']					= __('Redirect URL for custom thank your page.', 'paymill');
 
-		$descriptions['fields_hide']					= __('You may want to hide certain fields. Select them here:');
-		$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.');
+		$descriptions['fields_hide']					= __('You may want to hide certain fields. Select them here:', 'paymill');
+		$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.', 'paymill');
 		
-		$descriptions['flat_shipping_country']			= __('Name of the available delivery country, e.g. "England"');
+		$descriptions['flat_shipping_country']			= __('Name of the available delivery country, e.g. "England"', 'paymill');
 		$descriptions['flat_shipping_costs']			= __('Gross fee for the flat shipping costs., e.g. "7" or "4.90"', 'paymill');
 		$descriptions['flat_shipping_vat']				= __('Value-Added-Tax Rate in % for the flat shipping costs., e.g. "19" or "7"', 'paymill');
 

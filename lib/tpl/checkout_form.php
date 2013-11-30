@@ -1,18 +1,35 @@
 <div id="paymill_payment_form">
 	<script type="text/javascript">
 		var PAYMILL_PUBLIC_KEY = '<?php echo $GLOBALS['paymill_settings']->paymill_general_settings['api_key_public']; ?>';
+		<?php
+			if(esc_attr($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) == 1){
+				$show_elv = true;
+				$show_cc = false;
+			}else{
+				$show_elv = false;
+				$show_cc = true;
+			}
+		?>
 	</script>
 	<div class="paymill_payment_errors"></div>
 	
+	<?php
+		if(empty($no_logos) && isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && is_array($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) > 0){
+?>
 	<div class="form-row">
-		<p><?php
+		<p>
+<?php		
 			foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
 				if($type==1){
 					echo '<img src="'.plugins_url('',__FILE__ ).'/../img/logos/'.$name.'.png" style="vertical-align:middle;" alt="'.$name.'" />';
 				}
 			}
-		?></p>
+?>
+		</p>
 	</div>
+	<?php
+		}
+		?>
 	
 	<?php
 
@@ -21,8 +38,8 @@
 			&& (count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) >= 2))
 		){
 	?>
-		<div id="form-switch-credit" class="paymill_form-switch paymill_form-switch_active"><?php echo __('Credit Card', 'paymill'); ?></div>
-		<div id="form-switch-elv" class="paymill_form-switch"><?php echo __('Debit Payment', 'paymill'); ?></div>
+		<div id="form-switch-credit" class="paymill_form-switch paymill_form-switch<?php if($show_cc === true){ echo '_active'; } ?>"><?php echo __('Credit Card', 'paymill'); ?></div>
+		<div id="form-switch-elv" class="paymill_form-switch paymill_form-switch<?php if($show_elv === true){ echo '_active'; } ?>"><?php echo __('Debit Payment', 'paymill'); ?></div>
 	<?php
 		}
 	?>
@@ -30,7 +47,7 @@
 		<label><?php echo __('Name', 'paymill'); ?></label>
 		<input class="paymill_holdername" id="holdername" type="text" size="20" value="" autocomplete="off" />
 	</div>
-	<div id="form-credit">	
+	<div id="form-credit"<?php if($show_cc === false){ echo ' style="display:none;"'; } ?>>	
 		<div class="form-row">
 			<label><?php echo __('Credit Card Number', 'paymill'); ?></label>
 			<input class="paymill_card-number" id="card-number" type="text" size="20" value="" autocomplete="off" />
@@ -43,7 +60,7 @@
 			<?php echo __('CVC', 'paymill'); ?>: <input class="paymill_card-cvc" id="card-cvc" type="text" size="4" value="" autocomplete="off" />
 		</div>
 	</div>
-	<div id="form-elv">	
+	<div id="form-elv"<?php if($show_elv === false){ echo ' style="display:none;"'; } ?>>	
 		<div class="form-row">
 			<label translate="iframe"><?php echo __('Account #', 'paymill'); ?></label>
 			<input id="transaction-form-account" class="paymill_elv_number" type="text" value="" autocomplete="off"  maxlength="16">

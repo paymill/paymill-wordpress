@@ -11,18 +11,20 @@
 <?php
 			if($product['offer'] != ''){
 ?>
-			<div class="paymill_quantity">
 			<?php if($product['quantityhide'] == '1'){ ?>
-				<select name="paymill_quantity[<?php echo $id; ?>]" style="display:none;">
+			<div class="paymill_quantity" style="display:none;">
+				<select name="paymill_quantity[<?php echo $id; ?>]">
 					<option value="1">1</option>
 				</select>
+			</div>
 			<?php }else{ ?>
+			<div class="paymill_quantity">
 				<select name="paymill_quantity[<?php echo $id; ?>]">
 					<option value="">0</option>
 					<option value="1">1</option>
 				</select>
-			<?php } ?>
 			</div>
+			<?php } ?>
 			<input type="hidden" name="paymill_offer[<?php echo $id; ?>]" value="<?php echo $offers[$product['offer']]['id']; ?>" />
 			<div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo ($offers[$product['offer']]['amount']/100); ?></div><div class="paymill_price"><?php echo number_format(($offers[$product['offer']]['amount']/100),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><div class="paymmill_subscription"> /
 			<?php
@@ -38,19 +40,21 @@
 <?php
 			}else{
 ?>
-			<div class="paymill_quantity">
 			<?php if($product['quantityhide'] == '1'){ ?>
-				<select name="paymill_quantity[<?php echo $id; ?>]" style="display:none;">
-					<option value="1">1</option>
-				</select>
+				<div class="paymill_quantity" style="display:none;">
+					<select name="paymill_quantity[<?php echo $id; ?>]">
+						<option value="1">1</option>
+					</select>
+				</div>
 			<?php }else{ ?>
-				<select name="paymill_quantity[<?php echo $id; ?>]">
-				<?php for($i = 0; $i <= 10; $i++){ ?>
-					<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-				<?php } ?>
-				</select>
+				<div class="paymill_quantity">
+					<select name="paymill_quantity[<?php echo $id; ?>]">
+					<?php for($i = 0; $i <= 10; $i++){ ?>
+						<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<?php } ?>
+					</select>
+				</div>
 			<?php } ?>
-			</div>
 			<?php if(strlen($product['price']) > 0){ ?>
 				<div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden">
 					<?php echo (isset($_POST['paymill']['product'][$id]['price']) ? intval($_POST['paymill']['product'][$id]['price']) : $product['price']); ?>
@@ -91,7 +95,17 @@
 		<input type="hidden" name="paymill_pay_button_order" value="1" />
 </div>
 <?php
-	
+	if(
+		empty($hiding['company_name']) || $hiding['company_name'] != 1 ||
+		empty($hiding['forename']) || $hiding['forename'] != 1 ||
+		empty($hiding['surname']) || $hiding['surname'] != 1 ||
+		empty($hiding['street']) || $hiding['street'] != 1 ||
+		empty($hiding['number']) || $hiding['number'] != 1 ||
+		empty($hiding['zip']) || $hiding['zip'] != 1 ||
+		empty($hiding['city']) || $hiding['city'] != 1 ||
+		empty($hiding['email']) || $hiding['email'] != 1 ||
+		empty($hiding['phone']) || $hiding['phone'] != 1
+	){
 ?>
 <div class="paymill_address">
 	<div class="paymill_address_title"><?php echo __('Address', 'paymill'); ?></div>
@@ -151,5 +165,5 @@
 	<?php } ?>
 </div>
 <?php
-
+	}
 ?>

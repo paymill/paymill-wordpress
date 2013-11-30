@@ -3,8 +3,8 @@ Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.5
-Tested up to: 3.6.1
-Stable tag: 1.4.4
+Tested up to: 3.7.1
+Stable tag: 1.5.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,13 +14,13 @@ With PAYMILL you are able to provide credit card based payments for your custome
 
 This plugin currently allows:
 
-* Payment Gateway for WooCommerce - incl. subscription support (BETA)
+* Payment Gateway for WooCommerce - incl. subscription support
 * Payment Gateway for ShopPlugin
 * Pay Button - incl. subscription support
 
 Features in Development:
 
-* Payment Gateway for Magic Members
+* Payment Gateway for Magic Members (30% done)
 
 PAYMILL offers the fastest and easiest way to accept payments online. The innovative payment solution enables online businesses and services to integrate payments into their websites within a very short time. The developer-friendly REST API is flexibly integrable. Customize the check-out process the way you want or use the PAYMILL PayButton which allows an even easier integration. Super-fast account activation within a few days only. Top-notch customer support. Subscriptions supported and Mobile SDKs for iOS and Android available. Accept payments in up to 100 currencies. All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported. Available in 39 countries across Europe so far.
 
@@ -76,10 +76,21 @@ ELV is a German banking service and stands for "Elektronisches Lastschriftverfah
 
 Yes, here's an example shortcode with all currently available parameters: [paymill_pb title="test title" products_list="1,2"]
 
-= Are there actions/hooks in the Pay Button? =
+= Are there actions/filters/hooks in the Pay Button? =
 
-Yes, currently there is 1 action included:
-paymill_paybutton_order_complete (3 args: $order_id, $transaction, $_POST)
+Yes, all of them have 1 parameter as array with several vars. You may use var_dump to get their content and structure.
+
+= actions =
+
+paymill_paybutton_client_created
+paymill_paybutton_client_updated
+paymill_paybutton_subscription_created
+paymill_paybutton_order_complete
+
+= filters =
+
+paymill_paybutton_order_desc
+paymill_paybutton_email_text
 
 = How can I customize the Pay Button? =
 
@@ -108,6 +119,19 @@ custom theme file on THEME_DIR/paymill/pay_button.php (it will replace /paymill/
 6. Pay Button Shipping Settings
 
 == Changelog ==
+
+= 1.5.0 =
+
+* Common: Payment processing totally rewritten making it more robust
+* Common: Clicking on another area than submit button could submit form - fixed
+* Common: Serbo-Croatic Translation added (thanks to Borisa Djuraskovic <borisad@webhostinghub.com>)
+* WooCommerce: minor bugfixes
+* WooCommerce: More control about visibility of payment icons in checkout form
+* Shopplugin: Critical error fixed
+* Shopplugin: reworked payment form
+* Pay Button: New feature allows redirect to custom thank your URL
+* Pay Button: New actions and hooks added for triggering custom functions or customizing order confirmation mail
+
 = 1.4.4 =
 
 * WooCommerce: Rounding issue fixed
@@ -176,6 +200,18 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+
+* Common: Payment processing totally rewritten making it more robust
+* Common: Clicking on another area than submit button could submit form - fixed
+* Common: Serbo-Croatic Translation added (thanks to Borisa Djuraskovic <borisad@webhostinghub.com>)
+* WooCommerce: minor bugfixes
+* WooCommerce: More control about visibility of payment icons in checkout form
+* Shopplugin: Critical error fixed
+* Shopplugin: reworked payment form
+* Pay Button: New feature allows redirect to custom thank your URL
+* Pay Button: New actions and hooks added for triggering custom functions or customizing order confirmation mail
 
 = 1.4.4 =
 

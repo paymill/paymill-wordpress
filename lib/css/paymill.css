@@ -1,36 +1,72 @@
-#form-elv{
-	display:none;
-}
-
 /* form validation */
 
-.LV_validation_message{
+#paymill_payment_form  .LV_validation_message{
     font-weight:bold;
     margin:0 0 0 5px;
 }
 
-.LV_valid {
+#paymill_payment_form  .LV_valid {
     color:#00CC00;
+	float:none;
 }
 	
-.LV_invalid {
+#paymill_payment_form  .LV_invalid {
     color:#CC0000;
+	float:none;
 }
     
-.LV_valid_field,
-input.LV_valid_field:hover, 
-input.LV_valid_field:active,
-textarea.LV_valid_field:hover, 
-textarea.LV_valid_field:active {
+#paymill_payment_form  .LV_valid_field,
+#paymill_payment_form  input.LV_valid_field:hover, 
+#paymill_payment_form  input.LV_valid_field:active,
+#paymill_payment_form  textarea.LV_valid_field:hover, 
+#paymill_payment_form  textarea.LV_valid_field:active {
     border: 1px solid #00CC00;
 }
     
-.LV_invalid_field, 
-input.LV_invalid_field:hover, 
-input.LV_invalid_field:active,
-textarea.LV_invalid_field:hover, 
-textarea.LV_invalid_field:active {
+#paymill_payment_form  .LV_invalid_field, 
+#paymill_payment_form  input.LV_invalid_field:hover, 
+#paymill_payment_form  nput.LV_invalid_field:active,
+#paymill_payment_form  textarea.LV_invalid_field:hover, 
+#paymill_payment_form  textarea.LV_invalid_field:active {
     border: 1px solid #CC0000;
+}
+
+#paymill_payment_form input{
+	-webkit-box-sizing: content-box !important;
+	   -moz-box-sizing: content-box !important;
+	        box-sizing: content-box !important;
+	margin:0px !important;
+}
+
+#paymill_payment_form #card-expiry-month{
+	width:20px;
+	text-align:center;
+}
+
+#paymill_payment_form #card-expiry-year{
+	width:40px;
+	text-align:center;
+}
+
+#paymill_payment_form #card-cvc{
+	width:30px;
+	text-align:center;
+}
+#paymill_payment_form #card-number{
+	background-image:url('../img/cc_logos_v.png');
+	background-repeat:no-repeat;
+	background-position:0px 30px;
+	padding-left:55px;
+	width:150px;
+}
+#paymill_payment_form #holdername,
+#paymill_payment_form #transaction-form-account,
+#paymill_payment_form #transaction-form-code{
+	width:200px;
+}
+
+#paymill_framebox img{
+	box-shadow:none !important;
 }
 
 #form-credit, #form-elv{
@@ -77,31 +113,6 @@ textarea.LV_invalid_field:active {
 }
 #form-credit .form-row p{
 	display: inline;
-}
-
-#card-expiry-month{
-	width:20px;
-	text-align:center;
-}
-
-#card-expiry-year{
-	width:40px;
-	text-align:center;
-}
-
-#card-cvc{
-	width:30px;
-	text-align:center;
-}
-#card-number{
-	background-image:url('../img/cc_logos_v.png');
-	background-repeat:no-repeat;
-	background-position:0px 30px;
-	padding-left:55px;
-	width:150px;
-}
-#holdername, #transaction-form-account, #transaction-form-code{
-	width:200px;
 }
 
 /* pay button */
