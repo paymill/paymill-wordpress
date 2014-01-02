@@ -22,7 +22,7 @@ class paymill_client{
 
 		$client_cache			= $wpdb->get_results($query,ARRAY_A);
 
-		if($client_cache[0]['paymill_client_email'] != $client_email || $client_cache[0]['paymill_client_description'] != $client_desc){
+		if(count($client_cache) > 0 && ($client_cache[0]['paymill_client_email'] != $client_email || $client_cache[0]['paymill_client_description'] != $client_desc)){
 			// update client in paymill
 			$params = array(
 				'id'			=> $client_cache[0]['paymill_client_id'],
@@ -43,12 +43,9 @@ class paymill_client{
 			));
 		
 		// try loading the client
-		}else{
+		}elseif(count($client_cache) > 0){
 			$client				= $clientsObject->getOne($client_cache[0]['paymill_client_id']);
-		}
-		
-		// new client, add to paymill
-		if(empty($client['id']) || strlen($client['id']) == 0){
+		}else{
 			$client			 	= $clientsObject->create(array(
 				'email'			=> $client_email, 
 				'description'	=> $client_desc

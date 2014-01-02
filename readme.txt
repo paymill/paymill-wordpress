@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.5
 Tested up to: 3.7.1
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,7 +20,7 @@ This plugin currently allows:
 
 Features in Development:
 
-* Payment Gateway for Magic Members (30% done)
+* Payment Gateway for Magic Members (70% done) - beta for subscriptions included
 
 PAYMILL offers the fastest and easiest way to accept payments online. The innovative payment solution enables online businesses and services to integrate payments into their websites within a very short time. The developer-friendly REST API is flexibly integrable. Customize the check-out process the way you want or use the PAYMILL PayButton which allows an even easier integration. Super-fast account activation within a few days only. Top-notch customer support. Subscriptions supported and Mobile SDKs for iOS and Android available. Accept payments in up to 100 currencies. All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported. Available in 39 countries across Europe so far.
 
@@ -44,9 +44,9 @@ This plugin is for free and licensed to GPL. It's open source following the GPL 
 = Does this plugin calls to another server? =
 Yes. As Pamill is a payment service provider, it is absolutely required to call home to make sure that the payments are valid. We are talking about three different reasons for calling home:
 
-* 1. PAYMILL Javascript Bridge makes sure that payment data is correct and creates a payment token delivered to your server after checkout. This avoids delivering payment data to your server, what is -in most cases- absolutely prohibited by all common credit card providers.
-* 2. PAYMILL PHP Bridge finishes the order and delivers the generated token to the PAYMILL server.
-* 3. For security purposes we will implement a feature which delivers WordPress version number and PAYMILL Plugin version number upon payment process. This will give us the ability to warn paymill merchants who are using a very outdated WordPress version or about known security holes in specific version when still using them.
+1. PAYMILL Javascript Bridge makes sure that payment data is correct and creates a payment token delivered to your server after checkout. This avoids delivering payment data to your server, what is -in most cases- absolutely prohibited by all common credit card providers.
+2. PAYMILL PHP Bridge finishes the order and delivers the generated token to the PAYMILL server.
+3. For security purposes we will implement a feature which delivers WordPress version number and PAYMILL Plugin version number upon payment process. This will give us the ability to warn paymill merchants who are using a very outdated WordPress version or about known security holes in specific version when still using them.
 
 = Are there any fees for payments? =
 
@@ -74,7 +74,7 @@ ELV is a German banking service and stands for "Elektronisches Lastschriftverfah
 
 = Can I use shortcodes to display the Pay Button? =
 
-Yes, here's an example shortcode with all currently available parameters: [paymill_pb title="test title" products_list="1,2"]
+Yes, here's an example shortcode with all currently available parameters: '[paymill_pb title="test title" products_list="1,2"]'
 
 = Are there actions/filters/hooks in the Pay Button? =
 
@@ -82,32 +82,32 @@ Yes, all of them have 1 parameter as array with several vars. You may use var_du
 
 = actions =
 
-paymill_paybutton_client_created
-paymill_paybutton_client_updated
-paymill_paybutton_subscription_created
-paymill_paybutton_order_complete
+* paymill_paybutton_client_created
+* paymill_paybutton_client_updated
+* paymill_paybutton_subscription_created
+* paymill_paybutton_order_complete
 
 = filters =
 
-paymill_paybutton_order_desc
-paymill_paybutton_email_text
+* paymill_paybutton_order_desc
+* paymill_paybutton_email_text
 
 = How can I customize the Pay Button? =
 
 The Pay Button is made for customizing and you should make intensive use of CSS to cutomize it. Examples:
 
-// hide country selection
+'// hide country selection
 .paymill_shipping{
     display:none;
-}
+}'
 
-// hide company name
+'// hide company name
 .paymill_address div:nth-child(2){
     display:none;
-}
+}'
 
 Additionally, you may want to replace the default order form with your own. Create a
-custom theme file on THEME_DIR/paymill/pay_button.php (it will replace /paymill/lib/tpl/pay_button.php)
+custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymill/lib/tpl/pay_button.php')
 
 == Screenshots ==
 
@@ -119,6 +119,15 @@ custom theme file on THEME_DIR/paymill/pay_button.php (it will replace /paymill/
 6. Pay Button Shipping Settings
 
 == Changelog ==
+
+= 1.5.1 =
+
+* Common: Installation Manual updated
+* Common: "Error Multiple Primary Key Defined" on Update fixed
+* WooCommerce: Checkout form background color fixed
+* WooCommerce: Error "notDigits: '-16045' must contain only digits" fixed
+* Pay Button: Submit Button will be hidden on submit (and shown again by error) to avoid double orders.
+* Magic Members: Beta available. The B in beta stands for bugs, so please don't use magic members in live environments.
 
 = 1.5.0 =
 
@@ -200,6 +209,15 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.5.1 =
+
+* Common: Installation Manual updated
+* Common: "Error Multiple Primary Key Defined" on Update fixed
+* WooCommerce: Checkout form background color fixed
+* WooCommerce: Error "notDigits: '-16045' must contain only digits" fixed
+* Pay Button: Submit Button will be hidden on submit (and shown again by error) to avoid double orders.
+* Magic Members: Beta available. The B in beta stands for bugs, so please don't use magic members in live environments.
 
 = 1.5.0 =
 

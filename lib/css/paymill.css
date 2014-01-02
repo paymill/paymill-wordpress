@@ -38,6 +38,14 @@
 	margin:0px !important;
 }
 
+.payment_method_paymill{
+	overflow:hidden;
+}
+label[for=payment_method_paymill] *{
+	overflow:hidden;
+	background-color:transparent;
+}
+
 #paymill_payment_form #card-expiry-month{
 	width:20px;
 	text-align:center;

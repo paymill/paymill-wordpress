@@ -157,7 +157,7 @@
 						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
 						
 						$paymentClass		= new paymill_payment($client['id']);
-						
+							
 						// calculate total based on product settings
 						$total = (floatval($woocommerce->cart->total)*100);
 						
@@ -168,7 +168,7 @@
 							$cart = $woocommerce->cart->get_cart();
 							
 							$subscriptions = new paymill_subscriptions('woocommerce');
-						
+							
 							foreach($cart as $product){
 
 								$woo_sub_key	= WC_Subscriptions_Manager::get_subscription_key($order_id,$product['product_id']);
@@ -182,8 +182,12 @@
 									// get trial time
 									$now = time();
 									$trial_end		= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($order->order_date)));
-									$datediff		= $trial_end - $now;
-									$trial_time		= ceil($datediff/(60*60*24));
+									if($trial_end === false){
+										$trial_time		= 0;
+									}else{
+										$datediff		= $trial_end - $now;
+										$trial_time		= ceil($datediff/(60*60*24));
+									}
 									
 									// md5 name
 									$woo_sub_md5	= md5($amount.$currency.$interval.$trial_time);
@@ -193,7 +197,7 @@
 									$offer			= $subscriptions->offerGetDetailByName($name);
 									$offer			= $offer[0];
 									
-									// check wether woosub exists in paymill
+									// check wether offer exists in paymill
 									if(count($offer) == 0){
 										// offer does not exist in paymill yet, create it
 										$params = array(
@@ -201,9 +205,21 @@
 											'currency'			=> $currency,
 											'interval'			=> $interval,
 											'name'				=> $name,
-											'trial_period_days'	=> $trial_time
+											'trial_period_days'	=> intval($trial_time)
 										);
 										$offer = $subscriptions->offerCreate($params);
+										/*
+							ob_start();
+							var_dump($product['product_id']);
+							var_dump(get_gmt_from_date($order->order_date));
+							var_dump(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($order->order_date)));
+							var_dump($now);
+							var_dump($trial_end);
+							var_dump($trial_time);
+							var_dump($offer);
+							$var = ob_get_flush();
+							$woocommerce->add_error($var);
+							return;*/
 										
 										if(isset($offer['error']['messages'])){
 											foreach($offer['error']['messages'] as $field => $msg){
@@ -227,7 +243,7 @@
 										$wpdb->query($query);
 									
 										// subscription successful
-											do_action('paymill_paybutton_subscription_created', array(
+											do_action('paymill_woocommerce_subscription_created', array(
 												'product_id'	=> $id,
 												'offer_id'		=> $offer['id'],
 												'offer_data'	=> $offer

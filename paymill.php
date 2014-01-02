@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made eady
-Version: 1.5.0
+Version: 1.5.1
 Author: Matthias Reuter / Elbnetz
 Author URI: http://elbnetz.com
 */
@@ -15,7 +15,7 @@ WC_Subscriptions_Manager::cancel_subscription('1', '144_91');
 	/*
 		common information
 	*/
-	define('PAYMILL_VERSION',1500);
+	define('PAYMILL_VERSION',1514);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	$GLOBALS['paymill_active'] = false;
 
@@ -70,8 +70,7 @@ $sql = 'CREATE TABLE '.$wpdb->prefix.'paymill_clients (
   paymill_client_email varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   paymill_client_description longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   wp_member_id int(11) NOT NULL,
-  PRIMARY KEY  ( paymill_client_id),
-  KEY  paymill_client_email ( paymill_client_email));';
+  UNIQUE KEY paymill_client_id (paymill_client_id));';
 
 $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_transactions (
   paymill_transaction_id varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -82,19 +81,20 @@ $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_transactions (
   woocommerce_order_id int(11) NOT NULL,
   pay_button_order_id int(11) NOT NULL,
   shopplugin_order_id int(11) NOT NULL,
-  PRIMARY KEY  ( paymill_transaction_id),
-  KEY  paymill_payment_id ( paymill_payment_id));';
+  UNIQUE KEY paymill_transaction_id(paymill_transaction_id));';
   
 $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_cache (
   cache_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   cache_content longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  UNIQUE KEY  cache_id ( cache_id));';
+  UNIQUE KEY cache_id (cache_id));';
   
 $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_subscriptions (
   paymill_sub_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   woo_user_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   woo_offer_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  UNIQUE KEY  paymill_sub_id ( paymill_sub_id));';
+  mgm_user_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  mgm_offer_id varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  UNIQUE KEY paymill_sub_id (paymill_sub_id));';
   
 		dbDelta($sql);
 		

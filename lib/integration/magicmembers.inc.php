@@ -1,160 +1,103 @@
 <?php
 /**
 
- * Paymill payment module, integrates AIM and ARB
-
- * ps: ARB = 1 AIM + ARB for remaining cycles
-
- *
-
- * @author     MagicMembers
-
- * @copyright  Copyright (c) 2011, MagicMembers 
-
- * @package    MagicMembers plugin
-
- * @subpackage Payment Module
-
- * @category   Module 
-
- * @version    3.0
+ * Paymill payment module
 
  */
 
 class mgm_paymill extends mgm_payment{
 
 	// construct
-
 	function __construct(){
 
 		// php4 construct
-
 		$this->mgm_paymill();
 
 	}
 
-	
-
 	// construct
-
 	function mgm_paymill(){
 
 		// parent
-
 		parent::__construct();
 
 		// set code
-
 		$this->code = __CLASS__;
 
 		// set module
-
 		$this->module = str_replace('mgm_', '', $this->code);
 
 		// set name
-
-		$this->name = 'Paymill';		
+		$this->name = 'Paymill';
 
 		// logo
-
-		$this->logo = $this->module_url( 'assets/paymill.png' );
+		$this->logo = plugins_url('',PAYMILL_DIR.'paymill.php').'/lib/img/logo.png';
 
 		// description
-
-		$this->description = __('Paymill - Online payments made easy', 'mgm');
+		$this->description = __('PAYMILL - Online payments made easy', 'mgm');
 
 		// supported buttons types
-
 	 	$this->supported_buttons = array('subscription', 'buypost');
 
 		// trial support available ?
-
-		$this->supports_trial= 'Y';	
+		$this->supports_trial= 'Y';
 
 		// cancellation support available ?
+		$this->supports_cancellation= 'Y';
 
-		$this->supports_cancellation= 'Y';	
-
-		// do we depend on product mapping	
-
-		$this->requires_product_mapping = 'N'; 
+		// do we depend on product mapping
+		$this->requires_product_mapping = 'N';
 
 		// type of integration
+		$this->hosted_payment = 'Y';// credit card process onsite
 
-		$this->hosted_payment = 'N';// credit card process onsite
-
-		// if supports rebill status check	
-
-		$this->supports_rebill_status_check = 'Y';		
+		// if supports rebill status check
+		$this->supports_rebill_status_check = 'Y';
 
 		// default settings
-
 		$this->_default_setting();
 
 		// set path
-
-		parent::set_tmpl_path();
+		parent::set_tmpl_path(PAYMILL_DIR.'lib/tpl/mgm/');
 
 		// read settings
-
-		$this->read();	
-
+		$this->read();
 	}		
-
-	
 
 	// MODULE API COMMON HOOKABLE CALLBACKS  //////////////////////////////////////////////////////////////////
 
-	
-
 	// settings
-
 	function settings(){
 
 		global $wpdb;
 
-		
-
 		// data
+		$data = array();
 
-		$data = array();		
-
-		// set 
-
-		$data['module'] = $this;		
+		// set
+		$data['module'] = $this;
 
 		// load template view
-
 		$this->load->template('settings', array('data'=>$data));
 
 	}	
 
-	
-
 	// settings_box
-
 	function settings_box(){
 
 		global $wpdb;
 
 		// data
-
-		$data = array();	
+		$data = array();
 
 		// set 
-
-		$data['module'] = $this;		
+		$data['module'] = $this;
 
 		// load template view
-
 		return $this->load->template('settings_box', array('data'=>$data), true);
-
 	}
 
-	
-
 	// update
-
 	function settings_update(){
 
 		// form type 
@@ -236,35 +179,7 @@ class mgm_paymill extends mgm_payment{
 			case 'main':
 
 			default:
-
-			// from main						
-
-				// authorize.net specific				
-
-				$this->setting['loginid']  = $_POST['setting']['loginid'];
-
-				$this->setting['tran_key'] = $_POST['setting']['tran_key'];	
-
-				// csutom end points flag
-
-				if( isset($_POST['setting']['end_points']) ){
-
-					$this->setting['end_points'] = $_POST['setting']['end_points'];		
-
-				}
-
-				// update supported card types
-
-				if( isset($_POST['card_types']) && !empty($_POST['card_types']) ){
-
-					$this->setting['supported_card_types'] = $_POST['card_types'];
-
-				}else{
-
-					$this->setting['supported_card_types'] = array();	
-
-				}
-
+			
 				// purchase price
 
 				if(isset($_POST['setting']['purchase_price'])){
@@ -289,7 +204,7 @@ class mgm_paymill extends mgm_payment{
 
 				// fix old data
 
-				$this->hosted_payment = 'N';	
+				$this->hosted_payment = 'Y';	
 
 				// setup callback messages				
 
@@ -317,184 +232,692 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// return process api hook, link back to site after payment is made
-
 	function process_return(){
-
-		// init
-
 		if(!isset($this->response)) $this->response = array();
 
 		// check and show message		
-
-		if(isset($this->response['response_status']) && $this->response['response_status'] != 3 ){// 3 == Error							
-
-			// process notify, internally called
-
-			$this->process_notify(true);
+		if($this->process_payment() === true){
 
 			// redirect as success if not already redirected
-
-			$query_arg = array('status'=>'success', 'trans_ref' => mgm_encode_id($_POST['x_custom']));
+			$query_arg = array('status'=>'success', 'trans_ref' => mgm_encode_id($_POST['tran_id']));
 
 			// is a post redirect?
-
-			$post_redirect = $this->_get_post_redirect($_POST['x_custom']);
+			$post_redirect = $this->_get_post_redirect($_POST['tran_id']);
 
 			// set post redirect
-
 			if($post_redirect !== false){
-
 				$query_arg['post_redirect'] = $post_redirect;
-
 			}			
 
 			// is a register redirect?			
-
-			$register_redirect = $this->_auto_login($_POST['x_custom']);
+			$register_redirect = $this->_auto_login($_POST['tran_id']);
 
 			// set register redirect
-
 			if($register_redirect !== false){
-
 				$query_arg['register_redirect'] = $register_redirect;
-
 			}
 
-			// redirect			
-
-			mgm_redirect(add_query_arg($query_arg, $this->_get_thankyou_url()));			
-
-		}else{			
-
+			// redirect	
+			mgm_redirect(add_query_arg($query_arg, $this->_get_thankyou_url()));
+		}else{
 			// error
-
-			mgm_redirect(add_query_arg(array('status'=>'error','errors'=>urlencode($this->response['message_text'])), $this->_get_thankyou_url()));
-
-		}		
-
+			mgm_redirect(add_query_arg(array('status'=>'error','errors'=>urlencode($this->process_payment())), $this->_get_thankyou_url()));
+		}
 	}
 
-	
+	// make payment
+	function process_payment(){
+		global $wpdb;
 
-	// notify process api hook, background IPN url, used as proxy IPN for this module
+		//ini_set('display_errors',1); 
+		//error_reporting(E_ALL); 
 
-	function process_notify($interal=false){
-
-		// init
-
-		if(!isset($this->response)) $this->response = array();
-
+		//var_dump($_POST);
+		// $_POST[''] array(3) { ["tran_id"]=> string(2) "29" ["submit_from"]=> string(21) "process_html_redirect" ["paymillToken"]=> string(24) "tok_8ae4ec7be24098a4ed77" }
+		
 		//record POST/GET data
-
 		do_action('mgm_print_module_data', $this->module, __FUNCTION__ );			
 
-		// consider Silent Post Url:(Silent Post Will contain x_subscription_id post param  if it is an ARB recurring payment response)
+		/*
+		
+		var_dump($this->_get_transaction_passthrough($_POST['tran_id']));
+		
+		array(21) {
+		  ["payment_type"]=>
+		  string(21) "subscription_purchase"
+		  ["cost"]=>
+		  string(4) "5.00"
+		  ["duration"]=>
+		  string(1) "3"
+		  ["duration_type"]=>
+		  string(1) "m"
+		  ["membership_type"]=>
+		  string(6) "member"
+		  ["pack_id"]=>
+		  string(1) "3"
+		  ["description"]=>
+		  string(19) "Paid Member Account"
+		  ["num_cycles"]=>
+		  string(1) "0"
+		  ["role"]=>
+		  string(10) "subscriber"
+		  ["modules"]=>
+		  array(4) {
+			[0]=>
+			string(8) "mgm_free"
+			[1]=>
+			string(10) "mgm_paypal"
+			[2]=>
+			string(11) "mgm_paymill"
+			[4]=>
+			string(13) "mgm_paypalpro"
+		  }
+		  ["product"]=>
+		  array(1) {
+			["2checkout_product_id"]=>
+			string(0) ""
+		  }
+		  ["user_id"]=>
+		  int(1)
+		  ["subscription_option"]=>
+		  string(7) "upgrade"
+		  ["is_registration"]=>
+		  string(1) "N"
+		  ["is_another_membership_purchase"]=>
+		  string(1) "N"
+		  ["multiple_upgrade_prev_packid"]=>
+		  string(0) ""
+		  ["notify_user"]=>
+		  bool(false)
+		  ["currency"]=>
+		  string(3) "USD"
+		  ["client_ip"]=>
+		  string(12) "91.50.72.122"
+		  ["payment_email"]=>
+		  int(0)
+		  ["amount"]=>
+		  string(4) "5.00"
+		}
+		
+		*/
+		$transaction		= $this->_get_transaction_passthrough($_POST['tran_id']);
 
-		if(isset($_POST['x_subscription_id']) && isset($_POST['x_invoice_num'])) {
+		/*
+			var_dump(get_userdata($transaction['user_id']));
+		
+			object(WP_User)#2256 (7) {
+			  ["data"]=>
+			  object(stdClass)#2258 (10) {
+				["ID"]=>
+				string(1) "1"
+				["user_login"]=>
+				string(5) "admin"
+				["user_pass"]=>
+				string(34) "hjkhjkhjkh"
+				["user_nicename"]=>
+				string(5) "admin"
+				["user_email"]=>
+				string(22) "matthias@pc-intern.com"
+				["user_url"]=>
+				string(0) ""
+				["user_registered"]=>
+				string(19) "2013-04-11 16:00:13"
+				["user_activation_key"]=>
+				string(0) ""
+				["user_status"]=>
+				string(1) "0"
+				["display_name"]=>
+				string(5) "admin"
+			  }
+			  ["ID"]=>
+			  int(1)
+			  ["caps"]=>
+			  array(1) {
+				["administrator"]=>
+				bool(true)
+			  }
+			  ["cap_key"]=>
+			  string(15) "wp_capabilities"
+			  ["roles"]=>
+			  array(1) {
+				[0]=>
+				string(13) "administrator"
+			  }
+			  ["allcaps"]=>
+			  array(180) {
+				["switch_themes"]=>
+				bool(true)
+				["edit_themes"]=>
+				bool(true)
+				["activate_plugins"]=>
+				bool(true)
+				["edit_plugins"]=>
+				bool(true)
+				["edit_users"]=>
+				bool(true)
+				["edit_files"]=>
+				bool(true)
+				["manage_options"]=>
+				bool(true)
+				["moderate_comments"]=>
+				bool(true)
+				["manage_categories"]=>
+				bool(true)
+				["manage_links"]=>
+				bool(true)
+				["upload_files"]=>
+				bool(true)
+				["import"]=>
+				bool(true)
+				["unfiltered_html"]=>
+				bool(true)
+				["edit_posts"]=>
+				bool(true)
+				["edit_others_posts"]=>
+				bool(true)
+				["edit_published_posts"]=>
+				bool(true)
+				["publish_posts"]=>
+				bool(true)
+				["edit_pages"]=>
+				bool(true)
+				["read"]=>
+				bool(true)
+				["level_10"]=>
+				bool(true)
+				["level_9"]=>
+				bool(true)
+				["level_8"]=>
+				bool(true)
+				["level_7"]=>
+				bool(true)
+				["level_6"]=>
+				bool(true)
+				["level_5"]=>
+				bool(true)
+				["level_4"]=>
+				bool(true)
+				["level_3"]=>
+				bool(true)
+				["level_2"]=>
+				bool(true)
+				["level_1"]=>
+				bool(true)
+				["level_0"]=>
+				bool(true)
+				["edit_others_pages"]=>
+				bool(true)
+				["edit_published_pages"]=>
+				bool(true)
+				["publish_pages"]=>
+				bool(true)
+				["delete_pages"]=>
+				bool(true)
+				["delete_others_pages"]=>
+				bool(true)
+				["delete_published_pages"]=>
+				bool(true)
+				["delete_posts"]=>
+				bool(true)
+				["delete_others_posts"]=>
+				bool(true)
+				["delete_published_posts"]=>
+				bool(true)
+				["delete_private_posts"]=>
+				bool(true)
+				["edit_private_posts"]=>
+				bool(true)
+				["read_private_posts"]=>
+				bool(true)
+				["delete_private_pages"]=>
+				bool(true)
+				["edit_private_pages"]=>
+				bool(true)
+				["read_private_pages"]=>
+				bool(true)
+				["delete_users"]=>
+				bool(true)
+				["create_users"]=>
+				bool(true)
+				["unfiltered_upload"]=>
+				bool(true)
+				["edit_dashboard"]=>
+				bool(true)
+				["update_plugins"]=>
+				bool(true)
+				["delete_plugins"]=>
+				bool(true)
+				["install_plugins"]=>
+				bool(true)
+				["update_themes"]=>
+				bool(true)
+				["install_themes"]=>
+				bool(true)
+				["update_core"]=>
+				bool(true)
+				["list_users"]=>
+				bool(true)
+				["remove_users"]=>
+				bool(true)
+				["add_users"]=>
+				bool(true)
+				["promote_users"]=>
+				bool(true)
+				["edit_theme_options"]=>
+				bool(true)
+				["delete_themes"]=>
+				bool(true)
+				["export"]=>
+				bool(true)
+				["shopp_customers"]=>
+				bool(true)
+				["shopp_orders"]=>
+				bool(true)
+				["shopp_menu"]=>
+				bool(true)
+				["shopp_categories"]=>
+				bool(true)
+				["shopp_products"]=>
+				bool(true)
+				["shopp_memberships"]=>
+				bool(true)
+				["shopp_promotions"]=>
+				bool(true)
+				["shopp_financials"]=>
+				bool(true)
+				["shopp_export_orders"]=>
+				bool(true)
+				["shopp_export_customers"]=>
+				bool(true)
+				["shopp_delete_orders"]=>
+				bool(true)
+				["shopp_delete_customers"]=>
+				bool(true)
+				["shopp_settings_update"]=>
+				bool(true)
+				["shopp_settings_system"]=>
+				bool(true)
+				["shopp_settings_presentation"]=>
+				bool(true)
+				["shopp_settings_taxes"]=>
+				bool(true)
+				["shopp_settings_shipping"]=>
+				bool(true)
+				["shopp_settings_payments"]=>
+				bool(true)
+				["shopp_settings_checkout"]=>
+				bool(true)
+				["shopp_settings"]=>
+				bool(true)
+				["manage_woocommerce"]=>
+				bool(true)
+				["view_woocommerce_reports"]=>
+				bool(true)
+				["edit_product"]=>
+				bool(true)
+				["read_product"]=>
+				bool(true)
+				["delete_product"]=>
+				bool(true)
+				["edit_products"]=>
+				bool(true)
+				["edit_others_products"]=>
+				bool(true)
+				["publish_products"]=>
+				bool(true)
+				["read_private_products"]=>
+				bool(true)
+				["delete_products"]=>
+				bool(true)
+				["delete_private_products"]=>
+				bool(true)
+				["delete_published_products"]=>
+				bool(true)
+				["delete_others_products"]=>
+				bool(true)
+				["edit_private_products"]=>
+				bool(true)
+				["edit_published_products"]=>
+				bool(true)
+				["manage_product_terms"]=>
+				bool(true)
+				["edit_product_terms"]=>
+				bool(true)
+				["delete_product_terms"]=>
+				bool(true)
+				["assign_product_terms"]=>
+				bool(true)
+				["edit_shop_order"]=>
+				bool(true)
+				["read_shop_order"]=>
+				bool(true)
+				["delete_shop_order"]=>
+				bool(true)
+				["edit_shop_orders"]=>
+				bool(true)
+				["edit_others_shop_orders"]=>
+				bool(true)
+				["publish_shop_orders"]=>
+				bool(true)
+				["read_private_shop_orders"]=>
+				bool(true)
+				["delete_shop_orders"]=>
+				bool(true)
+				["delete_private_shop_orders"]=>
+				bool(true)
+				["delete_published_shop_orders"]=>
+				bool(true)
+				["delete_others_shop_orders"]=>
+				bool(true)
+				["edit_private_shop_orders"]=>
+				bool(true)
+				["edit_published_shop_orders"]=>
+				bool(true)
+				["manage_shop_order_terms"]=>
+				bool(true)
+				["edit_shop_order_terms"]=>
+				bool(true)
+				["delete_shop_order_terms"]=>
+				bool(true)
+				["assign_shop_order_terms"]=>
+				bool(true)
+				["edit_shop_coupon"]=>
+				bool(true)
+				["read_shop_coupon"]=>
+				bool(true)
+				["delete_shop_coupon"]=>
+				bool(true)
+				["edit_shop_coupons"]=>
+				bool(true)
+				["edit_others_shop_coupons"]=>
+				bool(true)
+				["publish_shop_coupons"]=>
+				bool(true)
+				["read_private_shop_coupons"]=>
+				bool(true)
+				["delete_shop_coupons"]=>
+				bool(true)
+				["delete_private_shop_coupons"]=>
+				bool(true)
+				["delete_published_shop_coupons"]=>
+				bool(true)
+				["delete_others_shop_coupons"]=>
+				bool(true)
+				["edit_private_shop_coupons"]=>
+				bool(true)
+				["edit_published_shop_coupons"]=>
+				bool(true)
+				["manage_shop_coupon_terms"]=>
+				bool(true)
+				["edit_shop_coupon_terms"]=>
+				bool(true)
+				["delete_shop_coupon_terms"]=>
+				bool(true)
+				["assign_shop_coupon_terms"]=>
+				bool(true)
+				["mgm_root"]=>
+				bool(true)
+				["mgm_home"]=>
+				bool(true)
+				["mgm_members"]=>
+				bool(true)
+				["mgm_member_list"]=>
+				bool(true)
+				["mgm_subscription_options"]=>
+				bool(true)
+				["mgm_coupons"]=>
+				bool(true)
+				["mgm_addons"]=>
+				bool(true)
+				["mgm_roles_capabilities"]=>
+				bool(true)
+				["mgm_content_control"]=>
+				bool(true)
+				["mgm_protection"]=>
+				bool(true)
+				["mgm_downloads"]=>
+				bool(true)
+				["mgm_pages"]=>
+				bool(true)
+				["mgm_custom_fields"]=>
+				bool(true)
+				["mgm_ppp"]=>
+				bool(true)
+				["mgm_post_packs"]=>
+				bool(true)
+				["mgm_post_purchases"]=>
+				bool(true)
+				["mgm_addon_purchases"]=>
+				bool(true)
+				["mgm_payment_settings"]=>
+				bool(true)
+				["mgm_autoresponders"]=>
+				bool(true)
+				["mgm_reports"]=>
+				bool(true)
+				["mgm_sales"]=>
+				bool(true)
+				["mgm_earnings"]=>
+				bool(true)
+				["mgm_projection"]=>
+				bool(true)
+				["mgm_payment_history"]=>
+				bool(true)
+				["mgm_misc_settings"]=>
+				bool(true)
+				["mgm_general"]=>
+				bool(true)
+				["mgm_post_settings"]=>
+				bool(true)
+				["mgm_message_settings"]=>
+				bool(true)
+				["mgm_email_settings"]=>
+				bool(true)
+				["mgm_autoresponder_settings"]=>
+				bool(true)
+				["mgm_rest_API_settings"]=>
+				bool(true)
+				["mgm_tools"]=>
+				bool(true)
+				["mgm_data_migrate"]=>
+				bool(true)
+				["mgm_core_setup"]=>
+				bool(true)
+				["mgm_system_reset"]=>
+				bool(true)
+				["mgm_logs"]=>
+				bool(true)
+				["mgm_dependency"]=>
+				bool(true)
+				["mgm_widget_dashboard_statistics"]=>
+				bool(true)
+				["mgm_widget_dashboard_membership_options"]=>
+				bool(true)
+				["sp_cdm"]=>
+				bool(true)
+				["sp_cdm_vendors"]=>
+				bool(true)
+				["sp_cdm_settings"]=>
+				bool(true)
+				["sp_cdm_projects"]=>
+				bool(true)
+				["sp_cdm_uploader"]=>
+				bool(true)
+				["administrator"]=>
+				bool(true)
+			  }
+			  ["filter"]=>
+			  NULL
+			}
+		
+		*/
+		$user				= get_userdata($transaction['user_id']);
 
-			// post
+		// first retrieve client data, either from cache or from API
+		require_once(PAYMILL_DIR.'lib/integration/client.inc.php');
+		$clientClass			= new paymill_client(
+									$user->data->user_email,
+									$user->data->user_login
+								);
+		
+		$client					= $clientClass->getCurrentClient();
 
-			if(!empty($_POST['x_invoice_num'])) {
-
-				$trans_id = $_POST['x_invoice_num']; //x_cust_id
-
-			}else {
-
-				// exit if invoice id(transaction ref id) not found.
-
-				die('Can\'t find invoice id' );
-
+		// client retrieved, now we are ready to process the payment
+		if($client['id'] !== false && strlen($client['id']) > 0){
+			require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
+			//die('payment start');
+			if(!isset($this->paymentClass)){
+				$this->paymentClass		= new paymill_payment($client['id']);
 			}
 
-			// treat invoice id as transaction reference:
+			// mapping
+			$durations = array(
+				'd'		=> 'DAY',
+				'w'		=> 'WEEK',
+				'm'		=> 'MONTH',
+				'y'		=> 'YEAR'
+			);
+			
+			// l = lifetime // one time purchase
+			// dr = daterange // one time purchase
+			
+			// test vars
+			/*var_dump($client['id']);
+			var_dump($this->paymentClass->getPaymentID());
+			var_dump(is_array($transaction));
+			var_dump($transaction['payment_type']);
+			var_dump(isset($durations[$transaction['duration_type']]));
+			die();*/
+			
+			$paymentID = $this->paymentClass->getPaymentID();
 
-			$_POST['x_custom'] = $_POST['x_invoice_num'];
+			// make subscription
+			if(
+				isset($client['id']) && strlen($client['id']) > 0 &&
+				isset($paymentID) && strlen($paymentID) > 0 &&
+				is_array($transaction) && count($transaction) > 0 &&
+				isset($transaction['payment_type']) && $transaction['payment_type'] == 'subscription_purchase' &&
+				isset($durations[$transaction['duration_type']]) && strlen($durations[$transaction['duration_type']]) > 0
+			){
+				$subscriptions = new paymill_subscriptions('magicmembers');
 
-			// pass post array to be processed:
+				// required vars
+				$amount			= (floatval($transaction['cost'])*100);
+				$currency		= $transaction['currency'];
+				
+				// set interval
+				$interval		= $transaction['duration'].' '.$durations[$transaction['duration_type']];
+				
+				// get trial time
+				// $now = time();
+				// $trial_end		= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($order->order_date)));
+				// $datediff		= $trial_end - $now;
+				// $trial_time		= ceil($datediff/(60*60*24));
+				
+				$trial_time		= false; // MGM does not support trials?!
+				
+				// md5 name
+				$mgm_sub_md5	= md5($amount.$currency.$interval.$trial_time);
+				
+				// get offer
+				$name			= 'mgm_'.$transaction['pack_id'].'_'.$mgm_sub_md5;
+				$offer			= $subscriptions->offerGetDetailByName($name);
+				$offer			= $offer[0];
+				
+				// check wether offer exists in paymill
+				if(count($offer) == 0){
+					// offer does not exist in paymill yet, create it
+					$params = array(
+						'amount'			=> $amount,
+						'currency'			=> $currency,
+						'interval'			=> $interval,
+						'name'				=> $name,
+						'trial_period_days'	=> $trial_time
+					);
+					$offer = $subscriptions->offerCreate($params);
+					
+					if(isset($offer['error']['messages'])){
+						foreach($offer['error']['messages'] as $field => $msg){
+							$woocommerce->add_error($field.': '.$msg);
+						}
+						return;
+					}
+				}
+				
+				// create user subscription
+				$user_sub = $subscriptions->create($client['id'], $offer['id'], $paymentID);
+				
+				if(isset($user_sub['error']) && strlen($user_sub['error']) > 0){
+					return __($user_sub['error'], 'paymill');
+				}else{
+					$query = 'INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, mgm_user_id, mgm_offer_id) VALUES ("'.$user_sub['id'].'", "'.$transaction['user_id'].'", "'.$transaction['pack_id'].'")';
+					$wpdb->query($query);
+				
+					// subscription successful
+						do_action('paymill_mgm_subscription_created', array(
+							'product_id'	=> $id,
+							'offer_id'		=> $offer['id'],
+							'offer_data'	=> $offer
+					));
+				}
+			}else{
+				die('ende');
+				if(!isset($client['id']) || strlen($client['id']) <= 0){
+					$error .= '<p>no client ID: '.$client['id'].'</p>';
+				}
+				if(!$paymentID){
+					$error .= '<p>no payment ID: '.$paymentID.'</p>';
+				}
+				if(!is_array($transaction) || count($transaction) <= 0){
+					$error .= '<p>no transaction: '.count($transaction).'</p>';
+				}
+				if(!isset($transaction['payment_type']) || $transaction['payment_type'] != 'subscription_purchase'){
+					$error .= '<p>no supported payment type: '.$transaction['payment_type'].'</p>';
+				}
+				if(!isset($durations[$transaction['duration_type']]) || strlen($durations[$transaction['duration_type']]) <= 0){
+					$error .= '<p>no duration type: '.$durations[$transaction['duration_type']].'</p>';
+				}
+			
+			
+				return '<p>payment initialization failed</p>'.$error;
+			}
+		}else{
+			return 'client creation failed';
+		}
+		
+		
+		// hook for pre process
+		do_action('mgm_notify_pre_process_'.$this->module, array('tran_id'=>$_POST['tran_id'],'custom'=>$transaction));
 
-			// 'arb_silent_post' is used as gateway method in this case
+		// check
+		switch($transaction['payment_type']){
 
-			$this->_process_response('arb_silent_post', $_POST);
+			// buypost
+			case 'post_purchase': 
+			case 'buypost':
+				$this->_buy_post(); //run the code to process a purchased post/page
+
+			break;
+
+			// subscription	
+			case 'subscription_purchase':						
+				$this->_buy_membership(); //run the code to process a new/extended membership
+
+			break;											
 
 		}
 
-		
-
-		// verify			
-
-		if ($this->_verify_callback()){	
-
-			// log data before validate
-
-			$tran_id = $this->_log_transaction();
-
-			// payment type
-
-			$payment_type = $this->_get_payment_type($_POST['x_custom']);
-
-			// custom
-
-			$custom = $this->_get_transaction_passthrough($_POST['x_custom']);
-
-			// hook for pre process
-
-			do_action('mgm_notify_pre_process_'.$this->module, array('tran_id'=>$tran_id,'custom'=>$custom));
-
-			// check			
-
-			switch($payment_type){
-
-				// buypost
-
-				case 'post_purchase': 
-
-				case 'buypost':
-
-					$this->_buy_post(); //run the code to process a purchased post/page
-
-				break;
-
-				// subscription	
-
-				case 'subscription':						
-
-					$this->_buy_membership(); //run the code to process a new/extended membership
-
-				break;											
-
-			}
-
-			// after process		
-
-			do_action('mgm_notify_post_process_'.$this->module, array('tran_id'=>$tran_id,'custom'=>$custom));
-
-		}		
+		// after process
+		do_action('mgm_notify_post_process_'.$this->module, array('tran_id'=>$_POST['tran_id'],'custom'=>$transaction));
 
 		// after process unverified		
-
-		do_action('mgm_notify_post_process_unverified_'.$this->module);	
-
+		do_action('mgm_notify_post_process_unverified_'.$this->module);
 		
-
-		// 200 OK to gateway, only external		
-
-		if( ! headers_sent() && ! $interal){
-
-			@header('HTTP/1.1 200 OK');
-
-			exit('OK');
-
-		}	
-
+		return true;
 	}
 
-	
-
 	// process cancel api hook 
-
 	function process_cancel(){
 
 		// redirect to cancel page
@@ -503,10 +926,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// unsubscribe process, proxy for unsubscribe
-
 	function process_unsubscribe() {				
 
 		// get user id
@@ -561,9 +981,8 @@ class mgm_paymill extends mgm_payment{
 
 
 
-			// cancel at authorize.net
-
-			$cancel_account = $this->cancel_recurring_subscription(null, $user_id, $subscr_id);						
+			// cancel at paymill
+			$cancel_account = $this->cancel_recurring_subscription(null, $user_id, $subscr_id, $member->pack_id);						
 
 		}	
 
@@ -597,12 +1016,11 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
-	// process credit_card, proxy for credit_card processing
-
+	// PAYMENT CALL - payment starts here
 	function process_credit_card(){			
 
+		die('creditcard');
+	
 		// read tran id
 
 		if(!$tran_id = $this->_read_transaction_id()){		
@@ -875,16 +1293,11 @@ class mgm_paymill extends mgm_payment{
 
 		// $this->process_return();			
 
-	}	
-
-	
+	}
 
 	// process html_redirect, proxy for form submit
-
 	//The credit card form will get submitted to the same function, then validate the card and if everything is clear
-
 	//() will be called internally
-
 	function process_html_redirect(){	
 
 		// read tran id
@@ -979,7 +1392,7 @@ class mgm_paymill extends mgm_payment{
 			paymill_shop_name = "magicmembers";
 			</script>';
 			
-			echo '<div id="payment" class="paymill_pay_button paymill_magicmembers"><form action="'. $this->_get_endpoint('html_redirect') .'" name="' . $this->code . '_form" method="post" id="' . $this->code . '_form" class="checkout">';
+			echo '<div id="payment" class="paymill_pay_button paymill_magicmembers"><form action="'. $this->_get_endpoint('return') .'" name="' . $this->code . '_form" method="post" id="' . $this->code . '_form" class="checkout">';
 			require(PAYMILL_DIR.'lib/tpl/checkout_form.php');
 			echo '
 			<input type="submit" id="place_order" value="'.__('Pay now', 'paymill').'"/>
@@ -999,10 +1412,7 @@ class mgm_paymill extends mgm_payment{
 
 	}	
 
-	
-
 	// subscribe button api hook
-
 	function get_button_subscribe($options=array()){	
 
 		$include_permalink = (isset($options['widget'])) ? false : true;
@@ -1032,10 +1442,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// buypost button api hook
-
 	function get_button_buypost($options=array(), $return = false) {
 
 		// get html
@@ -1071,10 +1478,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// unsubscribe button api hook
-
 	function get_button_unsubscribe($options=array()){	
 
 		// action
@@ -1111,48 +1515,7 @@ class mgm_paymill extends mgm_payment{
 
 	}	
 
-	
-
-	// dependency_check
-
-	function dependency_check(){
-
-		// default
-
-		$this->dependency = array();
-
-		// SIM dependency
-
-		/*****************************
-
-		if(!extension_loaded('mhash')){
-
-			$this->dependency[] = '<b class="mgm_module_dependency_high">MHASH PHP extension must be loaded for Paymill.</b>';
-
-		}
-
-		******************************/
-
-		if(!extension_loaded('SimpleXML')){
-
-			$this->dependency[] = '<b class="mgm_module_dependency_high">'.__('SimpleXML PHP extension must be loaded for Paymill ARB','mgm').'.</b>';
-
-		}
-
-		// transaction details api
-
-		$this->dependency[] = '<b class="mgm_module_dependency_medium">'.__('Transaction Details API in Paymill must be enabled for Rebill Status Query','mgm').'.</b>';
-
-		// error		
-
-		return (count($this->dependency)>0) ? true : false ;		
-
-	}
-
-	
-
 	// get module transaction info
-
 	function get_transaction_info($member, $date_format){		
 
 		// data
@@ -1195,8 +1558,6 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	/**
 
 	 * get gateway tracking fields for sync
@@ -1224,8 +1585,6 @@ class mgm_paymill extends mgm_payment{
 		return $html;				
 
 	}
-
-	
 
 	/**
 
@@ -1269,10 +1628,7 @@ class mgm_paymill extends mgm_payment{
 
 	// MODULE API COMMON PRIVATE HELPERS /////////////////////////////////////////////////////////////////	
 
-	
-
 	// get button data
-
 	function _get_button_data($pack, $tran_id=NULL) {
 
 		// system
@@ -1431,11 +1787,10 @@ class mgm_paymill extends mgm_payment{
 
 	}	
 
+	// buy post @todo  !!!
+	function _buy_post() {
 	
 
-	// buy post
-
-	function _buy_post() {
 
 		global $wpdb;
 
@@ -1742,11 +2097,34 @@ class mgm_paymill extends mgm_payment{
 		}
 
 	}
-
 	
+	function _get_alternate_transaction_id(){
 
-	// buy membership
+		// var
 
+		$alt_tran_id = '';
+
+		// post
+
+		if(isset($_POST['x_custom']) && !empty($_POST['x_custom'])){
+
+			$alt_tran_id = $_POST['x_custom'];
+
+		}elseif(isset($_GET['x_custom']) && !empty($_GET['x_custom'])){
+
+			$alt_tran_id = $_GET['x_custom'];
+
+		}elseif(isset($_POST['tran_id']) && !empty($_POST['tran_id'])){
+			$alt_tran_id = $_POST['tran_id'];
+		}		
+
+		// return 
+
+		return $alt_tran_id;
+
+	}
+
+	// buy membership @todo  !!!
 	function _buy_membership() {	
 
 		// system	
@@ -1759,8 +2137,6 @@ class mgm_paymill extends mgm_payment{
 
 		$dpne = bool_from_yn($system_obj->get_setting('disable_payment_notify_emails'));
 
-		
-
 		// passthrough
 
 		$alt_tran_id = $this->_get_alternate_transaction_id();
@@ -1768,9 +2144,60 @@ class mgm_paymill extends mgm_payment{
 				
 
 		// get passthrough, stop further process if fails to parse
-
-		$custom = $this->_get_transaction_passthrough($alt_tran_id);		
-
+		
+		/*
+		array(21) {
+  ["payment_type"]=>
+  string(21) "subscription_purchase"
+  ["cost"]=>
+  string(4) "5.00"
+  ["duration"]=>
+  string(1) "3"
+  ["duration_type"]=>
+  string(1) "m"
+  ["membership_type"]=>
+  string(6) "member"
+  ["pack_id"]=>
+  string(1) "3"
+  ["description"]=>
+  string(19) "Paid Member Account"
+  ["currency"]=>
+  string(3) "USD"
+  ["num_cycles"]=>
+  string(1) "0"
+  ["role"]=>
+  string(10) "subscriber"
+  ["modules"]=>
+  array(2) {
+    [0]=>
+    string(8) "mgm_free"
+    [2]=>
+    string(11) "mgm_paymill"
+  }
+  ["product"]=>
+  NULL
+  ["user_id"]=>
+  int(3)
+  ["subscription_option"]=>
+  string(7) "upgrade"
+  ["is_registration"]=>
+  string(1) "N"
+  ["is_another_membership_purchase"]=>
+  string(1) "N"
+  ["multiple_upgrade_prev_packid"]=>
+  string(0) ""
+  ["notify_user"]=>
+  bool(false)
+  ["client_ip"]=>
+  string(12) "91.50.72.122"
+  ["payment_email"]=>
+  int(0)
+  ["amount"]=>
+  string(4) "5.00"
+}
+*/
+		
+		$custom = $this->_get_transaction_passthrough($alt_tran_id);
 		// local var
 
 		extract($custom);
@@ -1949,11 +2376,17 @@ class mgm_paymill extends mgm_payment{
 
 		// response code
 
-		$response_code = $this->_get_response_code($this->response['response_status'], 'status');			
+		//$response_code = $this->_get_response_code($this->response['response_status'], 'status');			
 
 		// status
+		
+						// status
 
-		switch ($response_code) {
+				$new_status = MGM_STATUS_ACTIVE;
+
+				$member->status_str = __('Last payment was successful','mgm');	
+
+		/*switch ($response_code) {
 
 			case 'Approved':
 
@@ -2226,7 +2659,7 @@ class mgm_paymill extends mgm_payment{
 			break;
 
 		}
-
+*/
 		
 
 		// old status
@@ -2401,10 +2834,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// cancel membership
-
 	function _cancel_membership($user_id, $redirect = false){
 
 		// system	
@@ -2656,9 +3086,9 @@ class mgm_paymill extends mgm_payment{
 	 * @return boolean
 
 	 */	
-
 	function cancel_recurring_subscription($trans_ref = null, $user_id = null, $subscr_id = null, $pack_id = null) {
-
+		global $wpdb;
+	
 		//if coming form process return after a subscription payment
 
 		if(!empty($trans_ref)) {
@@ -2746,90 +3176,27 @@ class mgm_paymill extends mgm_payment{
 				return false;
 
 		}
-
 		
+		//only for subscription_purchase
+		if($pack_id && $user_id){
 
-		//only for subscription_purchase		
-
-		if($subscr_id) {				
-
-			// set xml content											
-
-			$post_data ='<ARBCancelSubscriptionRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
-
-							<merchantAuthentication>
-
-								<name>'.$this->setting['loginid'].'</name>
-
-								<transactionKey>'.$this->setting['tran_key'].'</transactionKey>
-
-							</merchantAuthentication>
-
-							<refId>'.$user_id.'</refId>
-
-							<subscriptionId>'.$subscr_id.'</subscriptionId>
-
-						</ARBCancelSubscriptionRequest>';
-
-			// end  point
-
-			$endpoint = $this->_get_endpoint($this->status.'_arb') ; // test_arb, live_aim etc.	
-
-			// headers
-
-			$http_headers = array('Content-Type' => 'text/xml');		
-
-			// create curl post				
-
-			$http_response = mgm_remote_post($endpoint, $post_data, array('headers'=>$http_headers,'timeout'=>30,'sslverify'=>false));
-
-			// parse response and store into a different array:
-
-			// do not use $this->response here as this will overwrite previous theprevious values in one scenario		
-
-			$arb_response = $this->_process_response('arb', $http_response, false);	
-
-			// check		
-
-			if(isset($arb_response['response_status']) && $arb_response['response_status'] == 1){	
-
+			$userInfo			= get_userdata($user_id);
+			$subscriptions		= new paymill_subscriptions('magicmembers');
+			
+			$query				= 'SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="'.$user_id.'" AND mgm_offer_id="'.$pack_id.'"';
+			$client_cache		= $wpdb->get_results($query,ARRAY_A);
+			
+			if(isset($client_cache[0]['paymill_sub_id']) && strlen($client_cache[0]['paymill_sub_id']) > 0){
+				$subscriptions->remove($client_cache[0]['paymill_sub_id']);
+				
+				$query				= 'DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="'.$user_id.'" AND mgm_offer_id="'.$pack_id.'"';
+				$wpdb->query($query);
+				
 				return true;
-
+			}else{
+				return false;
 			}
-
-		}elseif(is_null($subscr_id) || $subscr_id === 0) {			
-
-			//send email to admin if subscription Id is absent		
-
-			$system_obj = mgm_get_class('system');			
-
-			$dge = bool_from_yn($system_obj->get_setting('disable_gateway_emails'));
-
-			//send email only if setting enabled
-
-			if( ! $dge ) {
-
-				// blog
-
-				$blogname = get_option('blogname');
-
-				// user
-
-				$user = get_userdata($user_id);
-
-				// notify admin
-
-				mgm_notify_admin_membership_cancellation_manual_removal_required($blogname, $user, $member);				
-
-			}
-
-			// return			
-
-			return true;
-
-		}		
-
-		// return
+		}
 
 		return false;
 
@@ -3117,10 +3484,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// get transaction
-
 	function get_transaction_details($member){
 
 		// array
@@ -3185,10 +3549,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-			
-
 	// default setting
-
 	function _default_setting(){
 
 		// authorize.net specific
@@ -3215,10 +3576,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// log transaction
-
 	function _log_transaction(){
 
 		// check
@@ -3275,10 +3633,7 @@ class mgm_paymill extends mgm_payment{
 
 	}
 
-	
-
 	// get tran id
-
 	function _get_transaction_id(){
 
 		// validate
@@ -3296,1003 +3651,5 @@ class mgm_paymill extends mgm_payment{
 		return 0;	
 
 	}
-
-
-	// set 
-
-	function _set_address_fields($user, &$data){
-
-		// mappings
-
-		$mappings= array('first_name'=>'x_first_name','last_name'=>'x_last_name','address'=>'x_address',
-
-		                 'city'=>'x_city','state'=>'x_state','zip'=>'x_zip','country'=>'x_country',
-
-						 'phone'=>'x_phone');
-
-						 
-
-		// parent
-
-		parent::_set_address_fields($user, $data, $mappings, array($this,'_address_fields_filter'));				 
-
-	}
-
-	
-
-	// filter
-
-	function _address_fields_filter($name, $value){
-
-		// reuse parent filter unless needed
-
-		switch($name){
-
-			default:
-
-				 $value = parent::_address_field_filter($name, $value);		
-
-			break;
-
-		}	
-
-		// return 
-
-		return $value;
-
-	}
-
-	
-
-	// verify callback 
-
-	function _verify_callback(){	
-
-		// keep it simple		
-
-		return (isset($_POST['x_custom']) && !empty($_POST['x_custom'])) ? true : false;
-
-	}
-
-	
-
-	// custom pt var
-
-	function _get_alternate_transaction_id(){
-
-		// var
-
-		$alt_tran_id = '';
-
-		// post
-
-		if(isset($_POST['x_custom']) && !empty($_POST['x_custom'])){
-
-			$alt_tran_id = $_POST['x_custom'];
-
-		}elseif(isset($_GET['x_custom']) && !empty($_GET['x_custom'])){
-
-			$alt_tran_id = $_GET['x_custom'];
-
-		}		
-
-		// return 
-
-		return $alt_tran_id;
-
-	}
-
-
-
-	// MODULE SPECIFIC PRIVATE HELPERS /////////////////////////////////////////////////////////////////
-
-	
-
-	// filter postdata
-
-	function _filter_postdata($gateway_method, $post_data, $return='string'){	
-
-		// card holder name
-
-		list($ch_first_name, $ch_last_name) = explode(' ', $post_data['mgm_card_holder_name']);	
-
-		// gateway method
-
-		switch($gateway_method){
-
-			case 'arb':
-
-				// request xml
-
-				$content =
-
-						"<?xml version=\"1.0\" encoding=\"utf-8\"?>" .
-
-							"<ARBCreateSubscriptionRequest xmlns=\"AnetApi/xml/v1/schema/AnetApiSchema.xsd\">" .
-
-								"<merchantAuthentication>".
-
-									"<name>" . $post_data['x_login'] . "</name>".
-
-									"<transactionKey>" . $post_data['x_tran_key'] . "</transactionKey>".
-
-								"</merchantAuthentication>".
-
-								"<refId>" . $post_data['x_cust_id'] . "</refId>".
-
-								"<subscription>".
-
-									"<name>" . substr($post_data['x_description'],0,50) . "</name>". // iss#165, name overflow		
-
-									"<paymentSchedule>".
-
-										"<interval>".
-
-											"<length>" . $post_data['x_interval_length'] . "</length>".
-
-											"<unit>" . $post_data['x_interval_unit'] . "</unit>".
-
-										"</interval>".	
-
-										"<startDate>" . $post_data['x_start_date'] . "</startDate>".
-
-										"<totalOccurrences>" . $post_data['x_total_occurrences'] . "</totalOccurrences>";
-
-				$content .= (isset($post_data['x_trial_occurrences'])) ? "<trialOccurrences>" . $post_data['x_trial_occurrences'] . "</trialOccurrences>": "";
-
-				$content .=		
-
-									"</paymentSchedule>".		
-
-									"<amount>" . $post_data['x_amount'] . "</amount>";	
-
-				$content .= (isset($post_data['x_trial_occurrences'])) ? "<trialAmount>" . $post_data['x_trial_amount'] . "</trialAmount>" : "";
-
-				$content .=	
-
-									"<payment>".
-
-										"<creditCard>".
-
-											"<cardNumber>" . $post_data['mgm_card_number'] . "</cardNumber>".
-
-											"<expirationDate>" . $post_data['mgm_card_expiry_year'].'-'.$post_data['mgm_card_expiry_month'] . "</expirationDate>".
-
-										"</creditCard>".
-
-									"</payment>";
-
-				//include transaction id as invoice number(to be processed in Silent Post)					
-
-				$content .= 		"<order>".
-
-									"<invoiceNumber>". $post_data['x_custom'] . "</invoiceNumber>".	
-
-									"<description>". substr($post_data['x_description'],0,254) . "</description>".
-
-									"</order>";
-
-								
-
-				$content .=			"<customer>".
-
-										"<id>" . $post_data['x_cust_id'] . "</id>".
-
-										"<email>" . $post_data['x_email'] . "</email>";										
-
-										
-
-				$content .=	(isset($post_data['x_phone'])) ? "<phoneNumber>" .$this->_format_phone($post_data['x_phone']) ."</phoneNumber>" : "";
-
-										
-
-				$content .=			"</customer>".
-
-									"<billTo>".
-
-										"<firstName>". (($post_data['x_first_name']) ? $post_data['x_first_name'] : $ch_first_name) . "</firstName>".
-
-										"<lastName>" . (($post_data['x_last_name']) ? $post_data['x_last_name'] : $ch_last_name) . "</lastName>";
-
-										
-
-										// address					
-
-										if(isset($post_data['x_address'])){									
-
-											$content .=	"<address>" . substr($post_data['x_address'], 0, 60) . "</address>";	
-
-										}
-
-										// city
-
-										if(isset($post_data['x_city'])){	
-
-											$content .="<city>" . substr($post_data['x_city'], 0, 40) . "</city>";
-
-										}	
-
-										// city
-
-										if(isset($post_data['x_state']) && strlen($post_data['x_state'])==2){	
-
-											$content .="<state>" . substr($post_data['x_state'], 0, 2) . "</state>";
-
-										}
-
-										// city
-
-										if(isset($post_data['x_zip'])){	
-
-											$content .="<zip>" . substr($post_data['x_zip'], 0, 20) . "</zip>";
-
-										}
-
-										// city
-
-										if(isset($post_data['x_country'])){	
-
-											$content .="<country>" . substr($post_data['x_country'],0, 60) . "</country>";
-
-										}
-
-										
-
-				 $content .=		"</billTo>".
-
-								"</subscription>".
-
-							"</ARBCreateSubscriptionRequest>";	
-
-				// return
-
-				return $content;			
-
-			break;
-
-			case 'aim':
-
-				// set delim
-
-				$this->delim_char = '|';
-
-				// custom set
-
-				$aim_fields = array('x_version'        => '3.1',
-
-									'x_type'           => 'AUTH_CAPTURE',
-
-									'x_invoice_num'    => $post_data['x_invoice_num'],
-
-									'x_delim_data'     => 'TRUE',
-
-									'x_delim_char'     => $this->delim_char,
-
-									'x_method'         => 'CC',	
-
-									'x_relay_response' => 'FALSE',
-
-									'x_email_customer' => 'TRUE',	
-
-									'x_card_num'	   => $post_data['mgm_card_number'],
-
-									'x_card_code'      => $post_data['mgm_card_code'],
-
-									'x_exp_date'	   => $post_data['mgm_card_expiry_month'].'-'.$post_data['mgm_card_expiry_year'] // MM-YYYY	
-
-							);
-
-				// capture some as sent
-
-				$fields_sent = array('x_login', 'x_tran_key', 'x_description', 'x_first_name', 'x_last_name', 'x_email', 
-
-									 'x_cust_id', 'x_amount', 'x_address', 'x_city', 'x_state', 'x_zip', 'x_country');	
-
-				                
-
-				// first last name
-
-				if($post_data['x_first_name'] == '' || $post_data['x_first_name']==$post_data['x_last_name']) {
-
-					$post_data['x_first_name'] = $ch_first_name;
-
-				}
-
-				// last name
-
-				if($post_data['x_last_name'] == '' || $post_data['x_first_name']==$post_data['x_last_name']) {
-
-					$post_data['x_last_name'] = $ch_last_name;
-
-				}
-
-				// set
-
-				foreach($fields_sent as $field){
-
-					// take only when set
-
-					if(isset($post_data[$field]) && !empty($post_data[$field])){
-
-						$aim_fields[$field] = $post_data[$field];
-
-					}
-
-				}
-
-				// format
-
-				if(isset($aim_fields['x_phone'])){
-
-					// format phone
-
-					$phone = $this->_format_phone($aim_fields['x_phone']);
-
-					// check
-
-					if($phone){					
-
-						$aim_fields['x_phone'] = $phone;
-
-					}else{
-
-						unset($aim_fields['x_phone']);
-
-					}	
-
-				}
-
-				// send filtered
-
-				return ($return == 'string') ? mgm_http_build_query($aim_fields) : $aim_fields;			
-
-			break;
-
-		}		
-
-	}
-
-	
-
-	// process response
-
-	//Process response has been modified to process Silent Post Url for ARB
-
-	function _process_response($gateway_method, $content, $set_response = true){		
-
-		// init
-
-		if($set_response) $this->response = array();
-
-		//temp response data	
-
-		$temp_resp = array();
-
-		// gateway method
-
-		switch($gateway_method){
-
-			case 'arb':
-
-				$xml = @simplexml_load_string($content);				
-
-				if($xml){
-
-					$resultCode                   = (string)$xml->messages->resultCode;
-
-					$temp_resp['response_status'] = (strtolower($resultCode) == 'ok') ? 1 : 3; // 1 success, 3 error
-
-					$temp_resp['message_code']    = (string)$xml->messages->message->code ;	
-
-					$temp_resp['message_text']    = (string)$xml->messages->message->text ;
-
-					$temp_resp['subscription_id'] = (string)$xml->subscriptionId;						
-
-				}else{
-
-					$temp_resp['response_status'] = 3;
-
-					$temp_resp['message_text']    = 'Error parsing XML';					
-
-				}				
-
-			break;
-
-			case 'aim':
-
-				// split
-
-				$tmp_data = explode($this->delim_char, $content);
-
-				// error
-
-				if(count($tmp_data)==0){
-
-					$temp_resp['response_status'] = 3;
-
-					$temp_resp['message_text']    = strip_tags($tmp_data[0]);
-
-				}else{
-
-					// pos params
-
-					$fields = array(0=>"x_response_code", 1=>"x_response_subcode", 2=>"x_response_reason_code", 3=>"x_response_reason_text",
-
-		                            4=>"x_authorization_code", 5=>"x_avs_response", 6=>"x_transaction_id", 9=>"x_amount", 10=>"x_method",
-
-								    11=>"x_transaction_type", 37=>"x_md5_hash", 38=>"x_card_code_response");
-
-					// data
-
-					$data = array();
-
-					// store
-
-					foreach($fields as $index=>$field){
-
-						// check
-
-						if(isset($tmp_data[$index])){
-
-							$data[$field] = urldecode($tmp_data[$index]);			
-
-						}
-
-					}					
-
-					// set 
-
-					$temp_resp['response_status']  = (isset($data['x_response_code'])) ? $data['x_response_code'] : '';	
-
-					$temp_resp['message_code']     = (isset($data['x_response_reason_code'])) ? $data['x_response_reason_code'] : '';
-
-					$temp_resp['message_text']     = (isset($data['x_response_reason_text'])) ? $data['x_response_reason_text'] : '';
-
-					$temp_resp['transaction_id']   = (isset($data['x_transaction_id'])) ?  $data['x_transaction_id'] : '';
-
-					$temp_resp['transaction_type'] = (isset($data['x_transaction_type'])) ? $data['x_transaction_type'] : '';				
-
-				}	
-
-			break;
-
-			// check response in each iterations of ARB 
-
-			case 'arb_silent_post':
-
-				// Note that the content is an array here:								
-
-				// error
-
-				if(count($content)==0){					
-
-					$temp_resp['response_status'] = 3;
-
-					$temp_resp['message_text']    = __('Error occured', 'mgm');
-
-				}else{					
-
-					// pos params
-
-					$fields = array(0=>"x_response_code", 1=>"x_response_subcode", 2=>"x_response_reason_code", 3=>"x_response_reason_text",
-
-		                            4=>"x_invoice_num", 5=>"x_trans_id", 6=>"x_transaction_id", 9=>"x_amount", 10 => "x_type", 11 => "x_subscription_id");
-
-					// store					
-
-					foreach($fields as $index=>$field){						
-
-						${$field} = urldecode($content[$field]);									
-
-					}					
-
-					// set 
-
-					$temp_resp['response_status']  = $x_response_code;	
-
-					$temp_resp['message_code']     = $x_response_reason_code;
-
-					$temp_resp['message_text']     = $x_response_reason_text;
-
-					$temp_resp['transaction_id']   = $x_transaction_id;
-
-					$temp_resp['transaction_type'] = $x_type;				
-
-					$temp_resp['invoice_id'] 	   = $x_invoice_num;				
-
-					$temp_resp['subscription_id']  = $x_subscription_id;				
-
-				}
-
-			break;	
-
-			//bypass trial cost if 0
-
-			case 'bypass':				
-
-				$temp_resp['response_status']  = 1;						
-
-				$temp_resp['transaction_type'] = 'trial_bypass';
-
-			break;
-
-			case 'transaction_details':
-
-				$xml = @simplexml_load_string($content);				
-
-				if($xml){
-
-					// transaction
-
-					$temp_resp['transId']            = (string)$xml->transaction->transId;	
-
-					// batch
-
-					if(isset($xml->transaction->batch->batchId)){
-
-						$temp_resp['batchId']      = (string)$xml->transaction->batch->batchId;	
-
-					}						
-
-					// tran date is update in rebill
-
-					if(isset($xml->transaction->batch->settlementTimeLocal)){
-
-						$temp_resp['transDate']      = (string)$xml->transaction->batch->settlementTimeUTC;
-
-					}else{
-
-						$temp_resp['transDate']      = (string)$xml->transaction->submitTimeUTC;		
-
-					}			
-
-				}else{
-
-					$temp_resp['response_status']    = 3;
-
-					$temp_resp['message_text']       = 'Error parsing XML';					
-
-				}				
-
-			break;
-
-			case 'subscription_status':
-
-				$xml = @simplexml_load_string($content);				
-
-				if($xml){
-
-					$resultCode                       = (string)$xml->messages->resultCode;
-
-					$temp_resp['response_status']     = (strtolower($resultCode) == 'ok') ? 1 : 3; // 1 success, 3 error
-
-					// subscription_status
-
-					$temp_resp['subscription_status'] = (string)$xml->status;
-
-					$temp_resp['message_code']        = (string)$xml->messages->message->code ;	
-
-					$temp_resp['message_text']        = (string)$xml->messages->message->text ;
-
-				}else{
-
-					$temp_resp['response_status']     = 3;
-
-					$temp_resp['message_text']        = 'Error parsing XML';					
-
-				}
-
-			break;
-
-		}		
-
-		
-
-		// return
-
-		if(!$set_response) return $temp_resp;
-
-			
-
-		// set
-
-		$this->response = $temp_resp;		
-
-	}	
-
-	
-
-	// get code
-
-	function _get_response_code($key, $type='status'){
-
-		// status
-
-		$response_code['status']  = array(1 => "Approved", 2 => "Declined", 3 => "Error", 4 => "Held for Review");	
-
-		// avs: address verification
-
-		$response_code['avs']     = 
-
-			array("A" => "Address (Street) matches, ZIP does not",
-
-				  "B" => "Address information not provided for AVS check",
-
-				  "E" => "AVS error",
-
-				  "G" => "Non-U.S. Card Issuing Bank",
-
-				  "N" => "No Match on Address (Street) or ZIP",
-
-				  "P" => "AVS not applicable for this transaction",
-
-				  "R" => "Retry System unavailable or timed out",
-
-				  "S" => "Service not supported by issuer",
-
-				  "U" => "Address information is unavailable",
-
-				  "W" => "Nine digit ZIP matches, Address (Street) does not",
-
-				  "X" => "Address (Street) and nine digit ZIP match",
-
-				  "Y" => "Address (Street) and five digit ZIP match",
-
-				  "Z" => "Five digit ZIP matches, Address (Street) does not)");
-
-										 
-
-		// cvv: card verification						 
-
-		$response_code['cvv2'] = array("M" => "Match", "N" => "No Match", "P" => "Not Processed", "S" => "Should have been present", 
-
-								       "U" => "Issuer unable to process request");									   		
-
-		// check
-
-		if(isset($response_code[$type][$key])){
-
-			return $response_code[$type][$key];
-
-		}				   
-
-		// default
-
-		return 'error';
-
-	}
-
-	
-
-	// _format_phone
-
-	function _format_phone($phone){
-
-		// 111- 111-1111 /  (111) 111-1111.
-
-		// clean any non digizs
-
-		$phone = preg_replace("/[^0-9]+/i",'',$phone);
-
-		// init 
-
-		if(strlen($phone) != 10){
-
-			return '';
-
-		}else{
-
-			return sprintf('(%d) %d-%d', substr($phone,0,3), substr($phone,3,3),substr($phone,6,4));
-
-		}
-
-	}
-
-	
-
-	// fetch
-
-	function _fetch_merchant_txn_id(&$member){
-
-
-
-		if (!isset($member->payment_info->txn_id) || empty($member->payment_info->txn_id)) {
-
-			// check from transaction table
-
-			$paymill_transaction_id = mgm_get_transaction_option($member->transaction_id, 'paymill_transaction_id');
-
-
-
-			if( (int)$paymill_transaction_id > 0 ){
-
-			// set	
-
-				$member->payment_info->txn_id = $paymill_transaction_id;
-
-				// log
-
-				// mgm_log('fetch from transaction option: '. $member->payment_info->txn_id, __FUNCTION__);
-
-				// save
-
-				return $member->save();
-
-			}else{
-
-				// // fetch from batch, @todo test before running
-
-				$paymill_transaction_id = mgm_fetch_paymill_missing_txn_id($this, $member->id);
-
-				
-
-				if( (int)$paymill_transaction_id > 0 ){
-
-					// set
-
-				 	$member->payment_info->txn_id = $paymill_transaction_id;
-
-				 	// log
-
-					// mgm_log('fetch from refetch using batch api: '. $member->payment_info->txn_id, __FUNCTION__);
-
-				 	// save
-
-				 	return $member->save();
-
-				}
-
-			}
-
-		}
-
-	}
-
-
-
-	// get settled batches
-
-	function get_settled_batches($date_from, $date_to=NULL){
-
-		// ISO 8601 date
-
-		if( is_null($date_to) ){
-
-			$date_from_iso = date('c', strtotime('-1 DAY', strtotime($date_from)));// makes 1 day range
-
-			$date_to_iso   = date('c', strtotime('+1 DAY', strtotime($date_from)));// makes 1 day range
-
-		}else{
-
-			$date_from_iso = date('c', strtotime($date_from));
-
-			$date_to_iso   = date('c', strtotime($date_to));
-
-		}
-
-		// xml request
-
-		$post_data = '
-
-		<getSettledBatchListRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
-
-		    <merchantAuthentication>
-
-		        <name>'.$this->setting['loginid'].'</name>
-
-		        <transactionKey>'.$this->setting['tran_key'].'</transactionKey>
-
-		    </merchantAuthentication>
-
-		    <includeStatistics>1</includeStatistics>
-
-		    <firstSettlementDate>'.$date_from_iso.'</firstSettlementDate>
-
-		    <lastSettlementDate>'.$date_to_iso.'</lastSettlementDate>
-
-		</getSettledBatchListRequest>';
-
-
-
-		// end  point
-
-		$endpoint = $this->_get_endpoint($this->status . '_arb') ; // test_arb, live_aim etc.	
-
-
-
-		// headers
-
-		$http_headers = array('Content-Type' => 'text/xml');	
-
-		
-
-		// create curl post				
-
-		$http_response = mgm_remote_post($endpoint, $post_data, array('headers'=>$http_headers,'timeout'=>30,'sslverify'=>false));
-
-	
-
-		// init
-
-		$batches = array();
-
-		// object
-
-		if($xml_o = @simplexml_load_string($http_response)){
-
-			// log
-
-			// mgm_log('batches response:' . mgm_pr($xml_o, true), __FUNCTION__);
-
-			// check
-
-			if( isset($xml_o->batchList->batch) ){				
-
-				// array of batches
-
-				if( count($xml_o->batchList->batch) > 0 ){
-
-					// loop
-
-					foreach ($xml_o->batchList->batch as $batch) {
-
-						$batches[] = (string)$batch->batchId;
-
-					}
-
-				}elseif(isset($xml_o->batchList->batch->batchId)){
-
-				// one batch	
-
-					$batches[] = (string)$xml_o->batchList->batch->batchId;
-
-				}				
-
-			}	
-
-			// log
-
-			// mgm_log('batches: '. mgm_pr($batches, true), __FUNCTION__);		
-
-		}
-
-		// return
-
-		return $batches;
-
-	}
-
-
-
-	// get batch transactions
-
-	function get_batch_transactions($batches){	
-
-		// xml request 
-
-		$post_data_s ='
-
-		<getTransactionListRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
-
-		    <merchantAuthentication>
-
-		        <name>'.$this->setting['loginid'].'</name>
-
-		        <transactionKey>'.$this->setting['tran_key'].'</transactionKey>
-
-		    </merchantAuthentication>
-
-		    <batchId>{batch_id}</batchId>
-
-		</getTransactionListRequest>';
-
-
-
-		// end  point
-
-		$endpoint = $this->_get_endpoint($this->status . '_arb') ; // test_arb, live_aim etc.	
-
-
-
-		// headers
-
-		$http_headers = array('Content-Type' => 'text/xml');	
-
-				
-
-		// transactions
-
-		$transactions = array();
-
-		// loop
-
-		foreach($batches as $batchId){
-
-			// id replace
-
-			$post_data = str_replace('{batch_id}', $batchId, $post_data_s);
-
-			// create curl post				
-
-			$http_response = mgm_remote_post($endpoint, $post_data, array('headers'=>$http_headers,'timeout'=>30,'sslverify'=>false));
-
-
-
-			// object
-
-			if($xml_o = @simplexml_load_string($http_response)){
-
-				// log
-
-				// mgm_log('batch transactions response:' . mgm_pr($xml_o, true), __FUNCTION__);
-
-				// check
-
-				if( isset($xml_o->transactions->transaction) ){
-
-					// array
-
-					if( count($xml_o->transactions->transaction) ){
-
-						// loop
-
-						foreach ($xml_o->transactions->transaction as $transaction) {
-
-							// set
-
-							$transactions[(string)$transaction->invoiceNumber] = (string)$transaction->transId;
-
-						}
-
-					}elseif( isset($xml_o->transactions->transaction->transId) ){
-
-						// set
-
-						$transactions[(string)$xml_o->transactions->transaction->invoiceNumber] = (string)$xml_o->transactions->transaction->transId;
-
-					}					
-
-				}
-
-				// log
-
-				// mgm_log('batch transactions: '. mgm_pr($transactions, true), __FUNCTION__);
-
-			}
-
-		}
-
-		
-
-		// return 
-
-		return $transactions;
-
-	}
-
-
-
-	function get_settled_transactions($date_from, $date_to=NULL){
-
-		// init
-
-		$transactions = array();
-
-		// fetch batches
-
-		if( $batches = $this->get_settled_batches($date_from, $date_to) ){
-
-			// transactions
-
-			$transactions = $this->get_batch_transactions($batches);
-
-		}
-
-		// return
-
-		return $transactions;
-
-	}
-
 }
 ?>
