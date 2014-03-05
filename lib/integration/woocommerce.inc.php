@@ -286,27 +286,23 @@
 							));
 						}
 
+						$order->payment_complete();
+
+						// Reduce stock levels
+						$order->reduce_order_stock();
+
+						// Remove cart
+						$woocommerce->cart->empty_cart();
+
+						// Return thankyou redirect
+						return array(
+							'result' => 'success',
+							'redirect' => $this->get_return_url( $order )
+						);
+						
+					}else{
+						$woocommerce->add_error(__($client['error'], 'paymill'));
 					}
-					
-					//$woocommerce->add_error('ende');
-					//return;
-					
-					// Mark as on-hold (we're awaiting the cheque)
-					//$order->update_status('on-hold', __( 'Awaiting cheque payment', 'woocommerce' ));
-					
-					$order->payment_complete();
-
-					// Reduce stock levels
-					$order->reduce_order_stock();
-
-					// Remove cart
-					$woocommerce->cart->empty_cart();
-
-					// Return thankyou redirect
-					return array(
-						'result' => 'success',
-						'redirect' => $this->get_return_url( $order )
-					);
 				}
 				
 				public function validate_fields(){

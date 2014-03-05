@@ -19,8 +19,8 @@ class paymill_client{
 		
 		// get client cache
 		$query					= 'SELECT * FROM '.$wpdb->prefix.'paymill_clients WHERE paymill_client_email="'.$client_email.'"';
-
 		$client_cache			= $wpdb->get_results($query,ARRAY_A);
+		$client					= false;
 
 		if(count($client_cache) > 0 && ($client_cache[0]['paymill_client_email'] != $client_email || $client_cache[0]['paymill_client_description'] != $client_desc)){
 			// update client in paymill
@@ -45,7 +45,11 @@ class paymill_client{
 		// try loading the client
 		}elseif(count($client_cache) > 0){
 			$client				= $clientsObject->getOne($client_cache[0]['paymill_client_id']);
-		}else{
+			if($client['http_status_code'] == 404){
+				$client = false;
+			}
+		}
+		if($client == false){
 			$client			 	= $clientsObject->create(array(
 				'email'			=> $client_email, 
 				'description'	=> $client_desc

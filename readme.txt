@@ -3,8 +3,8 @@ Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.5
-Tested up to: 3.7.1
-Stable tag: 1.5.1
+Tested up to: 3.8
+Stable tag: 1.5.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -96,15 +96,21 @@ Yes, all of them have 1 parameter as array with several vars. You may use var_du
 
 The Pay Button is made for customizing and you should make intensive use of CSS to cutomize it. Examples:
 
-'// hide country selection
-.paymill_shipping{
-    display:none;
-}'
+// hide country selection
 
-'// hide company name
-.paymill_address div:nth-child(2){
+.paymill_shipping{
+
     display:none;
-}'
+
+}
+
+// hide company name
+
+.paymill_address div:nth-child(2){
+
+    display:none;
+
+}
 
 Additionally, you may want to replace the default order form with your own. Create a
 custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymill/lib/tpl/pay_button.php')
@@ -119,6 +125,10 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 6. Pay Button Shipping Settings
 
 == Changelog ==
+
+= 1.5.2 =
+
+* Common: "Fatal error: Call to a member function payment_complete() on a non-object" fixed
 
 = 1.5.1 =
 
@@ -209,6 +219,10 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.5.2 =
+
+* Common: "Fatal error: Call to a member function payment_complete() on a non-object" fixed
 
 = 1.5.1 =
 
