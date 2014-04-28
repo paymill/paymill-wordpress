@@ -26,7 +26,7 @@
 			</div>
 			<?php } ?>
 			<input type="hidden" name="paymill_offer[<?php echo $id; ?>]" value="<?php echo $offers[$product['offer']]['id']; ?>" />
-			<div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo ($offers[$product['offer']]['amount']/100); ?></div><div class="paymill_price"><?php echo number_format(($offers[$product['offer']]['amount']/100),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><div class="paymmill_subscription"> /
+			<div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo ($offers[$product['offer']]['amount']/100); ?></div><div class="paymill_price"><?php echo number_format(($offers[$product['offer']]['amount']/100),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><div class="paymill_subscription"> /
 			<?php
 				$interval = explode(' ',$offers[$product['offer']]['interval']);
 				if($interval[0] == 1){
