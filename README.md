@@ -49,8 +49,10 @@ There is a manual included in English and German as PDF, but in short:
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Register a free account on https://www.paymill.com/
 4. Insert TEST Api Keys for testing purposes in plugin settings
-5. If you are happy how the plugin works, enable your live account on https://www.paymill.com/ - this could take a couple of days.
-6. After your paymill account has been activated for LIVE mode, switch your account to live and replace your TEST API Keys with your LIVE API Keys in plugin settings.
+5. Integrate the widget somewhere in your wordpress. Without one of the supported shops, the easiest method is the pay button, available in the admin interface at _Design » Widgets_, or [as a shortcode](FAQ.md) for individual pages.
+6. Play around in test mode.
+7. If you are happy how the plugin works, enable your live account on https://www.paymill.com/ - this could take a couple of days.
+8. After your paymill account has been activated for LIVE mode, switch your account to live and replace your TEST API Keys with your LIVE API Keys in plugin settings.
 
 actions
 -------
