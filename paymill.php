@@ -4,9 +4,12 @@ Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
 <<<<<<< HEAD
+<<<<<<< HEAD
 Version: 1.6.0
 Author: Matthias Reuter info@straightvisions.com
 =======
+=======
+>>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
 Version: 1.5.2
 Author: Matthias Reuter / Elbnetz
 >>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
@@ -130,4 +133,7 @@ Author URI: http://elbnetz.com
 	add_action('wp_enqueue_scripts', 'paymill_scripts');
 
 ?>
+<<<<<<< HEAD
+>>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
+=======
 >>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
