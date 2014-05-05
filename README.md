@@ -16,7 +16,7 @@ German users can use ELV payment, too.
 Plugin Description
 ==================
 
-This plugin currently allows:
+Supported Shops:
 
 * Payment Gateway for WooCommerce - incl. subscription support
 * Payment Gateway for ShopPlugin
@@ -36,6 +36,14 @@ Subscriptions supported and Mobile SDKs for iOS and Android available.
 Accept payments in up to 100 currencies.
 All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported.
 Available in 40 countries across Europe so far.
+
+
+Team
+====
+* Officially supported by [PAYMILL](https://paymill.com)
+* Attended by [Elbnetz](http://elbnetz.com)
+* Developed and maintenanced by [straightvisions](http://straightvisions.com)
+
 
 Installation
 ============

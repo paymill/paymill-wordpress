@@ -12,14 +12,21 @@ With PAYMILL you are able to provide credit card based payments for your custome
 
 == Description ==
 
-This plugin currently allows:
+= Supported Shops: =
 
 * Payment Gateway for WooCommerce - incl. subscription support
 * Payment Gateway for ShopPlugin
 * Payment Gateway for Magic Members - incl. subscription support
 * Pay Button - incl. subscription support
 
+= Service Description =
+
 PAYMILL offers the fastest and easiest way to accept payments online. The innovative payment solution enables online businesses and services to integrate payments into their websites within a very short time. The developer-friendly REST API is flexibly integrable. Customize the check-out process the way you want or use the PAYMILL PayButton which allows an even easier integration. Super-fast account activation within a few days only. Top-notch customer support. Subscriptions supported and Mobile SDKs for iOS and Android available. Accept payments in up to 100 currencies. All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported. Available in 40 countries across Europe so far.
+
+= Team =
+* Officially supported by <a href="https://paymill.com">PAYMILL</a>
+* Attended by <a href="http://elbnetz.com">Elbnetz</a>
+* Developed and maintenanced by <a href="http://straightvisions.com">straightvisions</a>
 
 == Installation ==
 
