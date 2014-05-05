@@ -4,6 +4,18 @@
  * Paymill payment module
 
  */
+ 
+if(!function_exists('paymill_mgm_errorHandling')){
+	function paymill_mgm_errorHandling($errors){
+		global $woocommerce;
+		
+		foreach($errors as $error){
+			$output		.= '<div class="paymill_error">'.$error.'</div>';
+		}
+
+		return $output;
+	}
+}
 
 class mgm_paymill extends mgm_payment{
 
@@ -14,9 +26,10 @@ class mgm_paymill extends mgm_payment{
 		$this->mgm_paymill();
 
 	}
-
 	// construct
 	function mgm_paymill(){
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+		$GLOBALS['paymill_loader']->paymill_errors->setFunction('paymill_mgm_errorHandling');
 
 		// parent
 		parent::__construct();
@@ -34,7 +47,7 @@ class mgm_paymill extends mgm_payment{
 		$this->logo = plugins_url('',PAYMILL_DIR.'paymill.php').'/lib/img/logo.png';
 
 		// description
-		$this->description = __('PAYMILL - Online payments made easy', 'mgm');
+		$this->description = __('PAYMILL - Online payments made easy', 'paymill');
 
 		// supported buttons types
 	 	$this->supported_buttons = array('subscription', 'buypost');
@@ -52,7 +65,7 @@ class mgm_paymill extends mgm_payment{
 		$this->hosted_payment = 'Y';// credit card process onsite
 
 		// if supports rebill status check
-		$this->supports_rebill_status_check = 'Y';
+		$this->supports_rebill_status_check = 'N';
 
 		// default settings
 		$this->_default_setting();
@@ -65,7 +78,6 @@ class mgm_paymill extends mgm_payment{
 	}		
 
 	// MODULE API COMMON HOOKABLE CALLBACKS  //////////////////////////////////////////////////////////////////
-
 	// settings
 	function settings(){
 
@@ -81,7 +93,6 @@ class mgm_paymill extends mgm_payment{
 		$this->load->template('settings', array('data'=>$data));
 
 	}	
-
 	// settings_box
 	function settings_box(){
 
@@ -96,7 +107,6 @@ class mgm_paymill extends mgm_payment{
 		// load template view
 		return $this->load->template('settings_box', array('data'=>$data), true);
 	}
-
 	// update
 	function settings_update(){
 
@@ -231,7 +241,6 @@ class mgm_paymill extends mgm_payment{
 		}		
 
 	}
-
 	// return process api hook, link back to site after payment is made
 	function process_return(){
 		if(!isset($this->response)) $this->response = array();
@@ -265,17 +274,128 @@ class mgm_paymill extends mgm_payment{
 			mgm_redirect(add_query_arg(array('status'=>'error','errors'=>urlencode($this->process_payment())), $this->_get_thankyou_url()));
 		}
 	}
+	private function getCurrentClient(){
+		require_once(PAYMILL_DIR.'lib/integration/client.inc.php');
+		// create or get client
+		$this->clientClass	= new paymill_client($this->user->data->user_email,$this->user->data->user_login);
+		return $this->clientClass->getCurrentClient();
+	}
+	private function processSubscriptions(){
+		global $wpdb;
+		
+		// product is a subscription?
+		if(isset($this->order['payment_type']) && $this->order['payment_type'] == 'subscription_purchase' &&
+		isset($this->durations[$this->order['duration_type']]) && strlen($this->durations[$this->order['duration_type']]) > 0){
+			// required vars
+			$trial_time		= false; // MGM does not support trials?!
+			
+			// set interval
+			$interval		= $this->order['duration'].' '.$this->durations[$this->order['duration_type']];
+			
+			// md5 name
+			$mgm_sub_md5	= md5($this->total.$this->order['currency'].$interval.$trial_time);
 
+			// get offer
+			$name			= 'mgm_'.$this->order['pack_id'].'_'.$mgm_sub_md5;
+			$offer			= $this->subscriptions->offerGetDetailByName($name);
+
+			// check wether offer exists in paymill
+			if($offer === false){
+				// offer does not exist in paymill yet, create it
+				$params = array(
+					'amount'			=> $this->total,
+					'currency'			=> $this->order['currency'],
+					'interval'			=> $interval,
+					'name'				=> $name,
+					'trial_period_days'	=> intval($trial_time)
+				);
+				$offer = $this->subscriptions->offerCreate($params);
+				if($GLOBALS['paymill_loader']->paymill_errors->status()){
+					return false;
+				}
+			}
+
+			// create user subscription
+			$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID());
+			if($GLOBALS['paymill_loader']->paymill_errors->status()){
+				return false;
+			}else{
+				$wpdb->query($wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, mgm_user_id, mgm_offer_id) VALUES (%s, %s, %s)',
+				array(
+					$user_sub,
+					get_current_user_id(),
+					$this->order['pack_id']
+				)));
+			
+				// subscription successful
+					do_action('paymill_mgm_subscription_created', array(
+						'product_id'	=> $this->order['pack_id'],
+						'offer_id'		=> $offer['id'],
+						'offer_data'	=> $offer
+				));
+				
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}
+	private function processProducts(){
+		global $wpdb;
+		if($this->total > 0 && isset($this->order['payment_type']) && $this->order['payment_type'] == 'post_purchase' || (isset($this->order['num_cycles']) && $this->order['num_cycles'] == 1)){
+			// make transaction
+			$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->total)); // e.g. "4200" for 42.00 EUR
+			$GLOBALS['paymill_loader']->request_transaction->setCurrency($this->order['currency']);
+			if($this->paymentClass->getPreauthID() != false){
+				$GLOBALS['paymill_loader']->request_transaction->setPreauthorization($this->paymentClass->getPreauthID());
+			}else{
+				$GLOBALS['paymill_loader']->request_transaction->setPayment($this->paymentClass->getPaymentID());
+			}
+			$GLOBALS['paymill_loader']->request_transaction->setClient($this->client->getId());
+			$GLOBALS['paymill_loader']->request_transaction->setDescription($this->order_desc);
+			$GLOBALS['paymill_loader']->request->setSource(serialize($GLOBALS['paymill_source']));
+			
+			$GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_transaction);
+
+			$response = $GLOBALS['paymill_loader']->request->getLastResponse();
+			
+			if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
+				$GLOBALS['paymill_loader']->paymill_errors->setError(__($response['body']['data']['response_code'], 'paymill'));
+				if($GLOBALS['paymill_loader']->paymill_errors->status()){
+					$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+				}
+				return false;
+			}
+
+			// save data to transaction table
+			$wpdb->query($wpdb->prepare('
+			INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, mgm_order_id, paymill_transaction_time, paymill_transaction_data)
+			VALUES (%s,%s,%s,%d,%d,%s)',
+			array(
+				$response['body']['data']['id'],
+				$response['body']['data']['payment']['id'],
+				$response['body']['data']['client']['id'],
+				$this->order_id,
+				time(),
+				serialize($_POST)
+			)));
+			
+			do_action('paymill_mgm_products_paid', array(
+				'total'			=> $this->total,
+				'currency'		=> $this->order['currency'],
+				'client'		=> $response['body']['data']['client']['id']
+			));
+			
+			return true;
+		}else{ // total is zero, so just return true
+			return true;
+		}
+	}
 	// make payment
+	// @ PAYMILL
 	function process_payment(){
 		global $wpdb;
 
-		//ini_set('display_errors',1); 
-		//error_reporting(E_ALL); 
-
-		//var_dump($_POST);
-		// $_POST[''] array(3) { ["tran_id"]=> string(2) "29" ["submit_from"]=> string(21) "process_html_redirect" ["paymillToken"]=> string(24) "tok_8ae4ec7be24098a4ed77" }
-		
 		//record POST/GET data
 		do_action('mgm_print_module_data', $this->module, __FUNCTION__ );			
 
@@ -342,7 +462,6 @@ class mgm_paymill extends mgm_payment{
 		
 		*/
 		$transaction		= $this->_get_transaction_passthrough($_POST['tran_id']);
-
 		/*
 			var_dump(get_userdata($transaction['user_id']));
 		
@@ -752,171 +871,84 @@ class mgm_paymill extends mgm_payment{
 			}
 		
 		*/
-		$user				= get_userdata($transaction['user_id']);
+		$this->user				= get_userdata($transaction['user_id']);
 
-		// first retrieve client data, either from cache or from API
-		require_once(PAYMILL_DIR.'lib/integration/client.inc.php');
-		$clientClass			= new paymill_client(
-									$user->data->user_email,
-									$user->data->user_login
-								);
-		
-		$client					= $clientClass->getCurrentClient();
-
+		$this->client					= $this->getCurrentClient();
 		// client retrieved, now we are ready to process the payment
-		if($client['id'] !== false && strlen($client['id']) > 0){
-			require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
-			//die('payment start');
-			if(!isset($this->paymentClass)){
-				$this->paymentClass		= new paymill_payment($client['id']);
-			}
-
-			// mapping
-			$durations = array(
-				'd'		=> 'DAY',
-				'w'		=> 'WEEK',
-				'm'		=> 'MONTH',
-				'y'		=> 'YEAR'
-			);
+		if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
+			$this->order_id				= $_POST['tran_id'];
+			$this->order_desc			= __('Order #','paymill').$this->order_id;
+			$this->order				= $transaction;
+			$this->total_complete		=
+			$this->total				= round((floatval($transaction['cost'])*100));
 			
+			// mapping
+			$this->durations			= array(
+											'd'		=> 'DAY',
+											'w'		=> 'WEEK',
+											'm'		=> 'MONTH',
+											'y'		=> 'YEAR'
+										);
 			// l = lifetime // one time purchase
 			// dr = daterange // one time purchase
-			
-			// test vars
-			/*var_dump($client['id']);
-			var_dump($this->paymentClass->getPaymentID());
-			var_dump(is_array($transaction));
-			var_dump($transaction['payment_type']);
-			var_dump(isset($durations[$transaction['duration_type']]));
-			die();*/
-			
-			$paymentID = $this->paymentClass->getPaymentID();
 
-			// make subscription
-			if(
-				isset($client['id']) && strlen($client['id']) > 0 &&
-				isset($paymentID) && strlen($paymentID) > 0 &&
-				is_array($transaction) && count($transaction) > 0 &&
-				isset($transaction['payment_type']) && $transaction['payment_type'] == 'subscription_purchase' &&
-				isset($durations[$transaction['duration_type']]) && strlen($durations[$transaction['duration_type']]) > 0
-			){
-				$subscriptions = new paymill_subscriptions('magicmembers');
+			// load subscription class
+			$this->subscriptions		= new paymill_subscriptions('mgm');
+			$this->offers				= $this->subscriptions->offerGetList();
+	
+			// get the totals for pre authorization
+			// $this->getTotals();
 
-				// required vars
-				$amount			= (floatval($transaction['cost'])*100);
-				$currency		= $transaction['currency'];
+			// create payment object and preauthorization
+			require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
+			$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,$this->order['currency']); // create payment object, as it should be used for next processing instead of the token.
+			if($GLOBALS['paymill_loader']->paymill_errors->status()){
+				$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+				return false;
+			}
+			
+			// process subscriptions & products
+			if($this->processSubscriptions() && $this->processProducts()){
+				// success
+				// hook for pre process
+				$this->response['response_status']	= 'Approved';
 				
-				// set interval
-				$interval		= $transaction['duration'].' '.$durations[$transaction['duration_type']];
-				
-				// get trial time
-				// $now = time();
-				// $trial_end		= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($order->order_date)));
-				// $datediff		= $trial_end - $now;
-				// $trial_time		= ceil($datediff/(60*60*24));
-				
-				$trial_time		= false; // MGM does not support trials?!
-				
-				// md5 name
-				$mgm_sub_md5	= md5($amount.$currency.$interval.$trial_time);
-				
-				// get offer
-				$name			= 'mgm_'.$transaction['pack_id'].'_'.$mgm_sub_md5;
-				$offer			= $subscriptions->offerGetDetailByName($name);
-				$offer			= $offer[0];
-				
-				// check wether offer exists in paymill
-				if(count($offer) == 0){
-					// offer does not exist in paymill yet, create it
-					$params = array(
-						'amount'			=> $amount,
-						'currency'			=> $currency,
-						'interval'			=> $interval,
-						'name'				=> $name,
-						'trial_period_days'	=> $trial_time
-					);
-					$offer = $subscriptions->offerCreate($params);
-					
-					if(isset($offer['error']['messages'])){
-						foreach($offer['error']['messages'] as $field => $msg){
-							$woocommerce->add_error($field.': '.$msg);
-						}
-						return;
-					}
+				do_action('mgm_notify_pre_process_'.$this->module, array('tran_id'=>$_POST['tran_id'],'custom'=>$transaction));
+
+				// check
+				switch($transaction['payment_type']){
+					// buypost
+					case 'post_purchase': 
+					case 'buypost':
+						$this->_buy_post(); //run the code to process a purchased post/page
+
+					break;
+
+					// subscription	
+					case 'subscription_purchase':						
+						$this->_buy_membership(); //run the code to process a new/extended membership
+
+					break;											
 				}
+
+				// after process
+				do_action('mgm_notify_post_process_'.$this->module, array('tran_id'=>$_POST['tran_id'],'custom'=>$transaction));
+
+				// after process unverified		
+				do_action('mgm_notify_post_process_unverified_'.$this->module);
 				
-				// create user subscription
-				$user_sub = $subscriptions->create($client['id'], $offer['id'], $paymentID);
-				
-				if(isset($user_sub['error']) && strlen($user_sub['error']) > 0){
-					return __($user_sub['error'], 'paymill');
-				}else{
-					$query = 'INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, mgm_user_id, mgm_offer_id) VALUES ("'.$user_sub['id'].'", "'.$transaction['user_id'].'", "'.$transaction['pack_id'].'")';
-					$wpdb->query($query);
-				
-					// subscription successful
-						do_action('paymill_mgm_subscription_created', array(
-							'product_id'	=> $id,
-							'offer_id'		=> $offer['id'],
-							'offer_data'	=> $offer
-					));
-				}
+				return true;
 			}else{
-				die('ende');
-				if(!isset($client['id']) || strlen($client['id']) <= 0){
-					$error .= '<p>no client ID: '.$client['id'].'</p>';
+				if($GLOBALS['paymill_loader']->paymill_errors->status()){
+					$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 				}
-				if(!$paymentID){
-					$error .= '<p>no payment ID: '.$paymentID.'</p>';
-				}
-				if(!is_array($transaction) || count($transaction) <= 0){
-					$error .= '<p>no transaction: '.count($transaction).'</p>';
-				}
-				if(!isset($transaction['payment_type']) || $transaction['payment_type'] != 'subscription_purchase'){
-					$error .= '<p>no supported payment type: '.$transaction['payment_type'].'</p>';
-				}
-				if(!isset($durations[$transaction['duration_type']]) || strlen($durations[$transaction['duration_type']]) <= 0){
-					$error .= '<p>no duration type: '.$durations[$transaction['duration_type']].'</p>';
-				}
-			
-			
-				return '<p>payment initialization failed</p>'.$error;
+				return false;
 			}
 		}else{
-			return 'client creation failed';
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__('There was an issue with adding you as client for the payment process.', 'paymill'));
+			return false;
 		}
-		
-		
-		// hook for pre process
-		do_action('mgm_notify_pre_process_'.$this->module, array('tran_id'=>$_POST['tran_id'],'custom'=>$transaction));
-
-		// check
-		switch($transaction['payment_type']){
-
-			// buypost
-			case 'post_purchase': 
-			case 'buypost':
-				$this->_buy_post(); //run the code to process a purchased post/page
-
-			break;
-
-			// subscription	
-			case 'subscription_purchase':						
-				$this->_buy_membership(); //run the code to process a new/extended membership
-
-			break;											
-
-		}
-
-		// after process
-		do_action('mgm_notify_post_process_'.$this->module, array('tran_id'=>$_POST['tran_id'],'custom'=>$transaction));
-
-		// after process unverified		
-		do_action('mgm_notify_post_process_unverified_'.$this->module);
-		
-		return true;
 	}
-
 	// process cancel api hook 
 	function process_cancel(){
 
@@ -925,7 +957,6 @@ class mgm_paymill extends mgm_payment{
 		mgm_redirect(add_query_arg(array('status'=>'cancel'), $this->_get_thankyou_url()));
 
 	}
-
 	// unsubscribe process, proxy for unsubscribe
 	function process_unsubscribe() {				
 
@@ -1015,7 +1046,6 @@ class mgm_paymill extends mgm_payment{
 		mgm_redirect(mgm_get_custom_url('membership_details', false,array('unsubscribe_errors'=>urlencode($message))));		
 
 	}
-
 	// PAYMENT CALL - payment starts here
 	function process_credit_card(){			
 
@@ -1294,10 +1324,10 @@ class mgm_paymill extends mgm_payment{
 		// $this->process_return();			
 
 	}
-
 	// process html_redirect, proxy for form submit
 	//The credit card form will get submitted to the same function, then validate the card and if everything is clear
 	//() will be called internally
+	// @ PAYMILL
 	function process_html_redirect(){	
 
 		// read tran id
@@ -1378,6 +1408,8 @@ class mgm_paymill extends mgm_payment{
 		ob_start();
 
 		if(!$GLOBALS['paymill_active']){
+			paymill_load_frontend_scripts(); // load frontend scripts
+		
 			// settings
 			$GLOBALS['paymill_active'] = true;
 			$country = 'DE';
@@ -1410,9 +1442,9 @@ class mgm_paymill extends mgm_payment{
 
 		return $html;					
 
-	}	
-
+	}
 	// subscribe button api hook
+	// @ PAYMILL
 	function get_button_subscribe($options=array()){	
 
 		$include_permalink = (isset($options['widget'])) ? false : true;
@@ -1441,8 +1473,8 @@ class mgm_paymill extends mgm_payment{
 		return $html;
 
 	}
-
 	// buypost button api hook
+	// @ PAYMILL
 	function get_button_buypost($options=array(), $return = false) {
 
 		// get html
@@ -1477,7 +1509,6 @@ class mgm_paymill extends mgm_payment{
 		}
 
 	}
-
 	// unsubscribe button api hook
 	function get_button_unsubscribe($options=array()){	
 
@@ -1514,7 +1545,6 @@ class mgm_paymill extends mgm_payment{
 		return $html;		
 
 	}	
-
 	// get module transaction info
 	function get_transaction_info($member, $date_format){		
 
@@ -1542,7 +1572,7 @@ class mgm_paymill extends mgm_payment{
 
 		// info
 
-		$info = sprintf('<b>%s:</b><br>%s: %s<br>%s: %s', __('AUTHORIZE.NET INFO','mgm'), __('SUBSCRIPTION ID','mgm'), $subscription_id, 
+		$info = sprintf('<b>%s:</b><br>%s: %s<br>%s: %s', __('Paymill INFO','paymill'), __('SUBSCRIPTION ID','mgm'), $subscription_id, 
 
 						__('TRANSACTION ID','mgm'), $transaction_id);					
 
@@ -1557,7 +1587,6 @@ class mgm_paymill extends mgm_payment{
 		return $transaction_info;
 
 	}
-
 	/**
 
 	 * get gateway tracking fields for sync
@@ -1567,7 +1596,6 @@ class mgm_paymill extends mgm_payment{
 	 * @todo process another subscription
 
 	 */
-
 	function get_tracking_fields_html(){
 
 		// html
@@ -1585,7 +1613,6 @@ class mgm_paymill extends mgm_payment{
 		return $html;				
 
 	}
-
 	/**
 
       * update and sync gateway tracking fields
@@ -1601,7 +1628,6 @@ class mgm_paymill extends mgm_payment{
 	  * @uses _save_tracking_fields()
 
 	  */
-
 	 function update_tracking_fields($post_data, &$member){
 
 	 	// validate
@@ -1623,11 +1649,7 @@ class mgm_paymill extends mgm_payment{
 	 	return $this->_save_tracking_fields($fields, $member, $data); 			
 
 	 }
-
-						
-
 	// MODULE API COMMON PRIVATE HELPERS /////////////////////////////////////////////////////////////////	
-
 	// get button data
 	function _get_button_data($pack, $tran_id=NULL) {
 
@@ -1786,12 +1808,8 @@ class mgm_paymill extends mgm_payment{
 		return $data;
 
 	}	
-
 	// buy post @todo  !!!
 	function _buy_post() {
-	
-
-
 		global $wpdb;
 
 		// system
@@ -1842,7 +1860,7 @@ class mgm_paymill extends mgm_payment{
 
 		// response code
 
-		$response_code = $this->_get_response_code($this->response['response_status'], 'status');
+		$response_code = $this->response['response_status'];
 
 		// process on response code
 
@@ -2097,7 +2115,6 @@ class mgm_paymill extends mgm_payment{
 		}
 
 	}
-	
 	function _get_alternate_transaction_id(){
 
 		// var
@@ -2123,7 +2140,6 @@ class mgm_paymill extends mgm_payment{
 		return $alt_tran_id;
 
 	}
-
 	// buy membership @todo  !!!
 	function _buy_membership() {	
 
@@ -2833,7 +2849,6 @@ class mgm_paymill extends mgm_payment{
 		}
 
 	}
-
 	// cancel membership
 	function _cancel_membership($user_id, $redirect = false){
 
@@ -3068,9 +3083,6 @@ class mgm_paymill extends mgm_payment{
 		}
 
 	}
-
-	
-
 	/**
 
 	 * Cancel Recurring Subscription
@@ -3179,15 +3191,13 @@ class mgm_paymill extends mgm_payment{
 		
 		//only for subscription_purchase
 		if($pack_id && $user_id){
-
 			$userInfo			= get_userdata($user_id);
-			$subscriptions		= new paymill_subscriptions('magicmembers');
-			
+
 			$query				= 'SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="'.$user_id.'" AND mgm_offer_id="'.$pack_id.'"';
 			$client_cache		= $wpdb->get_results($query,ARRAY_A);
 			
 			if(isset($client_cache[0]['paymill_sub_id']) && strlen($client_cache[0]['paymill_sub_id']) > 0){
-				$subscriptions->remove($client_cache[0]['paymill_sub_id']);
+				$this->subscriptions->remove($client_cache[0]['paymill_sub_id']);
 				
 				$query				= 'DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="'.$user_id.'" AND mgm_offer_id="'.$pack_id.'"';
 				$wpdb->query($query);
@@ -3201,9 +3211,6 @@ class mgm_paymill extends mgm_payment{
 		return false;
 
 	}
-
-
-
 	/**
 
 	 * Specifically check recurring status of each rebill for an expiry date
@@ -3217,7 +3224,6 @@ class mgm_paymill extends mgm_payment{
 	 * @return boolean
 
 	 */
-
 	function query_rebill_status($user_id, $member=NULL) {	
 
 		// check	
@@ -3483,7 +3489,6 @@ class mgm_paymill extends mgm_payment{
 		return false;//default to false to skip normal modules
 
 	}
-
 	// get transaction
 	function get_transaction_details($member){
 
@@ -3548,7 +3553,6 @@ class mgm_paymill extends mgm_payment{
 		return $response;	
 
 	}
-
 	// default setting
 	function _default_setting(){
 
@@ -3575,7 +3579,6 @@ class mgm_paymill extends mgm_payment{
 		$this->_setup_callback_urls();	
 
 	}
-
 	// log transaction
 	function _log_transaction(){
 
@@ -3632,7 +3635,6 @@ class mgm_paymill extends mgm_payment{
 		return false;	
 
 	}
-
 	// get tran id
 	function _get_transaction_id(){
 

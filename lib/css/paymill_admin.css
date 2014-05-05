@@ -1,0 +1,70 @@
+.tooltip, .tooltip-2 {
+	width: 256px;
+	min-width: 256px;
+	position: absolute; 
+	bottom: 0; 
+	left: 50%;
+	display: none;
+	font-weight: normal;
+	font-size: 12px; 
+	line-height: 1.5em; 
+	color: #fff;
+	z-index: 50;
+	margin-bottom:12px;
+}
+.tooltip .text {
+	padding: 5px 15px 35px 15px; 
+	background: url(../img/tooltip.png) no-repeat 0 100%;
+}
+.tooltip .top {
+	height: 10px; 
+	background: url(../img/tooltip.png) no-repeat 0 0;
+}
+
+
+.paymill_settings_section_pay_button_products td > *{
+	max-width:98%;
+}
+
+/* hide quantity */
+.paymill_settings_section_pay_button_products td:nth-child(3){
+	max-width:100px;
+}
+
+/* delivery time */
+.paymill_settings_section_pay_button_products td:nth-child(4){
+	max-width:100px;
+}
+
+/* VAT */
+.paymill_settings_section_pay_button_products td:nth-child(5){
+	max-width:60px;
+}
+
+/* Price */
+.paymill_settings_section_pay_button_products td:nth-child(7){
+	max-width:100px;
+}
+
+.paymill_settings > div{
+	margin-top:10px;
+}
+.paymill_settings div .title{
+	font-weight:bold;
+}
+
+.paymill_settings .products_name, .paymill_settings .flat_shipping_name{
+	font-weight:bold;
+	text-align:center;
+}
+.paymill_settings .products_name:after, .paymill_settings .flat_shipping_name:after{
+	content:'*';
+}
+.payments_display{
+	overflow:hidden;
+}
+.payments_display:after{
+	content:'';
+	display:block;
+	clear:both;
+}

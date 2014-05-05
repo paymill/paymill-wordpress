@@ -1,76 +1,366 @@
 <?php
-	/*
-	
-	PAYMILL Payment Class
-	
-	*/
-	add_action( 'plugins_loaded', 'init_paymill_gateway_class' );
-	
-	function add_paymill_gateway_class( $methods ) {
-		$methods[] = 'WC_Gateway_Paymill_Gateway'; 
-		return $methods;
+	// PAYMILL Payment Class
+	if(!function_exists('paymill_woocommerce_errorHandling')){
+		function paymill_woocommerce_errorHandling($errors){
+			global $woocommerce;
+			
+			foreach($errors as $error){
+				$output		.= '<div class="paymill_error">'.$error.'</div>';
+			}
+
+			$woocommerce->add_error($output);
+		}
 	}
 
-	add_filter( 'woocommerce_payment_gateways', 'add_paymill_gateway_class' );
+	// HOOKED FUNCTIONS FROM PAYMILL WEBHOOKS
+	function paymill_webhooks(){
+		global $wpdb;
+		
+		// is there a webhook from Paymill?
+		if(class_exists('WC_Subscriptions_Manager')){
+		
+			// grab data from webhook
+			$body = @file_get_contents('php://input');
+			$event_json = json_decode($body, true);
+			
+			// retrieve sub ID
+			if(isset($event_json['event']['event_resource']['id']) && strlen($event_json['event']['event_resource']['id']) > 0){
+				$paymill_sub_id			= $event_json['event']['event_resource']['id'];
+			}elseif(isset($event_json['event']['event_resource']['subscription']['id']) && strlen($event_json['event']['event_resource']['subscription']['id']) > 0){
+				$paymill_sub_id			= $event_json['event']['event_resource']['subscription']['id'];
+			}
+			
+			error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+			error_log(date(DATE_RFC822).' - Webhook '.$event_json['event']['event_type'].' (Resource-ID: '.$paymill_sub_id.') triggered - start processing'."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+			
+			/* output example:
+				array(1) {
+				  ["event"]=>
+				  array(4) {
+					["event_type"]=>
+					string(20) "subscription.deleted"
+					["event_resource"]=>
+					array(13) {
+					  ["id"]=>
+					  string(24) "sub_b71adbf5....."
+					  ["offer"]=>
+					  array(10) {
+						["id"]=>
+						string(26) "offer_8083a5b....."
+						["name"]=>
+						string(39) "woo_91_73da6....."
+						["amount"]=>
+						int(100)
+						["currency"]=>
+						string(3) "EUR"
+						["interval"]=>
+						string(5) "1 DAY"
+						["trial_period_days"]=>
+						int(0)
+						["created_at"]=>
+						int(1389547028)
+						["updated_at"]=>
+						int(1389547028)
+						["subscription_count"]=>
+						array(2) {
+						  ["active"]=>
+						  string(1) "1"
+						  ["inactive"]=>
+						  string(1) "1"
+						}
+						["app_id"]=>
+						NULL
+					  }
+					  ["livemode"]=>
+					  bool(false)
+					  ["cancel_at_period_end"]=>
+					  bool(false)
+					  ["trial_start"]=>
+					  NULL
+					  ["trial_end"]=>
+					  NULL
+					  ["next_capture_at"]=>
+					  int(1389836717)
+					  ["created_at"]=>
+					  int(1389663382)
+					  ["updated_at"]=>
+					  int(1389750317)
+					  ["canceled_at"]=>
+					  NULL
+					  ["app_id"]=>
+					  NULL
+					  ["payment"]=>
+					  array(12) {
+						["id"]=>
+						string(28) "pay_4e3759f....."
+						["type"]=>
+						string(10) "creditcard"
+						["client"]=>
+						string(27) "client_dbe164....."
+						["card_type"]=>
+						string(4) "visa"
+						["country"]=>
+						NULL
+						["expire_month"]=>
+						string(2) "12"
+						["expire_year"]=>
+						string(4) "2020"
+						["card_holder"]=>
+						string(13) "dfgdfgdfgdfgd"
+						["last4"]=>
+						string(4) "1111"
+						["created_at"]=>
+						int(1389663369)
+						["updated_at"]=>
+						int(1389663380)
+						["app_id"]=>
+						NULL
+					  }
+					  ["client"]=>
+					  array(8) {
+						["id"]=>
+						string(27) "client_dbe164....."
+						["email"]=>
+						string(22) "matthias@pc-intern.com"
+						["description"]=>
+						string(15) "Matthias Reuter"
+						["created_at"]=>
+						int(1389547027)
+						["updated_at"]=>
+						int(1389547027)
+						["app_id"]=>
+						NULL
+						["payment"]=>
+						array(2) {
+						  [0]=>
+						  array(12) {
+							["id"]=>
+							string(28) "pay_1a5ff8....."
+							["type"]=>
+							string(10) "creditcard"
+							["client"]=>
+							string(27) "client_dbe16....."
+							["card_type"]=>
+							string(4) "visa"
+							["country"]=>
+							NULL
+							["expire_month"]=>
+							string(2) "12"
+							["expire_year"]=>
+							string(4) "2020"
+							["card_holder"]=>
+							string(10) "dfgdfgdfgd"
+							["last4"]=>
+							string(4) "1111"
+							["created_at"]=>
+							int(1389547027)
+							["updated_at"]=>
+							int(1389547028)
+							["app_id"]=>
+							NULL
+						  }
+						  [1]=>
+						  array(12) {
+							["id"]=>
+							string(28) "pay_4e375....."
+							["type"]=>
+							string(10) "creditcard"
+							["client"]=>
+							string(27) "client_dbe164....."
+							["card_type"]=>
+							string(4) "visa"
+							["country"]=>
+							NULL
+							["expire_month"]=>
+							string(2) "12"
+							["expire_year"]=>
+							string(4) "2020"
+							["card_holder"]=>
+							string(13) "dfgdfgdfgdfgd"
+							["last4"]=>
+							string(4) "1111"
+							["created_at"]=>
+							int(1389663369)
+							["updated_at"]=>
+							int(1389663380)
+							["app_id"]=>
+							NULL
+						  }
+						}
+						["subscription"]=>
+						array(2) {
+						  [0]=>
+						  string(24) "sub_fcc4....."
+						  [1]=>
+						  string(24) "sub_b71a....."
+						}
+					  }
+					}
+					["created_at"]=>
+					int(1389816435)
+					["app_id"]=>
+					NULL
+				  }
+				}
+				
+			*/
+			//error_log(var_export($event_json,true)."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+			
+			// get subscription info, if available
+			if(isset($paymill_sub_id) && strlen($paymill_sub_id) > 0){
+				
+				$sql = $wpdb->prepare('SELECT * FROM '.$wpdb->prefix.'paymill_subscriptions WHERE paymill_sub_id=%s',
+				array(
+					$paymill_sub_id
+				));
+				
+				$sub_cache			= $wpdb->get_results($sql,ARRAY_A);
+				$sub_cache			= $sub_cache[0];
+				
+				/* output example:
+				SELECT * FROM wp_paymill_subscriptions WHERE paymill_sub_id="sub_b71adbf5e097bbe5ba80"
+				*/
+				error_log("\n\n".$sql."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+				
+				/* output example:
+				
+				1
+				
+				30
+				
+				*/
+				//error_log($sub_cache['woo_user_id']."\n\n".$sub_cache['woo_offer_id']."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+				
+				$subscription           = WC_Subscriptions_Manager::get_subscription($sub_cache['woo_offer_id']);
+				
+				// update subscriptions when webhook is triggered
+				if(isset($sub_cache['woo_offer_id']) && strlen($sub_cache['woo_offer_id']) > 0){
+					// subscription successfully created
+					if($event_json['event']['event_type'] == 'subscription.created'){
+						
+					}
+					// tell WooCommerce when payment for subscription is successfully processed
+					if($event_json['event']['event_type'] == 'subscription.succeeded'){
+						/* example data WC_Subscriptions_Manager::get_subscription:
+							array(15) {
+							  ["order_id"]=>
+							  string(3) "201"
+							  ["product_id"]=>
+							  string(2) "91"
+							  ["variation_id"]=>
+							  string(0) ""
+							  ["status"]=>
+							  string(6) "active"
+							  ["period"]=>
+							  string(3) "day"
+							  ["interval"]=>
+							  string(1) "1"
+							  ["length"]=>
+							  string(2) "12"
+							  ["start_date"]=>
+							  string(19) "2014-01-12 17:17:10"
+							  ["expiry_date"]=>
+							  string(19) "2014-01-24 17:17:10"
+							  ["end_date"]=>
+							  string(1) "0"
+							  ["trial_expiry_date"]=>
+							  string(1) "0"
+							  ["failed_payments"]=>
+							  string(1) "0"
+							  ["completed_payments"]=>
+							  array(1) {
+								[0]=>
+								string(19) "2014-01-12 17:17:10"
+							  }
+							  ["suspension_count"]=>
+							  string(1) "0"
+							  ["last_payment_date"]=>
+							  string(19) "2014-01-12 17:17:10"
+							}
+						*/
+						error_log(var_export($subscription,true)."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+						
+						if(count($subscription['completed_payments']) >= 1){
+							WC_Subscriptions_Manager::process_subscription_payments_on_order($subscription['order_id'], $subscription['product_id']);
+						}else{
+							WC_Subscriptions_Manager::activate_subscriptions_for_order($subscription['order_id']);
+							$order				= new WC_Order($subscription['order_id']);
+							$order->payment_complete();
+						}
+					}
+					// cancel subscription, as it was deleted through Paymill dashboard
+					if($event_json['event']['event_type'] == 'subscription.deleted'){
+
+						$sql = $wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',
+						array(
+							$sub_cache['woo_user_id'],
+							$sub_cache['woo_offer_id']
+						));
+						$wpdb->query($sql);
+						
+						error_log("\n\n".$sql."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+						
+						//WC_Subscriptions_Manager::cancel_subscriptions_for_order( $order );
+						WC_Subscriptions_Manager::cancel_subscription($sub_cache['woo_user_id'], $sub_cache['woo_offer_id']);
+					}
+					// tell WC that payment failure occured
+					if($event_json['event']['event_type'] == 'subscription.failed'){
+						WC_Subscriptions_Manager::process_subscription_payment_failure_on_order($subscription['order_id'], $subscription['product_id']);
+					}
+				}
+			}
+			error_log(date(DATE_RFC822).' - Webhook '.$event_json['event']['event_type'].' finished - end processing'."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+			error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+		}
+	}
+	add_action('woocommerce_api_wc_gateway_paymill_gateway', 'paymill_webhooks');
 	
-	add_action( 'cancelled_subscription_paymill','woo_cancelled_subscription_paymill', 10, 2 );
-	// add_action( 'updated_users_subscriptions','woo_updated_subscription_paymill', 10, 2 );
+	add_action('cancelled_subscription_paymill','woo_cancelled_subscription_paymill', 10, 2);
+	//add_action( 'updated_users_subscriptions','woo_updated_subscription_paymill', 10, 2 );
 	//add_action( 'subscription_put_on-hold_paymill','woo_subscription_put_on_hold_paymill', 10, 2 );
 	//add_action( 'reactivated_subscription_paymill','woo_reactivated_subscription_paymill', 10, 2 );
-
 	function woo_cancelled_subscription_paymill($user,$subscription_key){
 		global $wpdb;
 		
 		$userInfo			= get_userdata(get_current_user_id());
-		$subscriptions		= new paymill_subscriptions('woocommerce');
-		$query				= 'SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id="'.$userInfo->ID.'" AND woo_offer_id="'.$user->id.'_'.$subscription_key.'"';
-		$client_cache		= $wpdb->get_results($query,ARRAY_A);
+		$client_cache		= $wpdb->get_results($wpdb->prepare('SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($userInfo->ID,$user->id.'_'.$subscription_key)),ARRAY_A);
 		
-		$subscriptions->remove($client_cache[0]['paymill_sub_id']);
-		
-		$query				= 'DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id="'.$userInfo->ID.'" AND woo_offer_id="'.$user->id.'_'.$subscription_key.'"';
-		$wpdb->query($query);
+		$this->subscriptions->remove($client_cache[0]['paymill_sub_id']);
+		$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($userInfo->ID,$user->id.'_'.$subscription_key)));
 	}
 	function woo_updated_subscription_paymill($user,$subscription_details){
-		var_dump($user);
-		var_dump($subscription_details);
-		die();
+		// @todo: implement support for changing/creating offer later
 	}
-	
 	function woo_subscription_put_on_hold_paymill(){
-	
+		// currently not supported with Paymill
 	}
 	function woo_reactivated_subscription_paymill($user,$subscription_key){
-	
+		// currently not supported with Paymill
 	}
-
 	
-	function init_paymill_gateway_class() {
+	function add_paymill_gateway_class($methods){
+		$methods[] = 'WC_Gateway_Paymill_Gateway'; 
+		return $methods;
+	}
+	add_filter('woocommerce_payment_gateways', 'add_paymill_gateway_class');
+	function init_paymill_gateway_class(){
 		global $wpdb;
-	
-		// update subscriptions when webhook is triggered
-		if(class_exists('WC_Subscriptions_Manager') && isset($_GET['paymill_webhook']) && $_GET['paymill_webhook'] == 1){
-			$body = @file_get_contents('php://input');
-			$event_json = json_decode($body, true);
-			
-			if($event_json['event']['event_type'] == 'subscription.deleted'){
-				$query				= 'SELECT * FROM '.$wpdb->prefix.'paymill_subscriptions WHERE paymill_sub_id="'.$event_json['event']['event_resource']['id'].'"';
-				$sub_cache			= $wpdb->get_results($query,ARRAY_A);
-				
-				$query				= 'DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id="'.$sub_cache[0]['woo_user_id'].'" AND woo_offer_id="'.$sub_cache[0]['woo_offer_id'].'"';
-				$wpdb->query($query);
-				
-				//error_log("\n\n".$query."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
-				//error_log($sub_cache[0]['woo_user_id']."\n\n".$sub_cache[0]['woo_offer_id']."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
-				
-				WC_Subscriptions_Manager::cancel_subscription($sub_cache[0]['woo_user_id'], $sub_cache[0]['woo_offer_id']);
-			}
-		}
-	
+
 		if(class_exists('WC_Payment_Gateway')){
 			class WC_Gateway_Paymill_Gateway extends WC_Payment_Gateway{
+			
+				private $total					= 0;
+				private $total_complete			= 0;
+				private $cart					= false;
+				private $order_id				= false;
+				private $order					= false;
+				private $subscriptions			= false;
+				private $offers					= false;
+				private $order_desc				= '';
+			
 				public function __construct(){
-				
+					load_paymill(); // this function-call can and should be used whenever working with Paymill API
+					$GLOBALS['paymill_loader']->paymill_errors->setFunction('paymill_woocommerce_errorHandling');
 					$GLOBALS['paymill_source']['woocommerce_version'] = ((isset($GLOBALS['woocommerce']) && is_object($GLOBALS['woocommerce']) && isset($GLOBALS['woocommerce']->version)) ? $GLOBALS['woocommerce']->version : 0);
 					
 					$this->id					= 'paymill';
@@ -99,12 +389,10 @@
 						'subscription_payment_method_change'*/
 					);
 				}
-				
-				// @todo: better icon
-				function get_icon() {
+				public function get_icon() {
 					global $woocommerce;
 
-					$icon = '<a href="https://www.paymill.com/" target="_blank"><img src="' . $woocommerce->force_ssl( $this->logo_small ) . '" alt="' . $this->title . '" /></a>';
+					$icon = '<a href="https://www.paymill.com/" target="_blank"><img src="' . WC_HTTPS::force_https_url( $this->logo_small ) . '" alt="' . $this->title . '" /></a>';
 
 					if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && is_array($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) > 0){
 						foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
@@ -114,91 +402,100 @@
 						}
 					}
 	
-					return apply_filters( 'woocommerce_gateway_icon', $icon, $this->id );
+					return apply_filters('woocommerce_gateway_icon', $icon, $this->id);
 				}
-				
 				public function init_form_fields(){
 					$this->form_fields = array(
 						'enabled' => array(
-							'title' => __( 'Enable/Disable', 'woocommerce' ),
-							'type' => 'checkbox',
-							'label' => __( 'Enable PAYMILL Payment', 'woocommerce' ),
-							'default' => 'yes'
+							'title'			=> __('Enable/Disable', 'woocommerce'),
+							'type'			=> 'checkbox',
+							'label'			=> __('Enable PAYMILL Payment', 'woocommerce'),
+							'default'		=> 'yes'
 						),
 						'title' => array(
-							'title' => __( 'Title', 'woocommerce' ),
-							'type' => 'text',
-							'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
-							'default' => __( 'PAYMILL Payment', 'woocommerce' ),
-							'desc_tip'      => true,
+							'title'			=> __('Title', 'woocommerce'),
+							'type'			=> 'text',
+							'description'	=> __('This controls the title which the user sees during checkout.', 'woocommerce'),
+							'default'		=> __('PAYMILL Payment', 'woocommerce'),
+							'desc_tip'		=> true,
 						),
 						'description' => array(
-							'title' => __( 'Customer Message', 'woocommerce' ),
-							'type' => 'textarea',
-							'default' => 'Payments made easy'
+							'title'			=> __('Customer Message', 'woocommerce'),
+							'type'			=> 'textarea',
+							'default'		=> 'Payments made easy'
 						)
 					);
 				}
-				
-				public function process_payment( $order_id ) {
-					global $woocommerce,$wpdb;
-					
-					// first retrieve client data, either from cache or from API
+				private function getCurrentClient(){
 					require_once(PAYMILL_DIR.'lib/integration/client.inc.php');
-					$clientClass			= new paymill_client(
-												$_POST['billing_email'],
-												$_POST['billing_first_name'].' '.$_POST['billing_last_name']
-											);
+					if(isset($_POST['billing_first_name']) && isset($_POST['billing_last_name'])){
+						$desc		= $_POST['billing_first_name'].' '.$_POST['billing_last_name'];
+					}elseif(isset($_POST['billing_first_name'])){
+						$desc		= $_POST['billing_first_name'];
+					}elseif(isset($_POST['billing_last_name'])){
+						$desc		= $_POST['billing_last_name'];
+					}else{
+						$desc		= '';
+					}
 					
-					$client					= $clientClass->getCurrentClient();
-
-					// client retrieved, now we are ready to process the payment
-					if($client['id'] !== false && strlen($client['id']) > 0){
-						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
-						
-						$paymentClass		= new paymill_payment($client['id']);
-							
-						// calculate total based on product settings
-						$total = (floatval($woocommerce->cart->total)*100);
-						
-						$order = new WC_Order( $order_id );
-						
-						// make subscription
-						if($client['id'] && $paymentClass->getPaymentID() && class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($order)){
-							$cart = $woocommerce->cart->get_cart();
-							
-							$subscriptions = new paymill_subscriptions('woocommerce');
-							
-							foreach($cart as $product){
-
-								$woo_sub_key	= WC_Subscriptions_Manager::get_subscription_key($order_id,$product['product_id']);
-
+					// create or get client
+					$this->clientClass	= new paymill_client($_POST['billing_email'],$desc);
+					return $this->clientClass->getCurrentClient();
+				}
+				private function getTotals(){
+					// retrieve subscriptions amount
+					if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
+						foreach($this->cart as $product){
+							if(is_object($product) && isset($product->id) && intval($product->id) > 0){
+								$woo_sub_key		= WC_Subscriptions_Manager::get_subscription_key($this->order_id,$product->id);
+								
 								if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
+									// retrieve subscription amount
+									$recurr_amount					= floatval(floatval(WC_Subscriptions_Order::get_item_recurring_amount($this->order,$product->id))*100);
+									$this->total					= $this->total-$recurr_amount;
+									if($this->total_complete == 0){
+										$this->total_complete = $this->total_complete+$recurr_amount;
+									}
+								}
+							}
+						}
+					}
+				}
+				private function processSubscriptions(){
+					global $wpdb;
+					
+					// check wether subscriptions addon is activated
+					if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
+						$product	= $this->cart;
+						//foreach($this->cart as $product){
+							if(is_array($product) && isset($product['product_id']) && intval($product['product_id']) > 0){
+								// product is a subscription?
+								$woo_sub_key	= WC_Subscriptions_Manager::get_subscription_key($this->order_id,$product['product_id']);
+								// check wether user already has subscription
+								if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
+								
 									// required vars
-									$amount			= (floatval(WC_Subscriptions_Order::get_item_recurring_amount( $order,$product['product_id'] ))*100);
+									$amount			= (floatval(WC_Subscriptions_Order::get_item_recurring_amount($this->order,$product['product_id']))*100);
 									$currency		= get_woocommerce_currency();
-									$interval		= '1 '.strtoupper(WC_Subscriptions_Order::get_subscription_period( $order,$product['product_id'] ));
-									
-									// get trial time
-									$now = time();
-									$trial_end		= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($order->order_date)));
+									$interval		= '1 '.strtoupper(WC_Subscriptions_Order::get_subscription_period($this->order,$product['product_id']));
+
+									$trial_end		= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($this->order->order_date)));
 									if($trial_end === false){
 										$trial_time		= 0;
 									}else{
-										$datediff		= $trial_end - $now;
+										$datediff		= $trial_end - time();
 										$trial_time		= ceil($datediff/(60*60*24));
 									}
 									
 									// md5 name
 									$woo_sub_md5	= md5($amount.$currency.$interval.$trial_time);
-									
+
 									// get offer
 									$name			= 'woo_'.$product['product_id'].'_'.$woo_sub_md5;
-									$offer			= $subscriptions->offerGetDetailByName($name);
-									$offer			= $offer[0];
-									
+									$offer			= $this->subscriptions->offerGetDetailByName($name);
+
 									// check wether offer exists in paymill
-									if(count($offer) == 0){
+									if($offer === false){
 										// offer does not exist in paymill yet, create it
 										$params = array(
 											'amount'			=> $amount,
@@ -207,125 +504,180 @@
 											'name'				=> $name,
 											'trial_period_days'	=> intval($trial_time)
 										);
-										$offer = $subscriptions->offerCreate($params);
-										/*
-							ob_start();
-							var_dump($product['product_id']);
-							var_dump(get_gmt_from_date($order->order_date));
-							var_dump(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($order->order_date)));
-							var_dump($now);
-							var_dump($trial_end);
-							var_dump($trial_time);
-							var_dump($offer);
-							$var = ob_get_flush();
-							$woocommerce->add_error($var);
-							return;*/
-										
-										if(isset($offer['error']['messages'])){
-											foreach($offer['error']['messages'] as $field => $msg){
-												$woocommerce->add_error($field.': '.$msg);
-											}
-											return;
+										$offer = $this->subscriptions->offerCreate($params);
+										if($GLOBALS['paymill_loader']->paymill_errors->status()){
+											return false;
 										}
 									}
-									
+
 									// create user subscription
-									$user_sub = $subscriptions->create($client['id'], $offer['id'], $paymentClass->getPaymentID());
-									
-									//ob_start(); var_dump($offer);var_dump($offer['id']); $var = ob_get_flush();
-									//$woocommerce->add_error($var);
-									
-									if(isset($user_sub['error']) && strlen($user_sub['error']) > 0){
-										$woocommerce->add_error(__($user_sub['error'], 'paymill'));
-										return;
+									$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID());
+									if($GLOBALS['paymill_loader']->paymill_errors->status()){
+										return false;
 									}else{
-										$query = 'INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, woo_user_id, woo_offer_id) VALUES ("'.$user_sub['id'].'", "'.$userInfo->ID.'", "'.$woo_sub_key.'")';
-										$wpdb->query($query);
+										$wpdb->query($wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, woo_user_id, woo_offer_id) VALUES (%s, %s, %s)',
+										array(
+											$user_sub,
+											get_current_user_id(),
+											$woo_sub_key
+										)));
 									
 										// subscription successful
 											do_action('paymill_woocommerce_subscription_created', array(
-												'product_id'	=> $id,
+												'product_id'	=> $product['product_id'],
 												'offer_id'		=> $offer['id'],
 												'offer_data'	=> $offer
 										));
+										
+										return true;
 									}
-							
+								}else{
+									// @todo: currently, WooCommerce does not support multiple subscriptions on checkout, so we can stop processing here if first subscription is already subscribed
+									$GLOBALS['paymill_loader']->paymill_errors->setError(__('Subscription already subscribed.', 'paymill'));
+									if($GLOBALS['paymill_loader']->paymill_errors->status()){
+									}
+									return false;
 								}
 							}
-						}
-						
-						// make transaction (single time)
-						if($total > 0){
-							$transactionsObject = new Services_Paymill_Transactions($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
-
-							// make transaction
-							$params = array(
-								'amount'      	=> $total,  // e.g. "4200" for 42.00 EUR
-								'currency'   	=> get_woocommerce_currency(),   // ISO 4217
-								'payment'		=> $paymentClass->getPaymentID(),
-								'client'     	=> $client['id'],
-								'description'	=> 'Order #'.$order_id,
-								'source'		=> serialize($GLOBALS['paymill_source'])
-							);				
-							$transaction        = $transactionsObject->create($params);
-
-							$response = $transactionsObject->getResponse();
-							if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
-								echo __($response['body']['data']['response_code'], 'paymill');
-								die();
-							}
-
-							// save data to transaction table
-							$query = 'INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, woocommerce_order_id, paymill_transaction_data) VALUES ("'.$transaction['id'].'", "'.$transaction['payment']['id'].'", "'.$transaction['client']['id'].'", "'.$order_id.'", "'.$wpdb->escape(serialize($_POST)).'")';
-							$wpdb->query($query);
-							
-							do_action('paymill_woocommerce_products_paid', array(
-								'total'			=> $total,
-								'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],
-								'client'		=> $client['id']
-							));
-						}
-
-						$order->payment_complete();
-
-						// Reduce stock levels
-						$order->reduce_order_stock();
-
-						// Remove cart
-						$woocommerce->cart->empty_cart();
-
-						// Return thankyou redirect
-						return array(
-							'result' => 'success',
-							'redirect' => $this->get_return_url( $order )
-						);
-						
+						//}
 					}else{
-						$woocommerce->add_error(__($client['error'], 'paymill'));
+						return true;
 					}
 				}
+				private function processProducts(){
+					global $wpdb;
+					if($this->total > 0){
+						// make transaction
+						$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->total)); // e.g. "4200" for 42.00 EUR
+						$GLOBALS['paymill_loader']->request_transaction->setCurrency(get_woocommerce_currency());
+						if($this->paymentClass->getPreauthID() != false){
+							$GLOBALS['paymill_loader']->request_transaction->setPreauthorization($this->paymentClass->getPreauthID());
+						}else{
+							$GLOBALS['paymill_loader']->request_transaction->setPayment($this->paymentClass->getPaymentID());
+						}
+						$GLOBALS['paymill_loader']->request_transaction->setClient($this->client->getId());
+						$GLOBALS['paymill_loader']->request_transaction->setDescription($this->order_desc);
+						$GLOBALS['paymill_loader']->request->setSource(serialize($GLOBALS['paymill_source']));
+						
+						$GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_transaction);
+
+						$response = $GLOBALS['paymill_loader']->request->getLastResponse();
+						
+						if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
+							$GLOBALS['paymill_loader']->paymill_errors->setError(__($response['body']['data']['response_code'], 'paymill'));
+							if($GLOBALS['paymill_loader']->paymill_errors->status()){
+								$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+							}
+							return false;
+						}
+
+						// save data to transaction table
+						$wpdb->query($wpdb->prepare('
+						INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, woocommerce_order_id, paymill_transaction_time, paymill_transaction_data)
+						VALUES (%s,%s,%s,%d,%d,%s)',
+						array(
+							$response['body']['data']['id'],
+							$response['body']['data']['payment']['id'],
+							$response['body']['data']['client']['id'],
+							$this->order_id,
+							time(),
+							serialize($_POST)
+						)));
+						
+						do_action('paymill_woocommerce_products_paid', array(
+							'total'			=> $this->total,
+							'currency'		=> get_woocommerce_currency(),
+							'client'		=> $response['body']['data']['client']['id']
+						));
+						
+						return true;
+					}else{ // total is zero, so just return true
+						return true;
+					}
+				}
+				public function process_payment($order_id){
+					global $woocommerce,$wpdb;
+					
+					$this->client					= $this->getCurrentClient();
+					// client retrieved, now we are ready to process the payment
+					if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
+						$this->order_id				= $order_id;
+						$this->order_desc			= __('Order #','paymill').$this->order_id;
+						$this->order				= new WC_Order($this->order_id);
+						$this->cart					= reset($woocommerce->cart->get_cart());
+						$this->total_complete		=
+						$this->total				= (floatval($this->order->get_total())*100);
+
+						// load subscription class
+						$this->subscriptions		= new paymill_subscriptions('woocommerce');
+						$this->offers				= $this->subscriptions->offerGetList();
 				
+						// get the totals for pre authorization
+						$this->getTotals();
+
+						// create payment object and preauthorization
+						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
+						$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,get_woocommerce_currency()); // create payment object, as it should be used for next processing instead of the token.
+						if($GLOBALS['paymill_loader']->paymill_errors->status()){
+							$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+							return false;
+						}
+						
+						// process subscriptions & products
+						if($this->processSubscriptions() && $this->processProducts()){
+							// success
+							if(method_exists($order, 'payment_complete')){
+								// if order contains subscription, mark payment complete later when webhook triggers succeeded payment
+								if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
+									$this->order->update_status('on-hold', __( 'Awaiting payment confirmation from Paymill.', 'paymill' ));
+								}else{
+									$this->order->payment_complete();
+								}
+							}
+
+							// Reduce stock levels
+							if(method_exists($order, 'reduce_order_stock')){
+								$this->order->reduce_order_stock();
+							}
+
+							// Remove cart
+							$woocommerce->cart->empty_cart();
+
+							// Return thankyou redirect
+							return array(
+								'result' => 'success',
+								'redirect' => $this->get_return_url($this->order)
+							);
+						}else{
+							if($GLOBALS['paymill_loader']->paymill_errors->status()){
+								$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+							}
+							return false;
+						}
+					}else{
+						$GLOBALS['paymill_loader']->paymill_errors->setError(__('There was an issue with adding you as client for the payment process.', 'paymill'));
+						return false;
+					}
+				}
 				public function validate_fields(){
 					global $woocommerce;
 					// check Paymill payment
 					if(empty($_POST['paymillToken'])){
-						$woocommerce->add_error('Es konnte kein Token erstellt werden.');
-
+						$woocommerce->add_error(__('Token not Found','paymill'));
 						return false;
 					}
-					
 					return true;
 				}
-				
 				public function payment_fields(){
 					global $woocommerce;
 
 					if(!$GLOBALS['paymill_active']){
+						paymill_load_frontend_scripts(); // load frontend scripts
+						
 						// settings
 						$GLOBALS['paymill_active'] = true;
 						$cart_total = $woocommerce->cart->total*100;
 						$currency = get_woocommerce_currency();
-						$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos_v.png';
 						$no_logos = true;
 						
 						// form ids
@@ -344,4 +696,5 @@
 			}
 		}
 	}
+	add_action('plugins_loaded', 'init_paymill_gateway_class');
 ?>

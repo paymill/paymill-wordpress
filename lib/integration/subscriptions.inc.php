@@ -2,57 +2,62 @@
 
 class paymill_subscriptions{
 
-	var $store						= false;
-	var $subscriptionsObject		= false;
-	var $cache						= false;
+	private $store						= false;
+	private $subscriptionsObject		= false;
+	private $cache						= false;
 
 	public function __construct($store){
-		require_once(PAYMILL_DIR.'lib/api/Subscriptions.php');
-		require_once(PAYMILL_DIR.'lib/api/Offers.php');
-		require_once(PAYMILL_DIR.'lib/api/Preauthorizations.php');
-	
-		$this->subscriptionsObject	= new Services_Paymill_Subscriptions($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
-		$this->offersObject			= new Services_Paymill_Offers($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
-		$this->preAuthObject		= new Services_Paymill_Preauthorizations($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
-
 		$this->store				= $store;
 	}
 
 	public function getList(){
-		return						$this->subscriptionsObject->get();
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_getList'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+		
+		try{
+			$output			= $request->getAll($GLOBALS['paymill_loader']->request_subscription);
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
+		}
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_getList'); // benchmark
+		return $output;
 	}
 	public function details($sub_id){
-		return						$this->subscriptionsObject->getOne($sub_id);
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_details'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+	
+		try{
+			$GLOBALS['paymill_loader']->request_subscription->setId($sub_id);
+			$output			= $GLOBALS['paymill_loader']->request->getOne($GLOBALS['paymill_loader']->request_subscription);
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
+		}
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_details'); // benchmark
+		return $output;
 	}
 	public function create($client, $offer, $payment){
-	
-		// retrieve offer amount for preauthorization
-		$offerDetail = $this->offerGetDetailByID($offer);
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_create'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+		
+		try{
+			$GLOBALS['paymill_loader']->request_subscription->setClient($client);
+			$GLOBALS['paymill_loader']->request_subscription->setOffer($offer);
+			$GLOBALS['paymill_loader']->request_subscription->setPayment($payment);
 
-		// make preauth
-		$params = array(
-			'payment'				=> $payment,
-			'amount'				=> $offerDetail[0]['amount'],
-			'currency'				=> $offerDetail[0]['currency']
-		);
-		
-		$preAuthResponse = $this->preAuthObject->create($params);
-		
-		if($preAuthResponse['preauthorization']['status'] == 'failed'){
-			echo __($preAuthResponse['response_code'],'paymill');
-			die();
-		}else{
-			$params = array(
-				'client'				=> $client,
-				'offer'					=> $offer,
-				'payment'				=> $payment
-			);
-
-			$subscription				= $this->subscriptionsObject->create($params);
-		
-			return $subscription;
+			$subscription	= $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_subscription);
+			$output			= $subscription->getId();
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
 		}
-	}/*
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_create'); // benchmark
+		return $output;
+	}/* @todo
 	public function update(){
 		$params = array(
 			'id'					=> '',
@@ -62,60 +67,134 @@ class paymill_subscriptions{
 		);
 		$subscription				= $this->subscriptionsObject->update($params);
 	}*/
-	public function remove($subscriptionid){
-		$this->subscriptionsObject->delete($subscriptionid);
+	public function remove($sub_id){
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_remove'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+		
+		try{
+			$GLOBALS['paymill_loader']->request_subscription->setId($sub_id);
+
+			$response = $GLOBALS['paymill_loader']->request->delete($GLOBALS['paymill_loader']->request_subscription);
+			$output			= $response;
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
+		}
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_remove'); // benchmark
+		return $output;
 	}
 	
 	public function offerGetList($reCache=false){
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_offerGetList'); // benchmark
 		global $wpdb;
-	
-		if($reCache === true){
-			$offersList = $this->offersObject->get();
-			foreach($offersList as $offer){
-				$offersListSorted[$offer['id']] = $offer;
+
+		try{
+			if($reCache === true){
+				load_paymill(); // this function-call can and should be used whenever working with Paymill API
+				$wpdb->query('TRUNCATE TABLE '.$wpdb->prefix.'paymill_cache_offers');
+				
+				$offersList														= $GLOBALS['paymill_loader']->request->getAll($GLOBALS['paymill_loader']->request_offer);
+
+				foreach($offersList as $offer){
+					$wpdb->insert(
+						$wpdb->prefix.'paymill_cache_offers',
+						array(
+							'id'												=> $offer['id'],
+							'name'												=> $offer['name'],
+							'amount'											=> $offer['amount'],
+							'currency'											=> $offer['currency'],
+							'interval'											=> $offer['interval'],
+							'trial_period_days'									=> $offer['trial_period_days']
+						),
+						array(
+							'%s',
+							'%s',
+							'%d',
+							'%s',
+							'%s',
+							'%d'
+						)
+					);
+					$this->cache['subscription_plans'][$offer['id']]			= $offer;
+					$this->cache['subscription_plans_by_name'][$offer['name']]	= $offer;
+				}
+			}elseif(empty($this->cache['subscription_plans'])){
+				$query															= 'SELECT * FROM '.$wpdb->prefix.'paymill_cache_offers';
+				$offersList														= $wpdb->get_results($query,ARRAY_A);
+				foreach($offersList as $offer){
+					$this->cache['subscription_plans'][$offer['id']]			= $offer;
+					$this->cache['subscription_plans_by_name'][$offer['name']]	= $offer;
+				}
+			}else{
+				$output															= false;
 			}
-			$query = "REPLACE INTO ".$wpdb->prefix."paymill_cache SET cache_id='subscription_plans',cache_content='".$wpdb->escape(serialize($offersListSorted))."'";
-
-			$wpdb->query($query);
-			
-			$this->cache['subscription_plans'] = $offersListSorted;
-
-			return $offersListSorted;
-		}elseif(is_array($this->cache['subscription_plans'])){
-			return $this->cache['subscription_plans'];
-		}else{
-			$query				= 'SELECT * FROM '.$wpdb->prefix.'paymill_cache WHERE cache_id="subscription_plans"';
-			$offersList			= $wpdb->get_results($query,ARRAY_A);
-			
-			$offersList = unserialize($offersList[0]['cache_content']);
-			$this->cache['subscription_plans'] = $offersList;
-			return $offersList;
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output																= false;
 		}
+
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_offerGetList'); // benchmark
+		return $this->cache['subscription_plans'];
 	}
-	/*
-	public function offerGetDetail($reCache=false){
-		if(!$reCache && isset($this->cache[$offer_id]) && is_array($this->cache[$offer_id])){
-			return $this->cache[$offer_id];
-		}else{
-			$this->offerGetList($reCache);
-			return (isset($this->cache[$offer_id]) ? $this->cache[$offer_id] : false);
-		}
-	}*/
 	public function offerGetDetailByID($id){
-		return $this->offersObject->get($id);
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_offerGetDetailByID'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+
+		if(isset($this->cache['subscription_plans'][$id]) && is_array($this->cache['subscription_plans'][$id]) && count($this->cache['subscription_plans'][$id]) > 0){
+			$output = $this->cache['subscription_plans'][$id];
+		}else{
+			$this->offerGetList(true);
+			if(isset($this->cache['subscription_plans'][$id]) && is_array($this->cache['subscription_plans'][$id]) && count($this->cache['subscription_plans'][$id]) > 0){
+				$output = $this->cache['subscription_plans'][$id];
+			}else{
+				$output = false;
+			}
+		}
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_offerGetDetailByID'); // benchmark
+		return $output;
 	}
 	public function offerGetDetailByName($name){
-		return $this->offersObject->get(array('name' => $name));
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_offerGetDetailByName'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+
+		if(isset($this->cache['subscription_plans_by_name'][$name]) && is_array($this->cache['subscription_plans_by_name'][$name]) && count($this->cache['subscription_plans_by_name'][$name]) > 0){
+			$output = $this->cache['subscription_plans_by_name'][$name];
+		}else{
+			$this->offerGetList(true);
+			if(isset($this->cache['subscription_plans_by_name'][$name]) && is_array($this->cache['subscription_plans_by_name'][$name]) && count($this->cache['subscription_plans_by_name'][$name]) > 0){
+				$output = $this->cache['subscription_plans_by_name'][$name];
+			}else{
+				$output = false;
+			}
+		}
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_offerGetDetailByName'); // benchmark
+		return $output;
 	}
 	
 	public function offerCreate($params){
-		/*$params = array(
-			'amount'   => '4200',       // E.g. "4200" for 42.00 EUR
-			'currency' => 'EUR',        // ISO 4217
-			'interval' => '1 MONTH',
-			'name'     => 'Test Offer'
-		);*/
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_offerCreate'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
 		
-		return $this->offersObject->create($params);
+		try{
+			$GLOBALS['paymill_loader']->request_offer->setAmount(round($params['amount']));
+			$GLOBALS['paymill_loader']->request_offer->setCurrency($params['currency']);
+			$GLOBALS['paymill_loader']->request_offer->setInterval($params['interval']);
+			$GLOBALS['paymill_loader']->request_offer->setName($params['name']);
+			$GLOBALS['paymill_loader']->request_offer->setTrialPeriodDays($params['trial_period_days']);
+
+			$output			= $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_offer);
+			$offerID		= $output->getId();
+			$this->offerGetList(true);
+			$output			= $this->offerGetDetailByID($offerID);
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
+		}
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_offerCreate'); // benchmark
+		return $output;
 	}
 }

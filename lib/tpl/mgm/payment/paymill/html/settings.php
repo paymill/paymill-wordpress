@@ -112,18 +112,7 @@
 					<p><div class="tips"><?php _e('Retrun URL for capturing payment post data returned from gateway. READONLY, only for information.','mgm'); ?></div></p>
 				</div>
 			</div><?php */?>
-	
-			<div class="row">
-				<div class="cell">
-					<p><b><?php _e('Silent Post URL','mgm'); ?>:</b></p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="cell">
-					<?php echo $data['module']->setting['notify_url']?>												
-					<p><div class="tips"><?php _e('Silent Post URL for capturing silent post data sent from Authorize.net. Set this url as the Silent Post Url in Authorize.net Merchant Settings Panel. READONLY, only for information.','mgm'); ?></div></p>
-				</div>
-			</div>
+
 			<div class="row">
 				<div class="cell">
 					<p><b><?php _e('Supported Buttons','mgm'); ?>:</b></p>

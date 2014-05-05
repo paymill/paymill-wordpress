@@ -3,6 +3,16 @@
 Changelog
 =========
 
+1.6
+-----
+* Major Update!
+* Common: payment channel SEPA added
+* Common: update to new API PHP Wrapper
+* Common: better theme support
+* MagicMembers: released as final
+* WooCommerce: many bugs fixed, support for webhooks added
+* PayButton: completely rewritten
+
 1.5.2
 -----
 * Common: "Fatal error: Call to a member function payment_complete() on a non-object" fixed

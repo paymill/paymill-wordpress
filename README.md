@@ -5,9 +5,9 @@ PAYMILL for WordPress
 * Contributors: Matthias Reuter
 * Donate link:
 * Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
-* Requires at least: 3.5
-* Tested up to: 3.8
-* Stable tag: 1.5.2
+* Requires at least: 3.9
+* Tested up to: 3.9
+* Stable tag: 1.6
 * License: [GPLv3 or later](http://www.gnu.org/licenses/gpl-3.0.html)
 
 With PAYMILL you are able to provide credit card based payments for your customers.
@@ -18,13 +18,10 @@ Plugin Description
 
 This plugin currently allows:
 
-* Payment Gateway for WooCommerce, including subscription support
+* Payment Gateway for WooCommerce - incl. subscription support
 * Payment Gateway for ShopPlugin
-* Pay Button. including subscription support
-
-Features in Development:
-
-* Payment Gateway for Magic Members (70% done) - beta for subscriptions included
+* Payment Gateway for Magic Members - incl. subscription support
+* Pay Button - incl. subscription support
 
 Service Description
 ===================
@@ -38,7 +35,7 @@ Top-notch customer support.
 Subscriptions supported and Mobile SDKs for iOS and Android available.
 Accept payments in up to 100 currencies.
 All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported.
-Available in 39 countries across Europe so far.
+Available in 40 countries across Europe so far.
 
 Installation
 ============
@@ -49,8 +46,10 @@ There is a manual included in English and German as PDF, but in short:
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Register a free account on https://www.paymill.com/
 4. Insert TEST Api Keys for testing purposes in plugin settings
-5. If you are happy how the plugin works, enable your live account on https://www.paymill.com/ - this could take a couple of days.
-6. After your paymill account has been activated for LIVE mode, switch your account to live and replace your TEST API Keys with your LIVE API Keys in plugin settings.
+5. Integrate the widget somewhere in your wordpress. Without one of the supported shops, the easiest method is the pay button, available in the admin interface at _Design » Widgets_, or [as a shortcode](FAQ.md) for individual pages.
+6. Play around in test mode.
+7. If you are happy how the plugin works, enable your live account on https://www.paymill.com/ - this could take a couple of days.
+8. After your paymill account has been activated for LIVE mode, switch your account to live and replace your TEST API Keys with your LIVE API Keys in plugin settings.
 
 actions
 -------
@@ -62,20 +61,13 @@ actions
 filters
 -------
 * paymill_paybutton_order_desc
+* paymill_paybutton_client_desc
 * paymill_paybutton_email_text
 
 Customizing the Pay Button
 --------------------------
 
-The Pay Button is made for customizing and you should make intensive use of CSS to cutomize it. Examples:
-
-```css
-/* hide country selection */
-.paymill_shipping { display: none; }
-
-/* hide company name */
-.paymill_address div:nth-child(2) { display: none; }
-```
+The Pay Button is made for customizing and you should make intensive use of CSS to cutomize it.
 
 Additionally, you may want to replace the default order form with your own.
 Create a custom theme file on `THEME_DIR/paymill/pay_button.php`,

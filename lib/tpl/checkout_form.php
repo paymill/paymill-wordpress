@@ -1,76 +1,75 @@
 <div id="paymill_payment_form">
 	<script type="text/javascript">
 		var PAYMILL_PUBLIC_KEY = '<?php echo $GLOBALS['paymill_settings']->paymill_general_settings['api_key_public']; ?>';
-		<?php
-			if(esc_attr($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) == 1){
-				$show_elv = true;
-				$show_cc = false;
-			}else{
-				$show_elv = false;
-				$show_cc = true;
-			}
-		?>
 	</script>
-	<div class="paymill_payment_errors"></div>
-	
 	<?php
-		if(empty($no_logos) && isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && is_array($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) > 0){
-?>
-	<div class="form-row">
-		<p>
-<?php		
+		$count_all_payment_types	= 0;
+		$count_bank_payment_types	= 0;
+		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && is_array($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) > 0){
+			echo '<div class="paymill_payment_logos">';
 			foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
 				if($type==1){
-					echo '<img src="'.plugins_url('',__FILE__ ).'/../img/logos/'.$name.'.png" style="vertical-align:middle;" alt="'.$name.'" />';
+					if(!isset($no_logos)){ echo '<img src="'.plugins_url('',__FILE__ ).'/../img/logos/'.$name.'.png" style="vertical-align:middle;" alt="'.$name.'" />'; }
+					if($name == 'elv' || $name == 'sepa'){
+						$count_bank_payment_types++;
+					}
 				}
+				$count_all_payment_types++;
 			}
-?>
-		</p>
-	</div>
-	<?php
+			echo '</div>';
 		}
-		?>
-	
-	<?php
-
-		if(
-			((esc_attr($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) == 1)
-			&& (count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) >= 2))
-		){
-	?>
-		<div id="form-switch-credit" class="paymill_form-switch paymill_form-switch<?php if($show_cc === true){ echo '_active'; } ?>"><?php echo __('Credit Card', 'paymill'); ?></div>
-		<div id="form-switch-elv" class="paymill_form-switch paymill_form-switch<?php if($show_elv === true){ echo '_active'; } ?>"><?php echo __('Debit Payment', 'paymill'); ?></div>
-	<?php
+		// credit card
+		if($count_all_payment_types > $count_bank_payment_types){
+			$show_cc = true;
+			echo '<div id="paymill_form_switch_credit" class="paymill_form_switch paymill_form_switch_active">'.__('Credit Card', 'paymill').'</div>';
+		}
+		// SEPA
+		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['sepa']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['sepa'] == 1){
+			if(!isset($show_cc)){
+				$show_sepa = true;
+			}
+			echo '<div id="paymill_form_switch_sepa" class="paymill_form_switch paymill_form_switch'.(isset($show_sepa) ? '_active' : '').'">'.__('SEPA', 'paymill').'</div>';
+		}
+		// ELV
+		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv'] == 1){
+			if(!isset($show_cc) && !isset($show_sepa)){
+				$show_sepa = true;
+			}
+			echo '<div id="paymill_form_switch_elv" class="paymill_form_switch paymill_form_switch'.(isset($show_elv) ? '_active' : '').'">'.__('ELV', 'paymill').'</div>';
 		}
 	?>
-	<div class="form-row">
-		<label><?php echo __('Name', 'paymill'); ?></label>
-		<input class="paymill_holdername" id="holdername" type="text" size="20" value="" autocomplete="off" />
+	<div class="paymill_holdername">
+		<input id="paymill_holdername" type="text" size="20" value="" autocomplete="off" placeholder="<?php echo __('Holder Name', 'paymill'); ?>" />
 	</div>
-	<div id="form-credit"<?php if($show_cc === false){ echo ' style="display:none;"'; } ?>>	
-		<div class="form-row">
-			<label><?php echo __('Credit Card Number', 'paymill'); ?></label>
-			<input class="paymill_card-number" id="card-number" type="text" size="20" value="" autocomplete="off" />
+	<div id="paymill_form_credit"<?php if(!isset($show_cc)){ echo ' style="display:none;"'; } ?>>	
+		<div class="paymill_card_number">
+			<input id="paymill_card_number" type="text" size="20" value="" autocomplete="off" placeholder="<?php echo __('Card Number', 'paymill'); ?>" />
 		</div>
-		<div class="form-row">
-			<label><?php echo __('Expire Date (MM/YYYY)', 'paymill'); ?></label>
-			<input class="paymill_card-expiry-month" id="card-expiry-month" type="text" size="2" value="" autocomplete="off" />
-			<p> / </p>
-			<input class="paymill_card-expiry-year" id="card-expiry-year" type="text" size="4" value="" autocomplete="off" />
-			<?php echo __('CVC', 'paymill'); ?>: <input class="paymill_card-cvc" id="card-cvc" type="text" size="4" value="" autocomplete="off" />
+		<div class="paymill_card_data">
+			<div class="paymill_expire_date"><?php echo __('Expire Date: ', 'paymill'); ?></div>
+			<input class="paymill_card_expiry_month" id="paymill_card_expiry_month" type="text" size="2" value="" autocomplete="off" placeholder="<?php echo __('MM', 'paymill'); ?>" />
+			<input class="paymill_card_expiry_year" id="paymill_card_expiry_year" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('YYYY', 'paymill'); ?>" />
+			<input class="paymill_card_cvc" id="paymill_card_cvc" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('CVC', 'paymill'); ?>" />
 		</div>
 	</div>
-	<div id="form-elv"<?php if($show_elv === false){ echo ' style="display:none;"'; } ?>>	
-		<div class="form-row">
-			<label translate="iframe"><?php echo __('Account #', 'paymill'); ?></label>
-			<input id="transaction-form-account" class="paymill_elv_number" type="text" value="" autocomplete="off"  maxlength="16">
+	<div id="paymill_form_sepa"<?php if(!isset($show_sepa)){ echo ' style="display:none;"'; } ?>>	
+		<div class="paymill_sepa_iban">
+			<input id="paymill_sepa_iban" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('IBAN', 'paymill'); ?>">
 		</div>
-		<div class="form-row">
-			<label translate="iframe"><?php echo __('Bank code', 'paymill'); ?></label>
-			<input id="transaction-form-code" class="paymill_elv_bank" type="text" value="" autocomplete="off"  maxlength="16">
+		<div class="paymill_sepa_bic">
+			<input id="paymill_sepa_bic" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('BIC', 'paymill'); ?>">
 		</div>
 	</div>
-		
-		<input class="paymill_amount" type="hidden" size="5" value="<?php if(isset($cart_total)){ echo $cart_total; } ?>"/>
-		<input class="paymill_currency" type="hidden" size="3" value="<?php echo $currency; ?>"/>
+	<div id="paymill_form_elv"<?php if(!isset($show_elv)){ echo ' style="display:none;"'; } ?>>	
+		<div class="paymill_elv_number">
+			<input id="paymill_elv_number" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('Account Number', 'paymill'); ?>">
+		</div>
+		<div class="paymill_elv_bank">
+			<input id="paymill_elv_bank_code" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('Bank Code', 'paymill'); ?>">
+		</div>
+		<!--[if gte IE 8]><!--><div class="paymill_elv_bankname"></div><!--<![endif]-->
+	</div>
+	<input class="paymill_amount" type="hidden" size="5" value="<?php if(isset($cart_total)){ echo $cart_total; } ?>"/>
+	<input class="paymill_currency" type="hidden" size="3" value="<?php echo $currency; ?>"/>
+	<div class="paymill_payment_errors"></div>
 </div>

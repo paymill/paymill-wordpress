@@ -1,4 +1,19 @@
 <?php
+
+	if(!function_exists('paymill_shopp_errorHandling')){
+		function paymill_shopp_errorHandling($errors){
+			global $woocommerce;
+			
+			foreach($errors as $error){
+				$output		.= '<div class="paymill_error">'.$error.'</div>';
+			}
+
+			return $output;
+		}
+	}
+
+
+
 class PaymillShopp extends GatewayFramework implements GatewayModule {
 
 	// Settings
@@ -6,18 +21,19 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 	var $saleonly = true; // force sale event on processing (no auth)
 	var $recurring = false; // support for recurring payment
 
-	function __construct () {
+	function __construct(){
 		parent::__construct();
-
+		
+		$GLOBALS['paymill_loader']->paymill_errors->setFunction('paymill_shopp_errorHandling');
+		
 		if (!isset($this->settings['label'])){
-			$this->settings['label'] = "Paymill";
+			$this->settings['label'] = 'Paymill';
 		}
 		
 		add_action('shopp_paymillshopp_sale',array(&$this,'sale')); // Process sales
 		
 		$GLOBALS['paymill_source']['shopp_version'] = SHOPP_VERSION;
 	}
-
 	/**
 	 * actions
 	 *
@@ -31,17 +47,16 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 	 **/
 	function actions () {
 		//add_action('shopp_process_checkout', array($this,'process')); // intercept checkout request, force confirm
-		
-	
 		add_filter( 'shopp_checkout_gateway_inputs', array($this,'form'),10,2);
 	}
-	
 	function form(){
 		if(!$GLOBALS['paymill_active']){
+			paymill_load_frontend_scripts(); // load frontend scripts
+		
 			// settings
 			$GLOBALS['paymill_active']	= true;
 			$cart_total					= $this->amount('total')*100;
-			$currency					= $GLOBALS['paymill_settings']->paymill_general_settings['currency'];
+			$currency					= $this->currency();
 			$cc_logo					= plugins_url('',__FILE__ ).'/../img/cc_logos_v.png';
 			$no_logos					= true;
 			
@@ -54,9 +69,7 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 			
 			// html / icons
 			echo '<p style="margin-top:10px;" id="paymill_framebox">';
-			
 			$icon = '<a href="https://www.paymill.com/" target="_blank"><img src="'.plugins_url('',__FILE__ ).'/../img/logo.png" alt="PAYMILL" /></a>';
-
 			if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && is_array($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) > 0){
 				foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
 					if($type==1){
@@ -64,103 +77,160 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 					}
 				}
 			}
-			
 			echo $icon;
-			
 			echo '</p><div id="payment">';
-			
 			require_once(PAYMILL_DIR.'lib/tpl/checkout_form.php');
-			
 			echo '</div><div style="background-image:url('.plugins_url('',__FILE__ ).'/../img/line.png);background-position:-300px;background-repeat:no-repeat;height:3px;line-height:3px;padding:0px;margin:5px 0px 10px 0px;"></div>';
-			
 		}else{
 			echo '<div class="paymill_notification paymill_notification_once_only"><strong>Error:</strong> Paymill can be loaded once only on the same page.</div>';
 		}
 	}
-	
+	private function getCurrentClient(){
+		require_once(PAYMILL_DIR.'lib/integration/client.inc.php');
+		if(isset($this->order->Customer->firstname) && isset($this->order->Customer->lastname)){
+			$desc		= $this->order->Customer->firstname.' '.$this->order->Customer->lastname;
+		}elseif(isset($_POST['billing_first_name'])){
+			$desc		= $this->order->Customer->firstname;
+		}elseif(isset($_POST['billing_last_name'])){
+			$desc		= $this->order->Customer->lastname;
+		}else{
+			$desc		= '';
+		}
+		
+		// create or get client
+		$this->clientClass	= new paymill_client($this->order->Customer->email,$desc);
+		return $this->clientClass->getCurrentClient();
+	}/*
+	private function getTotals(){
+		$this->total					= $this->Order->Cart->Totals;
+		$this->total_complete			= $this->Order->Cart->Totals;
+	}*/
+	private function processSubscriptions(){
+		// subscriptions for shopp not yet supported.
+		return true;
+	}
+	private function processProducts(){
+		global $wpdb;
+		if($this->total > 0){
+			// make transaction
+			$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->total)); // e.g. "4200" for 42.00 EUR
+			$GLOBALS['paymill_loader']->request_transaction->setCurrency($this->currency());
+			if($this->paymentClass->getPreauthID() != false){
+				$GLOBALS['paymill_loader']->request_transaction->setPreauthorization($this->paymentClass->getPreauthID());
+			}else{
+				$GLOBALS['paymill_loader']->request_transaction->setPayment($this->paymentClass->getPaymentID());
+			}
+			$GLOBALS['paymill_loader']->request_transaction->setClient($this->client->getId());
+			$GLOBALS['paymill_loader']->request_transaction->setDescription($this->order_desc);
+			$GLOBALS['paymill_loader']->request->setSource(serialize($GLOBALS['paymill_source']));
+			
+			$GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_transaction);
+
+			$response = $GLOBALS['paymill_loader']->request->getLastResponse();
+			
+			if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
+				$GLOBALS['paymill_loader']->paymill_errors->setError(__($response['body']['data']['response_code'], 'paymill'));
+				if($GLOBALS['paymill_loader']->paymill_errors->status()){
+					$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+				}
+				return false;
+			}
+
+			// save data to transaction table
+			$wpdb->query($wpdb->prepare('
+			INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, pay_button_order_id, paymill_transaction_time, paymill_transaction_data)
+			VALUES (%s,%s,%s,%d,%d,%s)',
+			array(
+				$response['body']['data']['id'],
+				$response['body']['data']['payment']['id'],
+				$response['body']['data']['client']['id'],
+				$this->order_id,
+				$this->order_id,
+				serialize($_POST)
+			)));
+			
+			do_action('paymill_paybutton_products_paid', array(
+				'total'			=> $this->total,
+				'currency'		=> $this->currency(),
+				'client'		=> $response['body']['data']['client']['id']
+			));
+			
+			return true;
+		}else{ // total is zero, so just return true
+			return true;
+		}
+	}
 	function sale ($Event) {
 		global $wpdb;
+		
+		$this->order_id				= $Event->order;
+		$this->order_desc			= __('Order #','paymill').$this->order_id;
+		$this->order				= $this->Order;
+		$this->cart					= $this->order->Cart;
+		$this->total_complete		= round((floatval($Event->amount)*100));
+		$this->total				= $this->total_complete;
+		$Billing					= $this->order->Billing;
+		$Paymethod					= $this->order->paymethod();
 
-		$order = $this->Order;
-		$orderTotals = $order->Cart->Totals;
-		$Billing = $order->Billing;
-		$Paymethod = $order->paymethod();
+		$this->client					= $this->getCurrentClient();
 		
-		
-		// first retrieve client data, either from cache or from API
-		require_once(PAYMILL_DIR.'lib/integration/client.inc.php');
-		$clientClass			= new paymill_client(
-									$order->Customer->email,
-									$order->Customer->firstname.' '.$order->Customer->lastname
-								);
-		
-		$client					= $clientClass->getCurrentClient();
-
 		// client retrieved, now we are ready to process the payment
-		if($client['id'] !== false && strlen($client['id']) > 0){
-			require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
-			
-			$paymentClass		= new paymill_payment($client['id']);
-			
-			// calculate total based on product settings
-			$total = (floatval($orderTotals->total)*100);
-		
-			$order_id				= $Event->order;
-	
-			// make transaction (single time)
-			if($total > 0){
-				$transactionsObject = new Services_Paymill_Transactions($GLOBALS['paymill_settings']->paymill_general_settings['api_key_private'], $GLOBALS['paymill_settings']->paymill_general_settings['api_endpoint']);
-			
-				$ordermsg = __('Order', 'paymill').' #'.$order_id.' '.__('Forename', 'paymill').': '.strip_tags($order->Customer->firstname).' '.__('Surname', 'paymill').': '.strip_tags($order->Customer->lastname);
-				
-				$params = array(
-					'amount'		=> str_replace('.','',"$total"),  // e.g. "4200" for 42.00 EUR
-					'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],   // ISO 4217
-					'payment'		=> $paymentClass->getPaymentID(),
-					'client'		=> $client['id'],
-					'description'	=> $ordermsg,
-					'source'		=> serialize($GLOBALS['paymill_source'])
-				);				
-				$transaction        = $transactionsObject->create($params);
-				
-				$response = $transactionsObject->getResponse();
-				if(isset($response['body']['data']['response_code']) && $response['body']['data']['response_code'] != '20000'){
-						shopp_add_order_event($Purchase->id, 'auth-fail', array(
-							'amount' => $orderTotals->total,	// Amount to be authorized
-							'gateway' => $Event->gateway,		// Gateway handler name (module name from @subpackage)
-							'message' => $response['body']['data']['response_code'], 'paymill')
-						);
-				}else{
-					// save data to transaction table
-					$query = 'INSERT INTO '.$wpdb->prefix.'paymill_transactions (paymill_transaction_id, paymill_payment_id, paymill_client_id, shopplugin_order_id, paymill_transaction_time) VALUES ("'.$transaction['id'].'", "'.$transaction['payment']['id'].'", "'.$transaction['client']['id'].'", "'.$order_id.'", "'.time().'")';
-					$wpdb->query($query);
-				
-					// the order_id usually comes from the auth or sale event object $Event->order
-					shopp_add_order_event( $Event->order, 'authed', array( 
-						'txnid' => $transaction['payment']['id'],             // Transaction ID from payment gateway, in some cases will be in $Event->txnid
-						'amount' => $orderTotals->total,               // Gross amount authorized
-						'gateway' => $Event->gateway,   // Gateway handler name (module name from @subpackage)
-						'paymethod' => $Paymethod->label,   // Payment method (payment method label from your payment settings)
-						'paytype' => $Billing->cardtype,            // Type of payment (check, MasterCard, etc)
-						'payid' => $Billing->card,              // Payment ID (last 4 of card or check number)
-					));
+		if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
+			// load subscription class
+			//$this->subscriptions		= new paymill_subscriptions('shopp');
+			//$this->offers				= $this->subscriptions->offerGetList();
 
-					// either immediately after authed (in the case of a sale event)
-					// or in response to a capture order event
-					shopp_add_order_event( $Event->order, 'captured', array( 
-						'txnid' => $transaction['payment']['id'],             // Transaction ID from payment gateway, in some cases will be in $Event->txnid
-						'amount' => $orderTotals->total,               // Gross amount captured
-						'gateway' => $Event->gateway,   // Gateway handler name (module name from @subpackage)
-						'fees' => 0                  // Transaction fee assessed by the payment gateway
-					));
-					
-					do_action('paymill_shopplugin_products_paid', array(
-						'total'			=> $total,
-						'currency'		=> $GLOBALS['paymill_settings']->paymill_general_settings['currency'],
-						'client'		=> $client['id']
-					));
-				}
+			// get the totals for pre authorization
+			//$this->getTotals();
+
+			// create payment object and preauthorization
+			require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
+			$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,$this->currency()); // create payment object, as it should be used for next processing instead of the token.
+			if($GLOBALS['paymill_loader']->paymill_errors->status()){
+				shopp_add_order_event($Purchase->id, 'auth-fail', array(
+					'amount' => $orderTotals->total,	// Amount to be authorized
+					'gateway' => $Event->gateway,		// Gateway handler name (module name from @subpackage)
+					'message' => $GLOBALS['paymill_loader']->paymill_errors->getErrors(), 'paymill')
+				);
+				return false;
 			}
+		
+			// process subscriptions & products
+			if($this->processSubscriptions() && $this->processProducts()){
+				// success
+				// the order_id usually comes from the auth or sale event object $Event->order
+				shopp_add_order_event( $Event->order, 'authed', array( 
+					'txnid' => $transaction['payment']['id'],             // Transaction ID from payment gateway, in some cases will be in $Event->txnid
+					'amount' => $orderTotals->total,               // Gross amount authorized
+					'gateway' => $Event->gateway,   // Gateway handler name (module name from @subpackage)
+					'paymethod' => $Paymethod->label,   // Payment method (payment method label from your payment settings)
+					'paytype' => $Billing->cardtype,            // Type of payment (check, MasterCard, etc)
+					'payid' => $Billing->card,              // Payment ID (last 4 of card or check number)
+				));
+
+				// either immediately after authed (in the case of a sale event)
+				// or in response to a capture order event
+				shopp_add_order_event( $Event->order, 'captured', array( 
+					'txnid' => $transaction['payment']['id'],             // Transaction ID from payment gateway, in some cases will be in $Event->txnid
+					'amount' => $orderTotals->total,               // Gross amount captured
+					'gateway' => $Event->gateway,   // Gateway handler name (module name from @subpackage)
+					'fees' => 0                  // Transaction fee assessed by the payment gateway
+				));
+				
+				do_action('paymill_shopplugin_products_paid', array(
+					'total'			=> $total,
+					'currency'		=> $this->currency(),
+					'client'		=> $client['id']
+				));
+			}else{
+				if($GLOBALS['paymill_loader']->paymill_errors->status()){
+					$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+				}
+				return false;
+			}
+		}else{
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__('There was an issue with adding you as client for the payment process.', 'paymill'));
+			return false;
 		}
 	}
 	
