@@ -30,17 +30,9 @@
 				</select>
 			</div>
 			<?php } ?>
-<<<<<<< HEAD
 			<input type="hidden" name="paymill_offer[<?php echo $id; ?>]" value="<?php echo $offers[$product['products_offer']]['id']; ?>" />
 			<div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo ($offers[$product['products_offer']]['amount']/100); ?></div>
 			<div class="paymill_price"><?php echo number_format(($offers[$product['products_offer']]['amount']/100),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><div class="paymill_subscription"> /
-=======
-			<input type="hidden" name="paymill_offer[<?php echo $id; ?>]" value="<?php echo $offers[$product['offer']]['id']; ?>" />
-			<div class="paymill_price_calc_<?php echo $id; ?> paymill_hidden"><?php echo ($offers[$product['offer']]['amount']/100); ?></div><div class="paymill_price"><?php echo number_format(($offers[$product['offer']]['amount']/100),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']); ?></div><div class="paymill_subscription"> /
-<<<<<<< HEAD
->>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
-=======
->>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
 			<?php
 				$interval = explode(' ',$offers[$product['products_offer']]['interval']);
 				if($interval[0] == 1){

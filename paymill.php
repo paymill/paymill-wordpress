@@ -3,16 +3,8 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-<<<<<<< HEAD
-<<<<<<< HEAD
 Version: 1.6.0
 Author: Matthias Reuter info@straightvisions.com
-=======
-=======
->>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
-Version: 1.5.2
-Author: Matthias Reuter / Elbnetz
->>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
 Author URI: http://elbnetz.com
 */
 
@@ -89,51 +81,8 @@ Author URI: http://elbnetz.com
 	if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_load_integration_classes'); // benchmark
 	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // pay button
 	require_once(PAYMILL_DIR.'lib/integration/woocommerce.inc.php'); // WooCommerce
-<<<<<<< HEAD
 	if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_load_integration_classes'); // benchmark
 	
 	// shutdown
 	if(paymill_BENCHMARK) add_action('shutdown', 'paymill_shutdownBenchmark'); // finish benchmark
 ?>
-=======
-
-	function paymill_scripts(){
-		wp_deregister_script(array('paymill_bridge','paymill_bridge_custom'));
-		wp_enqueue_script('jquery.formatCurrency-1.4.0.js', plugins_url( '/lib/js/jquery.formatCurrency-1.4.0.js' , __FILE__ ), array('jquery'), PAYMILL_VERSION);
-		wp_enqueue_script('paymill_bridge', 'https://bridge.paymill.de/', array('jquery'), PAYMILL_VERSION);
-		wp_localize_script('paymill_bridge', 'paymill_lang', array(
-			'validateCardNumber'		=> esc_attr__('Invalid Credit Card Number', 'paymill'),
-			'validateExpiry'			=> esc_attr__('Invalid Expiration Date', 'paymill'),
-			'validateCvc'				=> esc_attr__('Invalid CVC', 'paymill'),
-			'validateAccountNumber'		=> esc_attr__('Invalid Account Number', 'paymill'),
-			'validateBankCode'			=> esc_attr__('Invalid Bank Code', 'paymill'),
-			'decimalSymbol'				=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'], 'paymill'),
-			'digitGroupSymbol'			=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands'], 'paymill'),
-			'symbol'					=> esc_attr__($GLOBALS['paymill_settings']->paymill_general_settings['currency'], 'paymill'),
-		));
-		wp_enqueue_script('paymill_bridge_custom', plugins_url( '/lib/js/paymill.js' , __FILE__ ), array('paymill_bridge'), PAYMILL_VERSION);
-		wp_enqueue_script('livevalidation', plugins_url( '/lib/js/livevalidation_standalone.compressed.js' , __FILE__ ), array('paymill_bridge_custom'), PAYMILL_VERSION);
-		wp_enqueue_script('livevalidation_custom', plugins_url( '/lib/js/livevalidation_custom.js' , __FILE__ ), array('livevalidation'), PAYMILL_VERSION);
-		wp_localize_script('livevalidation_custom', 'paymill_livevl', array(
-			'wrongLength'				=> esc_attr__('Must be {is} characters long!', 'paymill'),
-			'tooShort'					=> esc_attr__('Must not be less than {minimum} characters long!', 'paymill'),
-			'tooLong'					=> esc_attr__('Must not be more than {maximum} characters long!', 'paymill'),
-			'notANumber'				=> esc_attr__('Must be a number!', 'paymill'),
-			'notAnInteger'				=> esc_attr__('Must be an integer!', 'paymill'),
-			'wrongNumber'				=> esc_attr__('Must be {is}!', 'paymill'),
-			'tooLow'					=> esc_attr__('Must not be less than {minimum}!', 'paymill'),
-			'tooHigh'					=> esc_attr__('Must not be more than {maximum}!', 'paymill'),
-			'notEmpty'					=> esc_attr__('Supply a value!', 'paymill'),
-		));
-		
-		if(empty($GLOBALS['paymill_settings']->paymill_pay_button_settings['no_default_css']) || $GLOBALS['paymill_settings']->paymill_pay_button_settings['no_default_css'] != '1'){
-			wp_enqueue_style('paymill', plugins_url( '/lib/css/paymill.css' , __FILE__ ), false, PAYMILL_VERSION, false);
-		}
-	}
-	add_action('wp_enqueue_scripts', 'paymill_scripts');
-
-?>
-<<<<<<< HEAD
->>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
-=======
->>>>>>> ff593a5371bcaa3080ee669f96c8ceeeff9df6e4
