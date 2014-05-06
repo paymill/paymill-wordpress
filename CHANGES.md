@@ -3,6 +3,10 @@
 Changelog
 =========
 
+1.6.1
+-----
+* WooCommerce: support for German Market added
+
 1.6
 -----
 * Major Update!

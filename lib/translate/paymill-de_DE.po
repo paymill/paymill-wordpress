@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Paymill\n"
 "POT-Creation-Date: 2014-05-05 22:28+0100\n"
-"PO-Revision-Date: 2014-05-05 22:40+0100\n"
+"PO-Revision-Date: 2014-05-06 13:47+0100\n"
 "Last-Translator: Matthias Reuter <info@straightvisions.com>\n"
 "Language-Team: Matthias Reuter <reuter@elbnetz.com>\n"
 "Language: de\n"
@@ -99,7 +99,7 @@ msgstr "Es gibt ein Problem mit den Payment Daten"
 
 #: lib/config.inc.php:63
 msgid "40102"
-msgstr "Die Kreditkarte ist abgelaufen oder noch gültig"
+msgstr "Die Kreditkarte ist abgelaufen oder noch nicht gültig"
 
 #: lib/config.inc.php:64
 msgid "40106"

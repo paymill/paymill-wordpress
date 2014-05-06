@@ -3,13 +3,17 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.6.0
+Version: 1.6.1
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
 
+	// fix for "failed to delete buffer" bug in WordPress
+	// see https://core.trac.wordpress.org/ticket/22430
+	remove_action( 'shutdown', 'wp_ob_end_flush_all', 1 );
+
 	// common information
-	define('PAYMILL_VERSION',1600);
+	define('PAYMILL_VERSION',1601);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	define('PAYMILL_PLUGIN_URL',plugins_url( '' , __FILE__ ).'/');
 	$GLOBALS['paymill_active'] = false; // eCommerce channels will set Paymill as active later to prevent showing payment form twice on same page.
@@ -79,8 +83,8 @@ Author URI: http://elbnetz.com
 	
 	// load integration classes
 	if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_load_integration_classes'); // benchmark
-	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // pay button
 	require_once(PAYMILL_DIR.'lib/integration/woocommerce.inc.php'); // WooCommerce
+	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // pay button
 	if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_load_integration_classes'); // benchmark
 	
 	// shutdown

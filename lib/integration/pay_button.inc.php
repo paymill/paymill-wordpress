@@ -262,10 +262,12 @@
 		}
 		function widget($args, $instance){
 			global $wpdb;
+
 			if(
 				!$GLOBALS['paymill_active'] &&
 				isset($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) &&
-				count($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) > 0
+				count($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) > 0 &&
+				get_the_ID() != get_option('woocommerce_check_page_id') // compatibility with WooCommerce German Market
 			){
 				paymill_load_frontend_scripts(); // load frontend scripts
 			
