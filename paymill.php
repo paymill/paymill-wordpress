@@ -8,12 +8,8 @@ Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
 
-	// fix for "failed to delete buffer" bug in WordPress
-	// see https://core.trac.wordpress.org/ticket/22430
-	remove_action( 'shutdown', 'wp_ob_end_flush_all', 1 );
-
 	// common information
-	define('PAYMILL_VERSION',1601);
+	define('PAYMILL_VERSION',1602);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	define('PAYMILL_PLUGIN_URL',plugins_url( '' , __FILE__ ).'/');
 	$GLOBALS['paymill_active'] = false; // eCommerce channels will set Paymill as active later to prevent showing payment form twice on same page.
