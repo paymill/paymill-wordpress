@@ -3,6 +3,11 @@
 Changelog
 =========
 
+1.6.2
+-----
+* WooCommerce: order status for normal products (non-subscription) did not switched to processing after payment - fixed
+* Common: Payment Type Buttons will appear more intelligent
+
 1.6.1
 -----
 * WooCommerce: support for German Market added

@@ -18,24 +18,42 @@
 			}
 			echo '</div>';
 		}
+		// count buttons
+		// credit card
+		$buttons = 0;
+		if($count_all_payment_types > $count_bank_payment_types){
+			$buttons++;
+		}
+		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['sepa']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['sepa'] == 1){
+			$buttons++;
+		}
+		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv'] == 1){
+			$buttons++;
+		}
+		
+		if($buttons > 1){
+			$visibility = '';
+		}else{
+			$visibility = ' style="display:none;"';
+		}
 		// credit card
 		if($count_all_payment_types > $count_bank_payment_types){
 			$show_cc = true;
-			echo '<div id="paymill_form_switch_credit" class="paymill_form_switch paymill_form_switch_active">'.__('Credit Card', 'paymill').'</div>';
+			echo '<div id="paymill_form_switch_credit" class="paymill_form_switch paymill_form_switch_active"'.$visibility.'>'.__('Credit Card', 'paymill').'</div>';
 		}
 		// SEPA
 		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['sepa']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['sepa'] == 1){
 			if(!isset($show_cc)){
 				$show_sepa = true;
 			}
-			echo '<div id="paymill_form_switch_sepa" class="paymill_form_switch paymill_form_switch'.(isset($show_sepa) ? '_active' : '').'">'.__('SEPA', 'paymill').'</div>';
+			echo '<div id="paymill_form_switch_sepa" class="paymill_form_switch paymill_form_switch'.(isset($show_sepa) ? '_active' : '').'"'.$visibility.'>'.__('SEPA', 'paymill').'</div>';
 		}
 		// ELV
 		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv'] == 1){
 			if(!isset($show_cc) && !isset($show_sepa)){
 				$show_sepa = true;
 			}
-			echo '<div id="paymill_form_switch_elv" class="paymill_form_switch paymill_form_switch'.(isset($show_elv) ? '_active' : '').'">'.__('ELV', 'paymill').'</div>';
+			echo '<div id="paymill_form_switch_elv" class="paymill_form_switch paymill_form_switch'.(isset($show_elv) ? '_active' : '').'"'.$visibility.'>'.__('ELV', 'paymill').'</div>';
 		}
 	?>
 	<div class="paymill_holdername">

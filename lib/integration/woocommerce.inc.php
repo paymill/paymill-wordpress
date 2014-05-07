@@ -626,7 +626,7 @@
 						// process subscriptions & products
 						if($this->processSubscriptions() && $this->processProducts()){
 							// success
-							if(method_exists($order, 'payment_complete')){
+							if(method_exists($this->order, 'payment_complete')){
 								// if order contains subscription, mark payment complete later when webhook triggers succeeded payment
 								if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
 									$this->order->update_status('on-hold', __( 'Awaiting payment confirmation from Paymill.', 'paymill' ));
