@@ -391,8 +391,8 @@
 				}
 				public function get_icon() {
 					global $woocommerce;
-
-					$icon = '<a href="https://www.paymill.com/" target="_blank"><img src="' . WC_HTTPS::force_https_url( $this->logo_small ) . '" alt="' . $this->title . '" /></a>';
+					
+					$icon = '';
 
 					if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && is_array($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) > 0){
 						foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
@@ -401,7 +401,7 @@
 							}
 						}
 					}
-	
+
 					return apply_filters('woocommerce_gateway_icon', $icon, $this->id);
 				}
 				public function init_form_fields(){
@@ -420,7 +420,8 @@
 							'desc_tip'		=> true,
 						),
 						'description' => array(
-							'title'			=> __('Customer Message', 'woocommerce'),
+							'title'			=> __('Description', 'woocommerce'),
+							'description'	=> __('This controls the description which the user sees during checkout.', 'woocommerce'),
 							'type'			=> 'textarea',
 							'default'		=> 'Payments made easy'
 						)
@@ -597,7 +598,7 @@
 				}
 				public function process_payment($order_id){
 					global $woocommerce,$wpdb;
-					
+
 					$this->client					= $this->getCurrentClient();
 					// client retrieved, now we are ready to process the payment
 					if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
@@ -622,7 +623,7 @@
 							$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 							return false;
 						}
-						
+
 						// process subscriptions & products
 						if($this->processSubscriptions() && $this->processProducts()){
 							// success
@@ -636,7 +637,7 @@
 							}
 
 							// Reduce stock levels
-							if(method_exists($order, 'reduce_order_stock')){
+							if(method_exists($this->order, 'reduce_order_stock')){
 								$this->order->reduce_order_stock();
 							}
 
@@ -686,6 +687,11 @@
 						paymill_form_checkout_submit_id = "#place_order";
 						paymill_shop_name = "woocommerce";
 						</script>';
+						
+						
+						echo '<a href="https://www.paymill.com/" target="_blank"><img src="' . WC_HTTPS::force_https_url( $this->logo_small ) . '" alt="' . $this->title . '" /></a>';
+						
+						echo '<p class="paymill_payment_description">'.$this->settings['description'].'</p>';
 			
 						require_once(PAYMILL_DIR.'lib/tpl/checkout_form.php');
 					}else{

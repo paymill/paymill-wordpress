@@ -65,26 +65,18 @@
 		</div>
 		<div class="paymill_card_data">
 			<div class="paymill_expire_date"><?php echo __('Expire Date: ', 'paymill'); ?></div>
-			<input class="paymill_card_expiry_month" id="paymill_card_expiry_month" type="text" size="2" value="" autocomplete="off" placeholder="<?php echo __('MM', 'paymill'); ?>" />
-			<input class="paymill_card_expiry_year" id="paymill_card_expiry_year" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('YYYY', 'paymill'); ?>" />
-			<input class="paymill_card_cvc" id="paymill_card_cvc" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('CVC', 'paymill'); ?>" />
+			<div class="paymill_card_expiry_month"><input class="paymill_card_expiry_month" id="paymill_card_expiry_month" type="text" size="2" value="" autocomplete="off" placeholder="<?php echo __('MM', 'paymill'); ?>" /></div>
+			<div class="paymill_card_expiry_year"><input class="paymill_card_expiry_year" id="paymill_card_expiry_year" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('YYYY', 'paymill'); ?>" /></div>
+			<div class="paymill_card_cvc"><input class="paymill_card_cvc" id="paymill_card_cvc" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('CVC', 'paymill'); ?>" /></div>
 		</div>
 	</div>
 	<div id="paymill_form_sepa"<?php if(!isset($show_sepa)){ echo ' style="display:none;"'; } ?>>	
-		<div class="paymill_sepa_iban">
-			<input id="paymill_sepa_iban" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('IBAN', 'paymill'); ?>">
-		</div>
-		<div class="paymill_sepa_bic">
-			<input id="paymill_sepa_bic" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('BIC', 'paymill'); ?>">
-		</div>
+		<div class="paymill_sepa_iban"><input id="paymill_sepa_iban" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('IBAN', 'paymill'); ?>"></div>
+		<div class="paymill_sepa_bic"><input id="paymill_sepa_bic" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('BIC', 'paymill'); ?>"></div>
 	</div>
 	<div id="paymill_form_elv"<?php if(!isset($show_elv)){ echo ' style="display:none;"'; } ?>>	
-		<div class="paymill_elv_number">
-			<input id="paymill_elv_number" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('Account Number', 'paymill'); ?>">
-		</div>
-		<div class="paymill_elv_bank">
-			<input id="paymill_elv_bank_code" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('Bank Code', 'paymill'); ?>">
-		</div>
+		<div class="paymill_elv_number"><input id="paymill_elv_number" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('Account Number', 'paymill'); ?>"></div>
+		<div class="paymill_elv_bank"><input id="paymill_elv_bank_code" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('Bank Code', 'paymill'); ?>"></div>
 		<!--[if gte IE 8]><!--><div class="paymill_elv_bankname"></div><!--<![endif]-->
 	</div>
 	<input class="paymill_amount" type="hidden" size="5" value="<?php if(isset($cart_total)){ echo $cart_total; } ?>"/>

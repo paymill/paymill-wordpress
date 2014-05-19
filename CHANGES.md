@@ -3,6 +3,11 @@
 Changelog
 =========
 
+1.6.3
+-----
+* Common: Minor bugs fixed
+* Common: Paymill logo now inside checkout form to give payment logos more space.
+
 1.6.2
 -----
 * WooCommerce: order status for normal products (non-subscription) did not switched to processing after payment - fixed

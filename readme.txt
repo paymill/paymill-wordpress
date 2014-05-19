@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.9
 Tested up to: 3.9
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -24,6 +24,7 @@ With PAYMILL you are able to provide credit card based payments for your custome
 PAYMILL offers the fastest and easiest way to accept payments online. The innovative payment solution enables online businesses and services to integrate payments into their websites within a very short time. The developer-friendly REST API is flexibly integrable. Customize the check-out process the way you want or use the PAYMILL PayButton which allows an even easier integration. Super-fast account activation within a few days only. Top-notch customer support. Subscriptions supported and Mobile SDKs for iOS and Android available. Accept payments in up to 100 currencies. All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported. Available in 40 countries across Europe so far.
 
 = Team =
+
 * Officially supported by <a href="https://paymill.com">PAYMILL</a>
 * Attended by <a href="http://elbnetz.com">Elbnetz</a>
 * Developed and maintenanced by <a href="http://straightvisions.com">straightvisions</a>
@@ -132,6 +133,11 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 6. Pay Button Shipping Settings
 
 == Changelog ==
+
+= 1.6.3 =
+
+* Common: Minor bugs fixed
+* Common: Paymill logo now inside checkout form to give payment logos more space.
 
 = 1.6.2 =
 
@@ -245,6 +251,11 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.6.3 =
+
+* Common: Minor bugs fixed
+* Common: Paymill logo now inside checkout form to give payment logos more space.
 
 = 1.6.2 =
 

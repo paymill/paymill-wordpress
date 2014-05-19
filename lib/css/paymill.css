@@ -5,11 +5,14 @@
 }
 #paymill_payment_form  .LV_valid {
 	color:#00CC00;
-	float:none;
+	float:left;
+	display:block;
 }
 #paymill_payment_form  .LV_invalid {
 	color:#CC0000;
 	float:none;
+	clear:both;
+	display:block;
 }
 #paymill_payment_form  .LV_valid_field,
 #paymill_payment_form  input.LV_valid_field:hover, 
@@ -34,8 +37,13 @@
 	padding:3px;
 	margin:0px 0px 5px 0px;
 	height:30px;
-	width:100%;
 	font-size:15px;
+	width:90%;
+}
+.paymill_card_data{
+	clear:both;
+	overflow:hidden;
+	max-width:80%;
 }
 .payment_method_paymill{
 	overflow:hidden;
@@ -43,20 +51,32 @@
 #paymill_payment_form #paymill_card_expiry_month{
 	width:40px;
 	text-align:center;
+	float:left;
+	clear:none;
 }
 #paymill_payment_form #paymill_card_expiry_year{
 	width:50px;
 	text-align:center;
+	float:left;
+	clear:none;
+	margin-left:5px;
 }
 #paymill_payment_form #paymill_card_cvc{
 	width:40px;
 	text-align:center;
+	float:left;
+	clear:none;
+	margin-left:5px;
+}
+#paymill_payment_form #paymill_card_cvc:after{
+	content:'';
+	display:block;
+	clear:both;
 }
 #paymill_payment_form #paymill_card_number{
 	background-image:url('../img/payment_logos.png');
 	background-repeat:no-repeat;
 	background-position:0px 30px;
-	text-align:right;
 	font-size:90%;
 }
 #paymill_framebox img{
