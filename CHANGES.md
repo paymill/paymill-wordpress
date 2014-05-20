@@ -3,6 +3,10 @@
 Changelog
 =========
 
+1.6.4
+-----
+* WooCommerce: inactive checkout button fixed
+
 1.6.3
 -----
 * Common: Minor bugs fixed
