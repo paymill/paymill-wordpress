@@ -451,11 +451,10 @@
 								$woo_sub_key		= WC_Subscriptions_Manager::get_subscription_key($this->order_id,$product->id);
 								
 								if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
-									// retrieve subscription amount
-									$recurr_amount					= floatval(floatval(WC_Subscriptions_Order::get_item_recurring_amount($this->order,$product->id))*100);
-									$this->total					= $this->total-$recurr_amount;
+									$sub_amount_total				= floatval(floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
+									$this->total					= $this->total-$sub_amount_total;
 									if($this->total_complete == 0){
-										$this->total_complete = $this->total_complete+$recurr_amount;
+										$this->total_complete = $this->total_complete+$sub_amount_total;
 									}
 								}
 							}
@@ -476,7 +475,7 @@
 								if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
 								
 									// required vars
-									$amount			= (floatval(WC_Subscriptions_Order::get_item_recurring_amount($this->order,$product['product_id']))*100);
+									$amount			= (floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
 									$currency		= get_woocommerce_currency();
 									$interval		= '1 '.strtoupper(WC_Subscriptions_Order::get_subscription_period($this->order,$product['product_id']));
 
@@ -593,6 +592,11 @@
 						
 						return true;
 					}else{ // total is zero, so just return true
+					
+						// remove preauth when not used
+						// @todo: Once preauths are usable for delayed payment in this plugin, we need to make a condition for this
+						$this->paymentClass->removePreauth();
+					
 						return true;
 					}
 				}
@@ -615,7 +619,7 @@
 				
 						// get the totals for pre authorization
 						$this->getTotals();
-
+						
 						// create payment object and preauthorization
 						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
 						$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,get_woocommerce_currency()); // create payment object, as it should be used for next processing instead of the token.
@@ -643,7 +647,7 @@
 
 							// Remove cart
 							$woocommerce->cart->empty_cart();
-
+							
 							// Return thankyou redirect
 							return array(
 								'result' => 'success',

@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.9
 Tested up to: 3.9
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -134,6 +134,11 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 
 == Changelog ==
 
+= 1.6.5 =
+
+* Common: Preauths for credit card validation will no longer stay when unused. They will be used (and differences refunded) or removed.
+* WooCommerce: pay-per-payment support for subscriptions
+
 = 1.6.4 =
 
 * WooCommerce: inactive checkout button fixed
@@ -255,6 +260,11 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.6.5 =
+
+* Common: Preauths for credit card validation will no longer stay when unused. They will be used (and differences refunded) or removed.
+* WooCommerce: pay-per-payment support for subscriptions
 
 = 1.6.4 =
 

@@ -3,6 +3,11 @@
 Changelog
 =========
 
+1.6.5
+-----
+* Common: Preauths for credit card validation will no longer stay when unused. They will be used (and differences refunded) or removed.
+* WooCommerce: pay-per-payment support for subscriptions
+
 1.6.4
 -----
 * WooCommerce: inactive checkout button fixed

@@ -152,6 +152,11 @@
 				
 				return true;
 			}else{ // total is zero, so just return true
+			
+				// remove preauth when not used
+				// @todo: Once preauths are usable for delayed payment in this plugin, we need to make a condition for this
+				$this->paymentClass->removePreauth();
+			
 				return true;
 			}
 		}

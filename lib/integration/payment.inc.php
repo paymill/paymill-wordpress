@@ -49,5 +49,11 @@ class paymill_payment{
 		}
 	}
 	
+	public function removePreauth(){
+		if($this->getPreauthID()){
+			$GLOBALS['paymill_loader']->request_preauth->setId($this->getPreauthID());
+			$GLOBALS['paymill_loader']->request->delete($GLOBALS['paymill_loader']->request_preauth);
+		}
+	}
 }
 ?>
