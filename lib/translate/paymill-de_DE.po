@@ -64,7 +64,7 @@ msgstr "Dieser Kundenaccount ist auf einer Schwarzen Liste"
 #: lib/config.inc.php:55
 msgid "40103"
 msgstr ""
-"Das Umsatzimit der Kreditkarte wurde mit dieser Transaktion überschritten "
+"Das Umsatzlimit der Kreditkarte wurde mit dieser Transaktion überschritten "
 "oder ist bereits überschritten"
 
 #: lib/config.inc.php:56
@@ -95,7 +95,7 @@ msgstr "Die Kreditkarte ist ungültig"
 
 #: lib/config.inc.php:62
 msgid "40001"
-msgstr "Es gibt ein Problem mit den Payment Daten"
+msgstr "Es gibt ein Problem mit den Payment-Daten"
 
 #: lib/config.inc.php:63
 msgid "40102"
@@ -119,7 +119,7 @@ msgstr "Die Benutzer-Authentifizierung ist fehlgeschlagen"
 
 #: lib/config.inc.php:68
 msgid "50502"
-msgstr "Es gibt eine Zeitüberschreitung bei der Risiko-Management Transaktion"
+msgstr "Es gibt eine Zeitüberschreitung bei der Risiko-Management-Transaktion"
 
 #: lib/config.inc.php:69
 msgid "40301"
@@ -135,7 +135,7 @@ msgstr "Der Verwendungszweck ist zu lang"
 
 #: lib/config.inc.php:72
 msgid "40403"
-msgstr "Die Währung ist nicht für den Kunden konfigurierten"
+msgstr "Die Währung ist nicht für den Kunden konfiguriert"
 
 #: lib/config.inc.php:73
 msgid "50104"
@@ -189,7 +189,7 @@ msgstr "Stadt"
 
 #: lib/config.inc.php:87
 msgid "email"
-msgstr "Email"
+msgstr "E-Mail"
 
 #: lib/config.inc.php:88
 msgid "phone"
@@ -207,7 +207,7 @@ msgstr "Abonnement bereits abgeschlossen"
 
 #: lib/config.inc.php:106
 msgid "General Plugin Settings"
-msgstr "Generelle Plugin Einstellungen"
+msgstr "Generelle Plugin-Einstellungen"
 
 #: lib/config.inc.php:108
 msgid "Paymill PRIVATE API key"
@@ -227,11 +227,11 @@ msgstr "Standard-CSS nicht laden"
 
 #: lib/config.inc.php:130
 msgid "Number Format: Decimal Point"
-msgstr "Nummern Formatierung: Dezimalpunkt"
+msgstr "Nummern-Formatierung: Dezimalpunkt"
 
 #: lib/config.inc.php:131
 msgid "Number Format: Thousands Seperator"
-msgstr "Nummern Formatierung: Tausender-Trenner"
+msgstr "Nummern-Formatierung: Tausender-Trenner"
 
 #: lib/config.inc.php:132
 msgid "Currency"
@@ -239,11 +239,11 @@ msgstr "Währung"
 
 #: lib/config.inc.php:133
 msgid "Outgoing Email"
-msgstr "Ausgehende Emailadresse"
+msgstr "Ausgehende E-Mail-Adresse"
 
 #: lib/config.inc.php:134
 msgid "Incoming Email"
-msgstr "Eingehende Emailadresse"
+msgstr "Eingehende E-Mail-Adresse"
 
 #: lib/config.inc.php:135
 msgid "Thank You URL"
@@ -275,7 +275,7 @@ msgstr "Umsatzsteuer"
 
 #: lib/config.inc.php:162
 msgid "Subscription Offer"
-msgstr "Abonnement Angebot"
+msgstr "Abonnement-Angebot"
 
 #: lib/config.inc.php:163
 msgid "Price"
@@ -291,7 +291,7 @@ msgstr "Lieferkosten"
 
 #: lib/config.inc.php:188
 msgid "Shipping VAT"
-msgstr "Liefer Umsatzsteuer"
+msgstr "Liefer-Umsatzsteuer"
 
 #: lib/config.inc.php:200
 msgid "Please insert your API settings here."
@@ -358,7 +358,7 @@ msgstr "Detaillierte Beschreibung des Produkts"
 
 #: lib/config.inc.php:268 lib/config.inc.php:430
 msgid "Gross Price of the product, e.g. 40 or 6.99"
-msgstr "Brutto Preis des Produkts, z.B. 40 oder 6.99"
+msgstr "Brutto-Preis des Produkts, z.B. 40 oder 6.99"
 
 #: lib/config.inc.php:269
 msgid ""
@@ -415,15 +415,15 @@ msgstr "Lege ein Symbol für das Tausender-Trennzeichen fest. Standard: ,"
 
 #: lib/config.inc.php:415
 msgid "Outgoing Emailaddress for customer order confirmation mail."
-msgstr "Ausgehende Emailadresse für die Kundenbestellbestätigung."
+msgstr "Ausgehende E-Mail-Adresse für die Kundenbestellbestätigung."
 
 #: lib/config.inc.php:416
 msgid "Incoming Emailaddress for Copy of customer order confirmation mail."
-msgstr "Eingehende Emailadresse für eine Kopie der Kundenbestellbestätigung."
+msgstr "Eingehende E-Mail-Adresse für eine Kopie der Kundenbestellbestätigung."
 
 #: lib/config.inc.php:417
 msgid "Redirect URL for custom thank your page."
-msgstr "Weiterleitungs-URL für eigene Dankeseiten."
+msgstr "Weiterleitungs-URL für eigene Danke-Seiten."
 
 #: lib/config.inc.php:419
 msgid ""
@@ -444,12 +444,12 @@ msgstr ""
 
 #: lib/config.inc.php:421
 msgid "Insert your Paymill <strong>PRIVATE</strong> API key."
-msgstr "Fügen Sie Ihren <strong>PRIVATEN</strong> Paymill API Schlüssel ein."
+msgstr "Fügen Sie Ihren <strong>PRIVATEN</strong> Paymill API-Schlüssel ein."
 
 #: lib/config.inc.php:422
 msgid "Insert your Paymill <strong>PUBLIC</strong> API key."
 msgstr ""
-"Fügen Sie Ihren <strong>ÖFFENTLICHEN</strong> Paymill API Schlüssel ein."
+"Fügen Sie Ihren <strong>ÖFFENTLICHEN</strong> Paymill API-Schlüssel ein."
 
 #: lib/config.inc.php:424
 msgid "Name of the available delivery country, e.g. England"
@@ -457,7 +457,7 @@ msgstr "Name des verfügbaren Lieferlandes, z.B. England"
 
 #: lib/config.inc.php:425
 msgid "Gross fee for the flat shipping costs., e.g. 7 or 4.90"
-msgstr "Brutto Gebühr für die pauschalen Versandkosten, z.B. 7 oder 4.90"
+msgstr "Brutto-Gebühr für die pauschalen Versandkosten, z.B. 7 oder 4.90"
 
 #: lib/config.inc.php:426
 #, php-format
@@ -681,7 +681,7 @@ msgstr "Land"
 
 #: lib/integration/pay_button.inc.php:171 lib/tpl/pay_button.php:145
 msgid "Email"
-msgstr "Email"
+msgstr "E-Mail"
 
 #: lib/integration/pay_button.inc.php:172 lib/tpl/pay_button.php:141
 msgid "Phone"
@@ -725,7 +725,7 @@ msgstr "Aktivieren/Deaktivieren"
 
 #: lib/integration/woocommerce.inc.php:412
 msgid "Enable PAYMILL Payment"
-msgstr "Aktiviere Paymill Bezahlung"
+msgstr "Aktiviere Paymill-Zahlung"
 
 #: lib/integration/woocommerce.inc.php:416
 msgid "Title"
@@ -770,7 +770,7 @@ msgstr "Karteninhaber"
 
 #: lib/tpl/checkout_form.php:46
 msgid "Card Number"
-msgstr "Kreditkarten Nummer"
+msgstr "Kreditkarten-Nummer"
 
 #: lib/tpl/checkout_form.php:49
 msgid "Expire Date: "
@@ -782,7 +782,7 @@ msgstr "MM"
 
 #: lib/tpl/checkout_form.php:51
 msgid "YYYY"
-msgstr "YYYY"
+msgstr "JJJJ"
 
 #: lib/tpl/checkout_form.php:52
 msgid "CVC"
