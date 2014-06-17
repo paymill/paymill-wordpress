@@ -3,6 +3,13 @@
 Changelog
 =========
 
+1.6.6
+-----
+* WooCommerce: Maintenance tab added to check webhook status.
+* Common: Translation issues fixed
+* Common: Don't load default CSS feature fixed
+* Common: "Client not found" issue fixed
+
 1.6.5
 -----
 * Common: Preauths for credit card validation will no longer stay when unused. They will be used (and differences refunded) or removed.

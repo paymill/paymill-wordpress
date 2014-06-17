@@ -9,6 +9,8 @@ class paymill_client{
 	public function __construct($client_email,$client_desc){
 		global $wpdb;
 		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+		
+		$client = false;
 	
 		// get client cache
 		$sql = $wpdb->prepare('SELECT * FROM '.$wpdb->prefix.'paymill_clients WHERE paymill_client_email=%s',
@@ -17,7 +19,6 @@ class paymill_client{
 		));
 
 		$client_cache			= $wpdb->get_results($sql,ARRAY_A);
-
 		if(count($client_cache) > 0 && ($client_cache[0]['paymill_client_email'] != $client_email || $client_cache[0]['paymill_client_description'] != $client_desc)){
 			// update client in paymill
 			$GLOBALS['paymill_loader']->request_client->setId($client_cache[0]['paymill_client_id']);
@@ -39,18 +40,27 @@ class paymill_client{
 				'client_email'	=> $client_email,
 				'client_desc'	=> $client_desc
 			));
-		
 		// try loading the client
 		}elseif(count($client_cache) > 0){
-			$GLOBALS['paymill_loader']->request_client->setId($client_cache[0]['paymill_client_id']);
-			$client = $GLOBALS['paymill_loader']->request->getOne($GLOBALS['paymill_loader']->request_client);
+			try{
+				$GLOBALS['paymill_loader']->request_client->setId($client_cache[0]['paymill_client_id']);
+				$client = $GLOBALS['paymill_loader']->request->getOne($GLOBALS['paymill_loader']->request_client);
+			}catch(Exception $e){
+			}
 		// client does not exist in Paymill, so create
-		}else{
-			$GLOBALS['paymill_loader']->request_client->setEmail($client_email);
-			$GLOBALS['paymill_loader']->request_client->setDescription($client_desc);
-			
-			// @todo: handle response
-			$client = $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_client);
+		}
+		
+		if($client == false){
+			try{
+				$GLOBALS['paymill_loader']->request_client = new $GLOBALS['paymill_loader']->request_client;
+				$GLOBALS['paymill_loader']->request_client->setEmail($client_email);
+				$GLOBALS['paymill_loader']->request_client->setDescription($client_desc);
+				
+				// @todo: handle response
+				$client = $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_client);
+			}catch(Exception $e){
+				$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			}
 			
 			// insert new client in local cache
 			if(get_current_user_id()){
@@ -58,16 +68,18 @@ class paymill_client{
 			}else{
 				$user_id = 0;
 			}
+			
+			$wpdb->query('DELETE FROM '.$wpdb->prefix.'paymill_clients WHERE wp_member_id="'.$user_id.'"');
 
-			$wpdb->query($wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_clients
-			(paymill_client_id, paymill_client_email, paymill_client_description, wp_member_id)
-			VALUES (%s,%s,%s,%s)',
+			$sql = $wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_clients
+			SET paymill_client_id="%s", paymill_client_email="%s", paymill_client_description="%s", wp_member_id="%s"',
 			array(
 				$client->getId(),
 				$client_email,
 				$client_desc,
 				$user_id
-			)));
+			));
+			$wpdb->query($sql);
 			
 			do_action('paymill_paybutton_client_created', array(
 				'client'		=> $client,
@@ -75,6 +87,7 @@ class paymill_client{
 				'client_desc'	=> $client_desc
 			));
 		}
+		
 		$this->client			= $client;
 	}
 	

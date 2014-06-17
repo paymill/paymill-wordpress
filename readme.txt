@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.9
 Tested up to: 3.9
-Stable tag: 1.6.5
+Stable tag: 1.6.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,12 +12,23 @@ With PAYMILL you are able to provide credit card based payments for your custome
 
 == Description ==
 
-= Supported Shops: =
+= Requires: =
+* PHP 5.3 or higher
+* WordPress 3.9.x or higher
 
-* Payment Gateway for WooCommerce - incl. subscription support
-* Payment Gateway for ShopPlugin
-* Payment Gateway for Magic Members - incl. subscription support
-* Pay Button - incl. subscription support
+= Supported Shops including subscriptions support: =
+
+* WooCommerce (2.1.x)
+* Magic Members (1.8.x)
+* Pay Button (independent, light-weight payment form)
+
+= Supported Shops without subscriptions support (yet): =
+
+* ShopPlugin (1.3.x)
+
+= work in progress: =
+
+* MarketPress (2.9.x)
 
 = Service Description =
 
@@ -133,6 +144,13 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 6. Pay Button Shipping Settings
 
 == Changelog ==
+
+= 1.6.6 =
+
+* WooCommerce: Maintenance tab added to check webhook status.
+* Common: Translation issues fixed
+* Common: Don't load default CSS feature fixed
+* Common: "Client not found" issue fixed
 
 = 1.6.5 =
 
@@ -260,6 +278,13 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.6.6 =
+
+* WooCommerce: Maintenance tab added to check webhook status.
+* Common: Translation issues fixed
+* Common: Don't load default CSS feature fixed
+* Common: "Client not found" issue fixed
 
 = 1.6.5 =
 

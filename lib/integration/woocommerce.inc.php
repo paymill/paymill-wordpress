@@ -3,12 +3,9 @@
 	if(!function_exists('paymill_woocommerce_errorHandling')){
 		function paymill_woocommerce_errorHandling($errors){
 			global $woocommerce;
-			
 			foreach($errors as $error){
-				$output		.= '<div class="paymill_error">'.$error.'</div>';
+				$woocommerce->add_error('<div class="paymill_error">'.$error.'</div>');
 			}
-
-			$woocommerce->add_error($output);
 		}
 	}
 
@@ -602,7 +599,7 @@
 				}
 				public function process_payment($order_id){
 					global $woocommerce,$wpdb;
-
+					
 					$this->client					= $this->getCurrentClient();
 					// client retrieved, now we are ready to process the payment
 					if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
@@ -630,6 +627,7 @@
 
 						// process subscriptions & products
 						if($this->processSubscriptions() && $this->processProducts()){
+
 							// success
 							if(method_exists($this->order, 'payment_complete')){
 								// if order contains subscription, mark payment complete later when webhook triggers succeeded payment

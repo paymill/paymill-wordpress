@@ -20,7 +20,7 @@ class paymill_errors{
 	}
 	
 	public function setFunction($function){
-		if(is_string($function)){
+		if(is_string($function) && $this->outputFunction === false){
 			$this->outputFunction		= $function;
 			return true;
 		}else{
@@ -40,7 +40,6 @@ class paymill_errors{
 		if($function === false && $this->getFunction() !== false && is_string($this->getFunction())){
 			$function = $this->getFunction();
 		}
-		
 		if(strlen($function) > 0){
 			return $function($this->errors);
 		}else{

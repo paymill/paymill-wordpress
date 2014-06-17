@@ -40,16 +40,36 @@
 		wp_enqueue_script('jquery.formatCurrency-1.4.0.js',PAYMILL_PLUGIN_URL.'lib/js/jquery.formatCurrency-1.4.0.js', array('jquery'), PAYMILL_VERSION);
 		wp_enqueue_script('paymill_bridge', 'https://bridge.paymill.de/', array('jquery'), PAYMILL_VERSION);
 		wp_localize_script('paymill_bridge', 'paymill_lang', array(
-			'validateCardNumber'		=> esc_attr__('Invalid Credit Card Number', 'paymill'),
-			'validateExpiry'			=> esc_attr__('Invalid Expiration Date', 'paymill'),
-			'validateCvc'				=> esc_attr__('Invalid CVC', 'paymill'),
-			'validateAccountNumber'		=> esc_attr__('Invalid Account Number', 'paymill'),
-			'validateBankCode'			=> esc_attr__('Invalid Bank Code', 'paymill'),
-			'validateIBAN'				=> esc_attr__('Invalid IBAN', 'paymill'),
-			'validateBIC'				=> esc_attr__('Invalid BIC', 'paymill'),
-			'decimalSymbol'				=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'], 'paymill'),
-			'digitGroupSymbol'			=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands'], 'paymill'),
-			'symbol'					=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['currency'], 'paymill'),
+			'validateCardNumber'				=> esc_attr__('Invalid Credit Card Number', 'paymill'),
+			'validateExpiry'					=> esc_attr__('Invalid Expiration Date', 'paymill'),
+			'validateCvc'						=> esc_attr__('Invalid CVC', 'paymill'),
+			'validateAccountNumber'				=> esc_attr__('Invalid Account Number', 'paymill'),
+			'validateBankCode'					=> esc_attr__('Invalid Bank Code', 'paymill'),
+			'validateIBAN'						=> esc_attr__('Invalid IBAN', 'paymill'),
+			'validateBIC'						=> esc_attr__('Invalid BIC', 'paymill'),
+			'decimalSymbol'						=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'], 'paymill'),
+			'digitGroupSymbol'					=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands'], 'paymill'),
+			'symbol'							=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['currency'], 'paymill'),
+			'internal_server_error'				=> esc_attr__('Communication with PSP failed', 'paymill'),
+			'invalid_public_key'				=> esc_attr__('Invalid Public Key', 'paymill'),
+			'invalid_payment_data'				=> esc_attr__('not permitted for this method of payment, credit card type, currency or country', 'paymill'),
+			'unknown_error'						=> esc_attr__('Unknown Error', 'paymill'),
+			'3ds_cancelled'						=> esc_attr__('Password Entry of 3-D Secure password was cancelled by the user', 'paymill'),
+			'field_invalid_card_number'			=> esc_attr__('Missing or invalid creditcard number', 'paymill'),
+			'field_invalid_card_exp_year'		=> esc_attr__('Missing or invalid expiry year', 'paymill'),
+			'field_invalid_card_exp_month'		=> esc_attr__('Missing or invalid expiry month', 'paymill'),
+			'field_invalid_card_exp'			=> esc_attr__('Card is no longer valid or has expired', 'paymill'),
+			'field_invalid_card_cvc'			=> esc_attr__('Invalid checking number', 'paymill'),
+			'field_invalid_card_holder'			=> esc_attr__('Invalid cardholder', 'paymill'),
+			'field_invalid_amount_int'			=> esc_attr__('Invalid or missing amount for 3-D Secure', 'paymill'),
+			'field_invalid_currency'			=> esc_attr__('Invalid or missing currency code for 3-D Secure', 'paymill'),
+			'field_invalid_account_number'		=> esc_attr__('Missing or invalid bank account number', 'paymill'),
+			'field_invalid_account_holder'		=> esc_attr__('Missing or invalid bank account holder', 'paymill'),
+			'field_invalid_bank_code'			=> esc_attr__('Missing or invalid bank code', 'paymill'),
+			'field_invalid_iban'				=> esc_attr__('Missing or invalid IBAN', 'paymill'),
+			'field_invalid_bic'					=> esc_attr__('Missing or invalid BIC', 'paymill'),
+			'field_invalid_country'				=> esc_attr__('Missing or unsupported country (with IBAN)', 'paymill'),
+			'field_invalid_bank_data'			=> esc_attr__('Missing or invalid bank data combination', 'paymill'),
 		));
 		wp_enqueue_script('paymill_bridge_custom', PAYMILL_PLUGIN_URL.'lib/js/paymill.js', array('paymill_bridge'), PAYMILL_VERSION);
 		wp_enqueue_script('livevalidation', PAYMILL_PLUGIN_URL.'lib/js/livevalidation_standalone.compressed.js', array('paymill_bridge_custom'), PAYMILL_VERSION);
@@ -66,7 +86,7 @@
 			'notEmpty'					=> esc_attr__('Supply a value!', 'paymill'),
 		));
 		
-		if(empty($GLOBALS['paymill_settings']->paymill_pay_button_settings['no_default_css']) || $GLOBALS['paymill_settings']->paymill_pay_button_settings['no_default_css'] != '1'){
+		if(empty($GLOBALS['paymill_settings']->paymill_general_settings['no_default_css']) || $GLOBALS['paymill_settings']->paymill_general_settings['no_default_css'] != '1'){
 			wp_enqueue_style('paymill', PAYMILL_PLUGIN_URL.'lib/css/paymill.css', false, PAYMILL_VERSION, false);
 		}
 		

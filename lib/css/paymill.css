@@ -127,28 +127,13 @@ paymill_#form_credit, paymill_#form_elv{
 }
 
 /* error box */
-#paymill_errors{
+.paymill_payment_errors{
 	background-color:#FF3300;
-	padding:5px;
 	color:#FFF;
 	margin:10px 0px 10px 0px;
+	padding:0px 5px 0px 5px;
 	border-radius: 4px;
-}
-#paymill_errors:after{
-	content:'';
-	display:block;
-	clear:both;
-}
-#paymill_errors .paymill_error_title{
-	margin:0px 10px 0px 0px;
-	padding:0px;
-	color:#FFF;
 	font-weight:bold;
-	float:left;
-}
-#paymill_errors .paymill_error{
-	color:#FFF;
-	float:left;
 }
 
 /* pay button */
@@ -204,11 +189,6 @@ paymill_#form_credit, paymill_#form_elv{
 }
 .paymill_pay_button .paymill_shipping{
 	margin-bottom:10px;
-}
-.paymill_pay_button .paymill_payment_errors{
-	font-weight:bold;
-	margin-bottom:5px;
-	padding-bottom:5px;
 }
 .paymill_pay_button .paymill_address .paymill_address_title{
 	font-weight:bold;

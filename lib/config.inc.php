@@ -33,11 +33,12 @@
 				define('PAYMILL_ACTIVE',false);
 			}
 		
-			add_action( 'admin_init', array( &$this, 'paymill_register_general_settings' ) );
+			add_action('admin_init', array(&$this, 'paymill_register_general_settings'));
 			if(defined('PAYMILL_ACTIVE') && PAYMILL_ACTIVE === true){
-				add_action( 'admin_init', array( &$this, 'register_pay_button_settings' ) );
+				add_action('admin_init', array(&$this, 'paymill_register_pay_button_settings'));
+				add_action('admin_init', array(&$this, 'paymill_register_maintenance_settings'));
 			}
-			add_action( 'admin_menu', array( &$this, 'add_admin_menus' ) );
+			add_action('admin_menu', array(&$this, 'add_admin_menus'));
 			
 			// prepare dynamic language strings
 			__('DAY', 'paymill');
@@ -73,6 +74,7 @@
 			__('50104','paymill');
 			__('50105','paymill');
 			__('50600','paymill');
+			__('50002','paymill');
 			
 			__('Token not Found','paymill');
 			
@@ -118,7 +120,7 @@
 			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_register_general_settings'); // benchmark
 		}
 		// Registers the pay_button settings and appends the key to the plugin settings tabs array.
-		public function register_pay_button_settings(){
+		public function paymill_register_pay_button_settings(){
 			if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_register_pay_button_settings'); // benchmark
 			
 			$this->plugin_settings_tabs[$this->setting_keys['paymill_pay_button_settings']] = 'Pay Button';
@@ -196,7 +198,18 @@
 			
 			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_register_pay_button_setting'); // benchmark
 		}
+		public function paymill_register_maintenance_settings(){
+			if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_register_maintenance_settings'); // benchmark
+			
+			$this->plugin_settings_tabs[$this->setting_keys['paymill_maintenance_settings']] = 'Maintenance';
+			register_setting($this->setting_keys['paymill_maintenance_settings'], $this->setting_keys['paymill_maintenance_settings']);
+
+			add_settings_section('section_maintenance', __('Maintenance', 'paymill'), array( &$this, 'section_maintenance_desc'), $this->setting_keys['paymill_maintenance_settings'] );
+
+			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_register_maintenance_settings'); // benchmark
+		}
 		// The following methods provide descriptions for their respective sections, used as callbacks with add_settings_section
+		public function section_maintenance_desc() { echo paymill_check_webhook(); }
 		public function section_general_desc() { echo __('Please insert your API settings here.', 'paymill'); }
 		public function section_pay_button_desc() { echo '<p>'.__('The Paymill Pay Buton is a simple, independent payment solution. As Paymill for WordPress is GPL licensed, feel free to customize that Pay Button to fit your needs.', 'paymill').'</p><h3>'.__('Common Settings', 'paymill').'</h3>'.'<p><strong>'.__('Configure common settings', 'paymill').'</strong></p><a href="#" id="common_toggle">'.__('Toggle View', 'paymill').'</a><div id="common_content" style="display:none;">'; }
 		public function section_pay_button_products_desc() { echo '</div><h3>'.__('Products', 'paymill').'</h3><p><strong>'.__('Configure products for the Pay Button. This list has a dynamic length and extends for 5 extra slots when last slot\'s Product Title is filled and saved.', 'paymill').'</strong></p><a href="#" id="products_toggle">'.__('Toggle View', 'paymill').'</a><div id="products_content" style="display:none;">'; }
@@ -381,7 +394,7 @@
 					class="regular-text code" />
 				';
 			}
-
+			
 			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_field_pay_button_option'); // benchmark
 		}
 		private function paymill_do_settings_sections($page){
