@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.6.6
+Version: 1.6.7
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
@@ -80,7 +80,13 @@ Author URI: http://elbnetz.com
 	// load integration classes
 	if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_load_integration_classes'); // benchmark
 	require_once(PAYMILL_DIR.'lib/integration/woocommerce.inc.php'); // WooCommerce
-	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // pay button
+	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // Pay Button
+	
+	add_action('mp_load_gateway_plugins', 'paymill_load_marketpress');
+	function paymill_load_marketpress(){
+		require_once(PAYMILL_DIR.'lib/integration/marketpress.inc.php'); // Marketpress
+	}
+	
 	if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_load_integration_classes'); // benchmark
 	
 	// shutdown

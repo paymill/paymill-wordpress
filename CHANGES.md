@@ -3,6 +3,12 @@
 Changelog
 =========
 
+1.6.7
+-----
+* WooCommerce: Switching live/test-modes results in "offer not found" - fixed
+* Common: Error Management issues fixed
+* MarketPress: Alpha included
+
 1.6.6
 -----
 * WooCommerce: Maintenance tab added to check webhook status.

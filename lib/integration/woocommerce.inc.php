@@ -348,6 +348,7 @@
 			
 				private $total					= 0;
 				private $total_complete			= 0;
+				private $total_sub_refund		= 0;
 				private $cart					= false;
 				private $order_id				= false;
 				private $order					= false;
@@ -456,21 +457,27 @@
 								}
 							}
 						}
+						// currently, there is no initial payment fee possible through paymill, so we are required to make a refund if a coupon is reducing initial fee.
+						/*if($this->total < 0){
+							$this->total_sub_refund = (($this->total)*(-1));
+						}*/
 					}
 				}
 				private function processSubscriptions(){
 					global $wpdb;
-					
+
 					// check wether subscriptions addon is activated
 					if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
+
 						$product	= $this->cart;
 						//foreach($this->cart as $product){
 							if(is_array($product) && isset($product['product_id']) && intval($product['product_id']) > 0){
 								// product is a subscription?
 								$woo_sub_key	= WC_Subscriptions_Manager::get_subscription_key($this->order_id,$product['product_id']);
+
 								// check wether user already has subscription
 								if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
-								
+
 									// required vars
 									$amount			= (floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
 									$currency		= get_woocommerce_currency();
@@ -503,6 +510,7 @@
 										);
 										$offer = $this->subscriptions->offerCreate($params);
 										if($GLOBALS['paymill_loader']->paymill_errors->status()){
+											$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 											return false;
 										}
 									}
@@ -510,6 +518,7 @@
 									// create user subscription
 									$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID());
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
+										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 										return false;
 									}else{
 										$wpdb->query($wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, woo_user_id, woo_offer_id) VALUES (%s, %s, %s)',
@@ -532,6 +541,7 @@
 									// @todo: currently, WooCommerce does not support multiple subscriptions on checkout, so we can stop processing here if first subscription is already subscribed
 									$GLOBALS['paymill_loader']->paymill_errors->setError(__('Subscription already subscribed.', 'paymill'));
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
+										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 									}
 									return false;
 								}
@@ -606,17 +616,19 @@
 						$this->order_id				= $order_id;
 						$this->order_desc			= __('Order #','paymill').$this->order_id;
 						$this->order				= new WC_Order($this->order_id);
-						$this->cart					= reset($woocommerce->cart->get_cart());
+						$cart						= $woocommerce->cart->get_cart();
+						$cart						= reset($cart);
+						$this->cart					= $cart;
 						$this->total_complete		=
 						$this->total				= (floatval($this->order->get_total())*100);
 
 						// load subscription class
 						$this->subscriptions		= new paymill_subscriptions('woocommerce');
 						$this->offers				= $this->subscriptions->offerGetList();
-				
+
 						// get the totals for pre authorization
 						$this->getTotals();
-						
+
 						// create payment object and preauthorization
 						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
 						$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,get_woocommerce_currency()); // create payment object, as it should be used for next processing instead of the token.
@@ -627,7 +639,8 @@
 
 						// process subscriptions & products
 						if($this->processSubscriptions() && $this->processProducts()){
-
+						var_dump('test');
+die('end');
 							// success
 							if(method_exists($this->order, 'payment_complete')){
 								// if order contains subscription, mark payment complete later when webhook triggers succeeded payment
@@ -678,10 +691,10 @@
 						paymill_load_frontend_scripts(); // load frontend scripts
 						
 						// settings
-						$GLOBALS['paymill_active'] = true;
-						$cart_total = $woocommerce->cart->total*100;
-						$currency = get_woocommerce_currency();
-						$no_logos = true;
+						$GLOBALS['paymill_active']		= true;
+						$cart_total						= $woocommerce->cart->total*100;
+						$currency						= get_woocommerce_currency();
+						$no_logos						= true;
 						
 						// form ids
 						echo '<script>

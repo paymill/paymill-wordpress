@@ -20,7 +20,7 @@ class paymill_errors{
 	}
 	
 	public function setFunction($function){
-		if(is_string($function) && $this->outputFunction === false){
+		if(is_string($function) && ($this->outputFunction === false || $this->outputFunction == 'paymill_pay_button_errorHandling')){
 			$this->outputFunction		= $function;
 			return true;
 		}else{

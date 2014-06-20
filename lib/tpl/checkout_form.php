@@ -9,7 +9,7 @@
 			echo '<div class="paymill_payment_logos">';
 			foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
 				if($type==1){
-					if(!isset($no_logos)){ echo '<img src="'.plugins_url('',__FILE__ ).'/../img/logos/'.$name.'.png" style="vertical-align:middle;" alt="'.$name.'" />'; }
+					if($no_logos != true){ echo '<img src="'.plugins_url('',__FILE__ ).'/../img/logos/'.$name.'.png" style="vertical-align:middle;" alt="'.$name.'" />'; }
 					if($name == 'elv' || $name == 'sepa'){
 						$count_bank_payment_types++;
 					}
