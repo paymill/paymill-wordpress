@@ -3,6 +3,10 @@
 Changelog
 =========
 
+1.6.8
+-----
+* WooCommerce: Issue with order completion fixed
+
 1.6.7
 -----
 * WooCommerce: Switching live/test-modes results in "offer not found" - fixed

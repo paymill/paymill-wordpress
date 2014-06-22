@@ -639,8 +639,6 @@
 
 						// process subscriptions & products
 						if($this->processSubscriptions() && $this->processProducts()){
-						var_dump('test');
-die('end');
 							// success
 							if(method_exists($this->order, 'payment_complete')){
 								// if order contains subscription, mark payment complete later when webhook triggers succeeded payment

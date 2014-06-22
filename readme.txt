@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.9
 Tested up to: 3.9
-Stable tag: 1.6.7
+Stable tag: 1.6.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -145,6 +145,10 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 
 == Changelog ==
 
+= 1.6.8 =
+
+* WooCommerce: Issue with order completion fixed
+
 = 1.6.7 =
 
 * WooCommerce: Switching live/test-modes results in "offer not found" - fixed
@@ -284,6 +288,10 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.6.8 =
+
+* WooCommerce: Issue with order completion fixed
 
 = 1.6.7 =
 
