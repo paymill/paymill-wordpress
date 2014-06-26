@@ -3,6 +3,16 @@
 Changelog
 =========
 
+1.6.9
+-----
+* MarketPress: Beta released
+* Common: Allows overriding language files by placing them into /wp-content/languages/paymill/
+* PayButton: Order Form optimized
+* PayButton: Feature for price/currency format
+* Shopp: Paymill as Payment Gateway wasn't recognized due to last changes in shopplugin - fixed
+* Shopp: Errors wasn't shown on checkout process - fixed
+* Shopp: Compatibility with new checkout button achieved
+
 1.6.8
 -----
 * WooCommerce: Issue with order completion fixed

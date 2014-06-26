@@ -555,7 +555,7 @@
 					global $wpdb;
 					if($this->total > 0){
 						// make transaction
-						$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->total)); // e.g. "4200" for 42.00 EUR
+						$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->total,2)); // e.g. "4200" for 42.00 EUR
 						$GLOBALS['paymill_loader']->request_transaction->setCurrency(get_woocommerce_currency());
 						if($this->paymentClass->getPreauthID() != false){
 							$GLOBALS['paymill_loader']->request_transaction->setPreauthorization($this->paymentClass->getPreauthID());

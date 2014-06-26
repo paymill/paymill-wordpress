@@ -161,6 +161,7 @@ $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_transactions (
   woocommerce_order_id int(11) NOT NULL,
   pay_button_order_id int(11) NOT NULL,
   shopplugin_order_id int(11) NOT NULL,
+  marketpress_order_id int(11) NOT NULL,
   UNIQUE KEY paymill_transaction_id (paymill_transaction_id));';
   
 $sql .= 'CREATE TABLE '.$wpdb->prefix.'paymill_cache_offers (

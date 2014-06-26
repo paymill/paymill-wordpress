@@ -3,13 +3,13 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.6.8
+Version: 1.6.9
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
 
 	// common information
-	define('PAYMILL_VERSION',1619);
+	define('PAYMILL_VERSION',1620);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	define('PAYMILL_PLUGIN_URL',plugins_url( '' , __FILE__ ).'/');
 	$GLOBALS['paymill_active'] = false; // eCommerce channels will set Paymill as active later to prevent showing payment form twice on same page.
@@ -37,7 +37,15 @@ Author URI: http://elbnetz.com
 	add_action('plugins_loaded', 'paymill_init');
 	function paymill_init(){
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_load_translation'); // benchmark
-		load_plugin_textdomain('paymill', false, dirname(plugin_basename(__FILE__)). '/lib/translate/');
+		
+		$domain = 'paymill';
+		// The "plugin_locale" filter is also used in load_plugin_textdomain()
+		$locale = apply_filters('plugin_locale', get_locale(), $domain);
+		
+		$custom_lang_dir = WP_LANG_DIR.'/'.$domain.'/'.$domain.'-'.$locale.'.mo';
+		load_textdomain($domain, $custom_lang_dir);
+		load_plugin_textdomain($domain, FALSE, dirname(plugin_basename(__FILE__)). '/lib/translate/');
+		
 		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_load_translation'); // benchmark
 	}
 

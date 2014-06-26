@@ -50,6 +50,7 @@
 			'decimalSymbol'						=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'], 'paymill'),
 			'digitGroupSymbol'					=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands'], 'paymill'),
 			'symbol'							=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['currency'], 'paymill'),
+			'currency_format'					=> esc_attr__($GLOBALS['paymill_settings']->paymill_pay_button_settings['currency_format'], 'paymill'),
 			'internal_server_error'				=> esc_attr__('Communication with PSP failed', 'paymill'),
 			'invalid_public_key'				=> esc_attr__('Invalid Public Key', 'paymill'),
 			'invalid_payment_data'				=> esc_attr__('not permitted for this method of payment, credit card type, currency or country', 'paymill'),

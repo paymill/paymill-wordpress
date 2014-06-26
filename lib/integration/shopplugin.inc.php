@@ -24,6 +24,7 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 	function __construct(){
 		parent::__construct();
 		
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
 		$GLOBALS['paymill_loader']->paymill_errors->setFunction('paymill_shopp_errorHandling');
 		
 		if (!isset($this->settings['label'])){
@@ -167,7 +168,7 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 	}
 	function sale ($Event) {
 		global $wpdb;
-		
+
 		$this->order_id				= $Event->order;
 		$this->order_desc			= __('Order #','paymill').$this->order_id;
 		$this->order				= $this->Order;
@@ -190,16 +191,21 @@ class PaymillShopp extends GatewayFramework implements GatewayModule {
 
 			// create payment object and preauthorization
 			require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
+
 			$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,$this->currency()); // create payment object, as it should be used for next processing instead of the token.
 			if($GLOBALS['paymill_loader']->paymill_errors->status()){
-				shopp_add_order_event($Purchase->id, 'auth-fail', array(
-					'amount' => $orderTotals->total,	// Amount to be authorized
-					'gateway' => $Event->gateway,		// Gateway handler name (module name from @subpackage)
-					'message' => $GLOBALS['paymill_loader']->paymill_errors->getErrors(), 'paymill')
-				);
+				$error = Shopp::__($GLOBALS['paymill_loader']->paymill_errors->getErrors());
+				new ShoppError($error, 'paymill_error', SHOPP_TRXN_ERR);
+				return shopp_add_order_event($Event->order, $Event->type . '-fail', array(
+					'amount' => $Event->amount,
+					'error' => 0,
+					'message' => $error,
+					'gateway' => $this->module
+				));
+						
 				return false;
 			}
-		
+
 			// process subscriptions & products
 			if($this->processSubscriptions() && $this->processProducts()){
 				// success

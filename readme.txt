@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 Requires at least: 3.9
 Tested up to: 3.9
-Stable tag: 1.6.8
+Stable tag: 1.6.9
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -18,17 +18,17 @@ With PAYMILL you are able to provide credit card based payments for your custome
 
 = Supported Shops including subscriptions support: =
 
-* WooCommerce (2.1.x)
+* WooCommerce (2.1.x) + WooCommerce Subscriptions (1.5.x)
 * Magic Members (1.8.x)
 * Pay Button (independent, light-weight payment form)
 
 = Supported Shops without subscriptions support (yet): =
 
-* ShopPlugin (1.3.x)
+* ShopPlugin (1.3.4)
 
 = work in progress: =
 
-* MarketPress (2.9.x) - 40% completed
+* MarketPress (2.9.x) - 95% completed
 
 = Service Description =
 
@@ -144,6 +144,16 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 6. Pay Button Shipping Settings
 
 == Changelog ==
+
+= 1.6.9 =
+
+* MarketPress: Beta released
+* Common: Allows overriding language files by placing them into /wp-content/languages/paymill/
+* PayButton: Order Form optimized
+* PayButton: Feature for price/currency format
+* Shopp: Paymill as Payment Gateway wasn't recognized due to last changes in shopplugin - fixed
+* Shopp: Errors wasn't shown on checkout process - fixed
+* Shopp: Compatibility with new checkout button achieved
 
 = 1.6.8 =
 
@@ -288,6 +298,16 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.6.9 =
+
+* MarketPress: Beta released
+* Common: Allows overriding language files by placing them into /wp-content/languages/paymill/
+* PayButton: Order Form optimized
+* PayButton: Feature for price/currency format
+* Shopp: Paymill as Payment Gateway wasn't recognized due to last changes in shopplugin - fixed
+* Shopp: Errors wasn't shown on checkout process - fixed
+* Shopp: Compatibility with new checkout button achieved
 
 = 1.6.8 =
 

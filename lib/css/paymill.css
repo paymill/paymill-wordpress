@@ -73,6 +73,12 @@
 	display:block;
 	clear:both;
 }
+#paymill_payment_form .paymill_card_cvc .cvc_desc{
+	line-height:30px;
+	display:inline-block;
+	height:30px;
+	margin-left:5px;
+}
 #paymill_payment_form #paymill_card_number{
 	background-image:url('../img/payment_logos.png');
 	background-repeat:no-repeat;

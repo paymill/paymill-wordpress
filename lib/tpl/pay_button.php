@@ -56,7 +56,7 @@
 				<div class="paymill_quantity">
 					<select name="paymill_quantity[<?php echo $id; ?>]">
 					<?php for($i = 0; $i <= 10; $i++){ ?>
-						<option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+						<option value="<?php echo $i; ?>"<?php if(isset($_REQUEST['paymill_quantity_'.$id]) && intval($_REQUEST['paymill_quantity_'.$id]) == $i){ echo ' selected="selected"'; } ?>><?php echo $i; ?></option>
 					<?php } ?>
 					</select>
 					<?php echo __('á ', 'paymill'); ?>
@@ -89,36 +89,23 @@
 		$hide_shipping = '';
 	}
 ?>
-		<select name="paymill_shipping" class="paymill_shipping" <?php echo $hide_shipping; ?>>
-			<option value="" data-deliverycosts="0"><?php echo __('Choose Country', 'paymill'); ?></option>
-<?php
-
-		foreach($GLOBALS['paymill_settings']->paymill_pay_button_settings['flat_shipping'] as $id => $shipping){
-			if(strlen($shipping['flat_shipping_country']) > 0){
-?>
-			<option value="<?php echo $id; ?>" data-deliverycosts="<?php echo $shipping['flat_shipping_costs']; ?>" data-deliveryvat="<?php echo $shipping['flat_shipping_vat']; ?>"><?php echo $shipping['flat_shipping_country'].' (+'.number_format(intval($shipping['flat_shipping_costs']),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']).')'; ?></option>
-<?php
-			}
-		}
-?>
-		</select>
 		<div class="paymill_total_price"><?php echo __('Total Price:', 'paymill'); ?> <span id="paymill_total_number">0</span></div>
 		<input class="paymill_amount" id="paymill_total" type="hidden" name="paymill_total" value="0" />
 		<input type="hidden" name="paymill_pay_button_order" value="1" />
 </div>
 <div class="paymill_address">
 	<div class="paymill_address_title"><?php echo __('Address', 'paymill'); ?></div>
-	<?php if(isset($show_fields['company_name']) && $show_fields['company_name'] == 1){ ?>
-	<div class="paymill_company_name">
-		<input type="text" name="company_name" value="" size="20" placeholder="<?php echo __('Company Name', 'paymill'); ?>" />
-	</div>
-	<?php } if(isset($show_fields['forename']) && $show_fields['forename'] == 1){ ?>
+	<?php if(isset($show_fields['forename']) && $show_fields['forename'] == 1){ ?>
 	<div class="paymmill_forename">
 		<input type="text" name="forename" value="" size="20" placeholder="<?php echo __('Forename', 'paymill'); ?>" />
 	</div>
 	<?php } if(isset($show_fields['surname']) && $show_fields['surname'] == 1){ ?>
 	<div class="paymmill_surname">
 		<input type="text" name="surname" value="" size="20" placeholder="<?php echo __('Surname', 'paymill'); ?>" />
+	</div>
+	<?php } if(isset($show_fields['company_name']) && $show_fields['company_name'] == 1){ ?>
+	<div class="paymill_company_name">
+		<input type="text" name="company_name" value="" size="20" placeholder="<?php echo __('Company Name', 'paymill'); ?>" />
 	</div>
 	<?php } if(isset($show_fields['street']) && $show_fields['street'] == 1){ ?>
 	<div class="paymmill_street">
@@ -128,15 +115,38 @@
 	<div class="paymmill_number">
 		<input type="text" name="number" value="" size="20" placeholder="<?php echo __('Number', 'paymill'); ?>" />
 	</div>
-	<?php } if(isset($show_fields['zip']) && $show_fields['zip'] == 1){ ?>
-	<div class="paymmill_zip">
-		<input type="text" name="zip" value="" size="20" placeholder="<?php echo __('ZIP', 'paymill'); ?>" />
-	</div>
 	<?php } if(isset($show_fields['city']) && $show_fields['city'] == 1){ ?>
 	<div class="paymmill_city">
 		<input type="text" name="city" value="" size="20" placeholder="<?php echo __('City', 'paymill'); ?>" />
 	</div>
-	<?php } if(isset($show_fields['phone']) && $show_fields['phone'] == 1){ ?>
+	<?php } if(isset($show_fields['state']) && $show_fields['state'] == 1){ ?>
+	<div class="paymmill_state">
+		<input type="text" name="state" value="" size="20" placeholder="<?php echo __('State/Province', 'paymill'); ?>" />
+	</div>
+	<?php } if(isset($show_fields['zip']) && $show_fields['zip'] == 1){ ?>
+	<div class="paymmill_zip">
+		<input type="text" name="zip" value="" size="20" placeholder="<?php echo __('ZIP', 'paymill'); ?>" />
+	</div>
+	<?php } ?>
+		<select name="paymill_shipping" class="paymill_shipping" <?php echo $hide_shipping; ?>>
+			<option value="" data-deliverycosts="0"><?php echo __('Choose Country', 'paymill'); ?></option>
+<?php
+
+		foreach($GLOBALS['paymill_settings']->paymill_pay_button_settings['flat_shipping'] as $id => $shipping){
+			if(strlen($shipping['flat_shipping_country']) > 0){
+				if(floatval($shipping['flat_shipping_costs']) > 0){
+					 $shipping_costs = '(+'.number_format(floatval($shipping['flat_shipping_costs']),2,$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_decimal'],$GLOBALS['paymill_settings']->paymill_pay_button_settings['number_thousands']).')';
+				}else{
+					$shipping_costs = '';
+				}
+?>
+			<option value="<?php echo $id; ?>" data-deliverycosts="<?php echo $shipping['flat_shipping_costs']; ?>" data-deliveryvat="<?php echo $shipping['flat_shipping_vat']; ?>"><?php echo $shipping['flat_shipping_country'].$shipping_costs; ?></option>
+<?php
+			}
+		}
+?>
+		</select>
+	<?php if(isset($show_fields['phone']) && $show_fields['phone'] == 1){ ?>
 	<div class="paymmill_phone">
 		<input type="text" name="phone" value="" size="20" placeholder="<?php echo __('Phone', 'paymill'); ?>" />
 	</div>

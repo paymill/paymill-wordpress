@@ -64,10 +64,10 @@
 			<input id="paymill_card_number" type="text" size="20" value="" autocomplete="off" placeholder="<?php echo __('Card Number', 'paymill'); ?>" />
 		</div>
 		<div class="paymill_card_data">
-			<div class="paymill_expire_date"><?php echo __('Expire Date: ', 'paymill'); ?></div>
+			<div class="paymill_expire_date"><?php echo __('Expiry Date: ', 'paymill'); ?></div>
 			<div class="paymill_card_expiry_month"><input class="paymill_card_expiry_month" id="paymill_card_expiry_month" type="text" size="2" value="" autocomplete="off" placeholder="<?php echo __('MM', 'paymill'); ?>" /></div>
 			<div class="paymill_card_expiry_year"><input class="paymill_card_expiry_year" id="paymill_card_expiry_year" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('YYYY', 'paymill'); ?>" /></div>
-			<div class="paymill_card_cvc"><input class="paymill_card_cvc" id="paymill_card_cvc" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('CVC', 'paymill'); ?>" /></div>
+			<div class="paymill_card_cvc"><input class="paymill_card_cvc" id="paymill_card_cvc" type="text" size="4" value="" autocomplete="off" placeholder="<?php echo __('CVC', 'paymill'); ?>" /> <div class="cvc_desc"><?php echo __('(Security code)', 'paymill'); ?></div></div>
 		</div>
 	</div>
 	<div id="paymill_form_sepa"<?php if(!isset($show_sepa)){ echo ' style="display:none;"'; } ?>>	

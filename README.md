@@ -7,7 +7,7 @@ PAYMILL for WordPress
 * Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 * Requires at least: 3.9
 * Tested up to: 3.9
-* Stable tag: 1.6.8
+* Stable tag: 1.6.9
 * License: [GPLv3 or later](http://www.gnu.org/licenses/gpl-3.0.html)
 
 With PAYMILL you are able to provide credit card based payments for your customers.
@@ -21,15 +21,15 @@ Requires:
 * WordPress 3.9.x or higher
 
 Supported Shops including subscriptions support:
-* WooCommerce (2.1.x)
+* WooCommerce (2.1.x) + WooCommerce Subscriptions (1.5.x)
 * Magic Members (1.8.x)
 * Pay Button (independent, light-weight payment form)
 
 Supported Shops without subscriptions support (yet):
-* ShopPlugin (1.3.x)
+* ShopPlugin (1.3.4)
 
 work in progress:
-* MarketPress (2.9.x)
+* MarketPress (2.9.x) - 95% completed
 
 
 Service Description
