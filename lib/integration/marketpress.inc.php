@@ -164,11 +164,10 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 
 		//set names here to be able to translate
 		$this->admin_name					= __('Paymill for WordPress', 'paymill');
-		$this->public_name					= __('Paymill', 'paymill');
+		$this->public_name					= $this->method_button_img_url = $settings['gateways']['paymill-for-wordpress']['name'];
 
 		//button img
-		$this->method_img_url				= plugins_url('',__FILE__ ).'/../img/logo_small.png';
-		$this->method_button_img_url		= plugins_url('',__FILE__ ).'/../img/logo_small.png';
+		$this->method_img_url				=  $this->method_button_img_url = $settings['gateways']['paymill-for-wordpress']['image-url'];
 
 		load_paymill(); // this function-call can and should be used whenever working with Paymill API
 		$GLOBALS['paymill_loader']->paymill_errors->setFunction('paymill_marketpress_errorHandling');
@@ -184,6 +183,8 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 	 * @param array $shipping_info. Contains shipping info and email in case you need it
 	 */
 	function payment_form($global_cart, $shipping_info) {
+		global $mp;
+		
 		if(!$GLOBALS['paymill_active']){
 			paymill_load_frontend_scripts(); // load frontend scripts
 
@@ -201,6 +202,8 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 			paymill_form_checkout_submit_id = "#mp_payment_confirm";
 			paymill_shop_name = "marketpress";
 			</script>';
+			
+			echo do_shortcode($mp->get_setting('gateways->paymill-for-wordpress->instructions'));
 
 			require_once(PAYMILL_DIR.'lib/tpl/checkout_form.php');
 			
@@ -388,7 +391,43 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 	 *	You can access saved settings via $settings array.
 	 */
 	function gateway_settings_box($settings) {
-		global $mp;
+    global $mp;
+    ?>
+    <div id="mp_paymill_for_wordpress" class="postbox mp-pages-msgs">
+    	<h3 class='handle'><span><?php _e('Paymill for WordPress Settings', 'paymill'); ?></span></h3>
+      <div class="inside">
+	      <span class="description"><?php _e('Pay with credit card and SEPA', 'paymill') ?></span>
+	      <table class="form-table">
+		      <tr>
+						<th scope="row"><label for="paymill-for-wordpress-name"><?php _e('Method Name', 'mp') ?></label></th>
+						<td>
+		  				<span class="description"><?php _e('Enter a public name for this payment method that is displayed to users - No HTML', 'mp') ?></span>
+		          <p>
+		          <input value="<?php echo esc_attr($mp->get_setting('gateways->paymill-for-wordpress->name') ? $mp->get_setting('gateways->paymill-for-wordpress->name', __('Paymill', 'mp')) : __('Paymill', 'mp')); ?>" style="width: 100%;" name="mp[gateways][paymill-for-wordpress][name]" id="paymill-for-wordpress-name" type="text" />
+		          </p>
+		        </td>
+	        </tr>
+		      <tr>
+		        <th scope="row"><label for="paymill-for-wordpress-instructions"><?php _e('User Instructions', 'mp') ?></label></th>
+		        <td>
+		        <span class="description"><?php _e('These are the manual payment instructions to display on the payments screen - HTML allowed', 'mp') ?></span>
+	          <p>
+							<?php wp_editor( $mp->get_setting('gateways->paymill-for-wordpress->instructions'), 'manualpaymentsinstructions', array('textarea_name'=>'mp[gateways][paymill-for-wordpress][instructions]') ); ?>
+						</p>
+	        	</td>
+	        </tr>
+	        </tr>
+		      <tr>
+		        <th scope="row"><label for="paymill-for-wordpress-instructions"><?php _e('Method Image URL', 'paymill') ?></label></th>
+		        <td>
+		        <span class="description"><?php _e('Insert Image URL for replacing Paymill Logo image. You could create an image containing your provided payment types. - no HTML', 'paymill') ?></span>
+	          <p><input value="<?php echo esc_attr($mp->get_setting('gateways->paymill-for-wordpress->image-url') ? $mp->get_setting('gateways->paymill-for-wordpress->image-url', plugins_url('',__FILE__ ).'/../img/logo_small.png') : plugins_url('',__FILE__ ).'/../img/logo_small.png'); ?>" style="width: 100%;" name="mp[gateways][paymill-for-wordpress][image-url]" id="paymill-for-wordpress-image-url" type="text" /></p>
+	        	</td>
+	        </tr>
+      	</table>
+      </div>
+    </div>
+    <?php
 	}
 
 	/**
@@ -396,6 +435,24 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 	 *	array. Don't forget to return!
 	 */
 	function process_gateway_settings($settings) {
+		
+		if(isset($settings['gateways']['paymill-for-wordpress']) && !is_array( $settings['gateways']['paymill-for-wordpress'])){
+			return $settings;
+		}
+		
+		//strip slashes
+		$settings['gateways']['paymill-for-wordpress'] = array_map('stripslashes', (array)$settings['gateways']['paymill-for-wordpress']);
+			
+		//no html
+		$settings['gateways']['paymill-for-wordpress']['name'] = stripslashes(wp_filter_nohtml_kses($settings['gateways']['paymill-for-wordpress']['name']));
+		$settings['gateways']['paymill-for-wordpress']['image-url'] = stripslashes(wp_filter_nohtml_kses($settings['gateways']['paymill-for-wordpress']['image-url']));
+		
+		//filter html if needed
+		if (!current_user_can('unfiltered_html')) {
+			$settings['gateways']['paymill-for-wordpress']['instructions'] = wp_filter_post_kses($settings['gateways']['paymill-for-wordpress']['instructions']);
+		}
+		
+		$settings['gateways']['paymill-for-wordpress']['instructions'] = wpautop($settings['gateways']['paymill-for-wordpress']['instructions']);
 
 		return $settings;
 	}

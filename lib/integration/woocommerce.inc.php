@@ -322,7 +322,8 @@
 		$userInfo			= get_userdata(get_current_user_id());
 		$client_cache		= $wpdb->get_results($wpdb->prepare('SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($userInfo->ID,$user->id.'_'.$subscription_key)),ARRAY_A);
 		
-		$this->subscriptions->remove($client_cache[0]['paymill_sub_id']);
+		$subscriptions		= new paymill_subscriptions('woocommerce');
+		$subscriptions->remove($client_cache[0]['paymill_sub_id']);
 		$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($userInfo->ID,$user->id.'_'.$subscription_key)));
 	}
 	function woo_updated_subscription_paymill($user,$subscription_details){

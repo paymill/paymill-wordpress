@@ -3,6 +3,11 @@
 Changelog
 =========
 
+1.7.0
+-----
+* MarketPress: Final released
+* WooCommerce: Subscription Cancellation within WooCommerce "My Account" page results in error - fixed
+
 1.6.9
 -----
 * MarketPress: Beta released

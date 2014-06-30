@@ -1,10 +1,10 @@
 === PAYMILL for WordPress ===
 Contributors: Matthias Reuter
 Donate link: 
-Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
+Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, ecommerce, debitcard, subscriptions
 Requires at least: 3.9
 Tested up to: 3.9
-Stable tag: 1.6.9
+Stable tag: 1.7.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -25,10 +25,7 @@ With PAYMILL you are able to provide credit card based payments for your custome
 = Supported Shops without subscriptions support (yet): =
 
 * ShopPlugin (1.3.4)
-
-= work in progress: =
-
-* MarketPress (2.9.x) - 95% completed
+* MarketPress (2.9.x)
 
 = Service Description =
 
@@ -93,7 +90,7 @@ The TEST mode always gives a positive feedback on 3D secure.
 
 = Which Credit Cards are supported? =
 
-Depending on your country and account status, the following credit card provider are currently supported: VISA, MasterCard, American Express, Diners Club, UnionPay and JCB
+Depending on your country and account status, the following credit card provider are currently supported: American Express, CB, Diners Club, Discover, JCB, Maestro, MasterCard, Union Pay, VISA
 
 = What is ELV and why it's supported? =
 
@@ -104,6 +101,9 @@ This is a very convenience payment solution for German users, as credit cards ar
 
 SEPA is a European banking service and stands for "Single Euro Payments Area".
 This is a very convenience payment solution for European users, as credit cards are not very common in Europe compared to e.g. USA.
+
+= Is there a update-safe way to edit language files? =
+Yes, just copy language files from /wp-content/plugins/paymill/lib/translate/ as draft to customize into /wp-content/languages/paymill/
 
 = Can I use shortcodes to display the Pay Button? =
 
@@ -144,6 +144,11 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 6. Pay Button Shipping Settings
 
 == Changelog ==
+
+= 1.7.0 =
+
+* MarketPress: Final released
+* WooCommerce: Subscription Cancellation within WooCommerce "My Account" page results in error - fixed
 
 = 1.6.9 =
 
@@ -298,6 +303,11 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.7.0 =
+
+* MarketPress: Final released
+* WooCommerce: Subscription Cancellation within WooCommerce "My Account" page results in error - fixed
 
 = 1.6.9 =
 

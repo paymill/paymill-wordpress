@@ -41,7 +41,7 @@ The TEST mode always gives a positive feedback on 3D secure.
 
 Which Credit Cards are supported?
 ---------------------------------
-Depending on your country and account status, the following credit card provider are currently supported: VISA, MasterCard, American Express, Diners Club, UnionPay and JCB
+Depending on your country and account status, the following credit card provider are currently supported: American Express, CB, Diners Club, Discover, JCB, Maestro, MasterCard, Union Pay, VISA
 
 What is ELV and why it's supported?
 -----------------------------------
@@ -52,6 +52,10 @@ What is SEPA and why it's supported?
 -----------------------------------
 SEPA is a European banking service and stands for "Single Euro Payments Area".
 This is a very convenience payment solution for European users, as credit cards are not very common in Europe compared to e.g. USA.
+
+Is there a update-safe way to edit language files?
+-----------------------------------
+Yes, just copy language files from /wp-content/plugins/paymill/lib/translate/ as draft to customize into /wp-content/languages/paymill/
 
 Can I use shortcodes to display the Pay Button?
 -----------------------------------------------
