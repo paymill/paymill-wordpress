@@ -145,6 +145,12 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 
 == Changelog ==
 
+= 1.7.1 =
+
+* Cart66: Alpha released
+* WooCommerce: Now shows shop domain in transaction description of Paymill dashboard.
+* Common: Several minor fixes and tweaks.
+
 = 1.7.0 =
 
 * MarketPress: Final released
@@ -303,6 +309,12 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.7.1 =
+
+* Cart66: Alpha released
+* WooCommerce: Now shows shop domain in transaction description of Paymill dashboard.
+* Common: Several minor fixes and tweaks.
 
 = 1.7.0 =
 

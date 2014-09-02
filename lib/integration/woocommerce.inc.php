@@ -356,6 +356,7 @@
 				private $subscriptions			= false;
 				private $offers					= false;
 				private $order_desc				= '';
+				public $has_fields				= true;
 			
 				public function __construct(){
 					load_paymill(); // this function-call can and should be used whenever working with Paymill API
@@ -371,6 +372,7 @@
 					
 					add_action('woocommerce_update_options_payment_gateways_' . $this->id, array(&$this, 'process_admin_options'));
 				
+					$this->has_fields = true;
 					$this->init_form_fields();
 					$this->init_settings();
 					
@@ -564,7 +566,7 @@
 							$GLOBALS['paymill_loader']->request_transaction->setPayment($this->paymentClass->getPaymentID());
 						}
 						$GLOBALS['paymill_loader']->request_transaction->setClient($this->client->getId());
-						$GLOBALS['paymill_loader']->request_transaction->setDescription($this->order_desc);
+						$GLOBALS['paymill_loader']->request_transaction->setDescription($_SERVER['HTTP_HOST'].': '.$this->order_desc);
 						$GLOBALS['paymill_loader']->request->setSource(serialize($GLOBALS['paymill_source']));
 						
 						$GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_transaction);

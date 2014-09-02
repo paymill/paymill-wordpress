@@ -3,6 +3,12 @@
 Changelog
 =========
 
+1.7.1
+-----
+* Cart66: Alpha released
+* WooCommerce: Now shows shop domain in transaction description of Paymill dashboard.
+* Common: Several minor fixes and tweaks.
+
 1.7.0
 -----
 * MarketPress: Final released

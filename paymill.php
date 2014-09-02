@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.7.0
+Version: 1.7.1
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
@@ -26,9 +26,11 @@ Author URI: http://elbnetz.com
 		// define('SAVEQUERIES', true);
 		
 		// benchmarking
-		define('paymill_BENCHMARK', true);
+		define('paymill_BENCHMARK', false);
+		// todo: create benchmark switch in settings
+		/*define('paymill_BENCHMARK', true);
 		require_once(PAYMILL_DIR.'lib/benchmark.inc.php');
-		paymill_doBenchmark(false,'init'); // start benchmark
+		paymill_doBenchmark(false,'init'); // start benchmark*/
 	}else{
 		define('paymill_BENCHMARK', false);
 	}
@@ -41,7 +43,6 @@ Author URI: http://elbnetz.com
 		$domain = 'paymill';
 		// The "plugin_locale" filter is also used in load_plugin_textdomain()
 		$locale = apply_filters('plugin_locale', get_locale(), $domain);
-		
 		$custom_lang_dir = WP_LANG_DIR.'/'.$domain.'/'.$domain.'-'.$locale.'.mo';
 		load_textdomain($domain, $custom_lang_dir);
 		load_plugin_textdomain($domain, FALSE, dirname(plugin_basename(__FILE__)). '/lib/translate/');
@@ -89,6 +90,12 @@ Author URI: http://elbnetz.com
 	if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_load_integration_classes'); // benchmark
 	require_once(PAYMILL_DIR.'lib/integration/woocommerce.inc.php'); // WooCommerce
 	require_once(PAYMILL_DIR.'lib/integration/pay_button.inc.php'); // Pay Button
+	
+	add_action('init', 'paymill_load_cart66',11);
+	add_action('admin_init', 'paymill_load_cart66',11);
+	function paymill_load_cart66(){
+		require_once(PAYMILL_DIR.'lib/integration/cart66.inc.php'); // Cart66
+	}
 	
 	add_action('mp_load_gateway_plugins', 'paymill_load_marketpress');
 	function paymill_load_marketpress(){
