@@ -653,9 +653,9 @@
 							}
 
 							// Reduce stock levels
-							if(method_exists($this->order, 'reduce_order_stock')){
+							/*if(method_exists($this->order, 'reduce_order_stock')){
 								$this->order->reduce_order_stock();
-							}
+							}*/
 
 							// Remove cart
 							$woocommerce->cart->empty_cart();
