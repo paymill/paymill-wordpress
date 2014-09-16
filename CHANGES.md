@@ -2,6 +2,9 @@
 
 Changelog
 =========
+1.7.2
+-----
+* Common: ELV/SEPA issue in checkout fixed
 
 1.7.1
 -----

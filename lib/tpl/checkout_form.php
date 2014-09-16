@@ -51,7 +51,7 @@
 		// ELV
 		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv'] == 1){
 			if(!isset($show_cc) && !isset($show_sepa)){
-				$show_sepa = true;
+				$show_elv = true;
 			}
 			echo '<div id="paymill_form_switch_elv" class="paymill_form_switch paymill_form_switch'.(isset($show_elv) ? '_active' : '').'"'.$visibility.'>'.__('ELV', 'paymill').'</div>';
 		}

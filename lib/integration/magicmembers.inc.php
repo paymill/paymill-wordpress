@@ -2809,7 +2809,7 @@ class mgm_paymill extends mgm_payment{
 
 				// notify
 
-				if( mgm_notify_user_membership_purchase($blogname, $user, $member, $custom, $subs_pack, $s_packs, $system_obj) ){						
+				if(function_exists('mgm_notify_user_membership_purchase') && mgm_notify_user_membership_purchase($blogname, $user, $member, $custom, $subs_pack, $s_packs, $system_obj) ){		
 
 					// update as email sent 
 

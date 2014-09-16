@@ -145,6 +145,10 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 
 == Changelog ==
 
+= 1.7.2 =
+
+* Common: ELV/SEPA issue in checkout fixed
+
 = 1.7.1 =
 
 * Cart66: Alpha released
@@ -309,6 +313,10 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.7.2 =
+
+* Common: ELV/SEPA issue in checkout fixed
 
 = 1.7.1 =
 

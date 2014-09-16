@@ -187,7 +187,7 @@
 			$order_mail = $this->order_desc.$email_customer_desc.$order_products;
 			
 			// allow filtering the order email
-			$order_mail = apply_filters( 'paymill_paybutton_email_text', $order_mail, array($this->order_id, $_POST, $order_mail));
+			$order_mail = apply_filters('paymill_paybutton_email_text', $order_mail, array($this->order_id, $_POST));
 			
 			// send confirmation mail
 			wp_mail(

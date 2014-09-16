@@ -13,8 +13,9 @@
 		
 		// Fired during plugins_loaded (very very early), so don't miss-use this, only actions and filters, current ones speak for themselves.
 		public function __construct() {
-			$this->setting_keys['paymill_general_settings'] = 'paymill_general_settings';
-			$this->setting_keys['paymill_pay_button_settings'] = 'paymill_pay_button_settings';
+			$this->setting_keys['paymill_general_settings']			= 'paymill_general_settings';
+			$this->setting_keys['paymill_pay_button_settings']		= 'paymill_pay_button_settings';
+			$this->setting_keys['paymill_maintenance_settings']		= 'paymill_maintenance_settings';
 			
 			foreach($this->setting_keys as $key){
 				$this->$key = (array) get_option( $key );
