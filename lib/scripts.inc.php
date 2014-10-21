@@ -62,6 +62,7 @@
 			'field_invalid_card_exp'			=> esc_attr__('Card is no longer valid or has expired', 'paymill'),
 			'field_invalid_card_cvc'			=> esc_attr__('Invalid checking number', 'paymill'),
 			'field_invalid_card_holder'			=> esc_attr__('Invalid cardholder', 'paymill'),
+			'field_invalid_amount'				=> esc_attr__('Invalid or missing amount', 'paymill'),
 			'field_invalid_amount_int'			=> esc_attr__('Invalid or missing amount for 3-D Secure', 'paymill'),
 			'field_invalid_currency'			=> esc_attr__('Invalid or missing currency code for 3-D Secure', 'paymill'),
 			'field_invalid_account_number'		=> esc_attr__('Missing or invalid bank account number', 'paymill'),

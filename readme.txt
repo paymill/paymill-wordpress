@@ -2,9 +2,9 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, ecommerce, debitcard, subscriptions
-Requires at least: 3.9
-Tested up to: 3.9
-Stable tag: 1.7.0
+Requires at least: 4.0
+Tested up to: 4.0
+Stable tag: 1.8.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,18 +14,20 @@ With PAYMILL you are able to provide credit card based payments for your custome
 
 = Requires: =
 * PHP 5.3 or higher
-* WordPress 3.9.x or higher
+* WordPress 4.0.x or higher
+* CuRL PHP extension
 
 = Supported Shops including subscriptions support: =
 
-* WooCommerce (2.1.x) + WooCommerce Subscriptions (1.5.x)
+* WooCommerce (2.2.x) + WooCommerce Subscriptions (1.5.x)
 * Magic Members (1.8.x)
 * Pay Button (independent, light-weight payment form)
 
 = Supported Shops without subscriptions support (yet): =
 
-* ShopPlugin (1.3.4)
+* ShopPlugin (1.3.5)
 * MarketPress (2.9.x)
+* Cart66 Lite (1.5.1.17)
 
 = Service Description =
 
@@ -142,8 +144,14 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 4. Pay Button Common Settings
 5. Pay Button Products Settings
 6. Pay Button Shipping Settings
+6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.8.0 =
+
+* Cart66: Final released
+* Common: Some Error Messages were not displayed - fixed
 
 = 1.7.2 =
 

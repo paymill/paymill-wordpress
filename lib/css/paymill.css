@@ -213,3 +213,8 @@ paymill_#form_credit, paymill_#form_elv{
 .paymill_pay_button #payment_method_paymill{
 	display:none;
 }
+
+/* cart66 -_- */
+#Cart66_paymill_for_wordpress_form #contactPaymentInfo li:nth-child(n+2):nth-child(-n+5){
+	display:none;
+}

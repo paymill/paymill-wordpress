@@ -1,291 +1,291 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Paymill\n"
-"POT-Creation-Date: 2014-06-26 17:27+0100\n"
-"PO-Revision-Date: 2014-06-26 17:36+0100\n"
+"POT-Creation-Date: 2014-10-21 15:35+0100\n"
+"PO-Revision-Date: 2014-10-21 15:36+0100\n"
 "Last-Translator: Matthias Reuter <info@straightvisions.com>\n"
 "Language-Team: Matthias Reuter <reuter@elbnetz.com>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.5\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Poedit-KeywordsList: __;esc_attr__\n"
 "X-Poedit-Basepath: ../../\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: lib/config.inc.php:45
+#: lib/config.inc.php:46
 msgid "DAY"
 msgstr "Tag"
 
-#: lib/config.inc.php:46
+#: lib/config.inc.php:47
 msgid "WEEK"
 msgstr "Woche"
 
-#: lib/config.inc.php:47
+#: lib/config.inc.php:48
 msgid "MONTH"
 msgstr "Monat"
 
-#: lib/config.inc.php:48
+#: lib/config.inc.php:49
 msgid "YEAR"
 msgstr "Jahr"
 
-#: lib/config.inc.php:49
+#: lib/config.inc.php:50
 msgid "DAYS"
 msgstr "Tage"
 
-#: lib/config.inc.php:50
+#: lib/config.inc.php:51
 msgid "WEEKS"
 msgstr "Wochen"
 
-#: lib/config.inc.php:51
+#: lib/config.inc.php:52
 msgid "MONTHS"
 msgstr "Monate"
 
-#: lib/config.inc.php:52
+#: lib/config.inc.php:53
 msgid "YEARS"
 msgstr "Jahre"
 
-#: lib/config.inc.php:54
+#: lib/config.inc.php:55
 msgid "50501"
 msgstr ""
 "Die Schnittstelle zum Acquirer reagiert nicht, daher bekommen wir keine "
 "Antwort ob die Transaktion erfolgreich durchgelaufen ist"
 
-#: lib/config.inc.php:55
+#: lib/config.inc.php:56
 msgid "50001"
 msgstr "Die Kreditkarte ist auf einer Schwarzen Liste"
 
-#: lib/config.inc.php:56
+#: lib/config.inc.php:57
 msgid "50201"
 msgstr "Dieser Kundenaccount ist auf einer Schwarzen Liste"
 
-#: lib/config.inc.php:57
+#: lib/config.inc.php:58
 msgid "40103"
 msgstr ""
 "Das Umsatzimit der Kreditkarte wurde mit dieser Transaktion überschritten "
 "oder ist bereits überschritten"
 
-#: lib/config.inc.php:58
+#: lib/config.inc.php:59
 msgid "50102"
 msgstr "Diese Karte wurde ohne weitere Gründe abgelehnt"
 
-#: lib/config.inc.php:59
+#: lib/config.inc.php:60
 msgid "50103"
 msgstr "Die Kreditkarte wurde vermutlich manipuliert oder gestohlen"
 
-#: lib/config.inc.php:60
+#: lib/config.inc.php:61
 msgid "40105"
 msgstr "Das Kreditkartenablaufdatum ist nicht korrekt"
 
-#: lib/config.inc.php:61
+#: lib/config.inc.php:62
 msgid "40101"
 msgstr "Der CVV ist nicht korrekt"
 
-#: lib/config.inc.php:62
+#: lib/config.inc.php:63
 msgid "40100"
 msgstr ""
 "Es existieren Probleme mit der Kreditkarte. Nähere Details können nicht "
 "übergeben werden"
 
-#: lib/config.inc.php:63
+#: lib/config.inc.php:64
 msgid "40104"
 msgstr "Die Kreditkarte ist ungültig"
 
-#: lib/config.inc.php:64
+#: lib/config.inc.php:65
 msgid "40001"
 msgstr "Es gibt ein Problem mit den Payment Daten"
 
-#: lib/config.inc.php:65
+#: lib/config.inc.php:66
 msgid "40102"
 msgstr "Die Kreditkarte ist abgelaufen oder noch nicht gültig"
 
-#: lib/config.inc.php:66
+#: lib/config.inc.php:67
 msgid "40106"
 msgstr "Kreditkarten-Anbieter ist erforderlich"
 
-#: lib/config.inc.php:67
+#: lib/config.inc.php:68
 msgid "40201"
 msgstr "Daten stimmen nicht mit dem Bank-Account überein"
 
-#: lib/config.inc.php:68
+#: lib/config.inc.php:69
 msgid "50300"
 msgstr "Es gibt einen teschnischen Fehler mit 3-D Secure"
 
-#: lib/config.inc.php:69
+#: lib/config.inc.php:70
 msgid "40202"
 msgstr "Die Benutzer-Authentifizierung ist fehlgeschlagen"
 
-#: lib/config.inc.php:70
+#: lib/config.inc.php:71
 msgid "50502"
 msgstr "Es gibt eine Zeitüberschreitung bei der Risiko-Management Transaktion"
 
-#: lib/config.inc.php:71
+#: lib/config.inc.php:72
 msgid "40301"
 msgstr "Währung oder Betrag stimmen nicht überein"
 
-#: lib/config.inc.php:72
+#: lib/config.inc.php:73
 msgid "40401"
 msgstr "Der Betrag ist zu niedrig oder null"
 
-#: lib/config.inc.php:73
+#: lib/config.inc.php:74
 msgid "40402"
 msgstr "Der Verwendungszweck ist zu lang"
 
-#: lib/config.inc.php:74
+#: lib/config.inc.php:75
 msgid "40403"
 msgstr "Die Währung ist nicht für den Kunden konfigurierten"
 
-#: lib/config.inc.php:75
+#: lib/config.inc.php:76
 msgid "50104"
 msgstr ""
 "Die Transaktion wurde vom Authorisierungs-System abgelehnt (Karte durch Bank "
 "eingeschränkt)"
 
-#: lib/config.inc.php:76
+#: lib/config.inc.php:77
 msgid "50105"
 msgstr "Die Konfiguration ist ungültig"
 
-#: lib/config.inc.php:77
+#: lib/config.inc.php:78
 msgid "50600"
 msgstr "Doppelte Transaktion"
 
-#: lib/config.inc.php:78
+#: lib/config.inc.php:79
 msgid "50002"
 msgstr "Die Kreditkarte ist auf einer Schwarzen Liste"
 
-#: lib/config.inc.php:80 lib/integration/woocommerce.inc.php:680
+#: lib/config.inc.php:81 lib/integration/woocommerce.inc.php:683
 msgid "Token not Found"
 msgstr "Token nicht gefunden"
 
-#: lib/config.inc.php:82
+#: lib/config.inc.php:83
 msgid "shipping"
 msgstr "Lieferung"
 
-#: lib/config.inc.php:83
+#: lib/config.inc.php:84
 msgid "company_name"
 msgstr "Firmenname"
 
-#: lib/config.inc.php:84
+#: lib/config.inc.php:85
 msgid "forename"
 msgstr "Vorname"
 
-#: lib/config.inc.php:85
+#: lib/config.inc.php:86
 msgid "surname"
 msgstr "Nachname"
 
-#: lib/config.inc.php:86
+#: lib/config.inc.php:87
 msgid "street"
 msgstr "Straße"
 
-#: lib/config.inc.php:87
+#: lib/config.inc.php:88
 msgid "number"
 msgstr "Nummer"
 
-#: lib/config.inc.php:88
+#: lib/config.inc.php:89
 msgid "zip"
 msgstr "PLZ"
 
-#: lib/config.inc.php:89
+#: lib/config.inc.php:90
 msgid "city"
 msgstr "Stadt"
 
-#: lib/config.inc.php:90
+#: lib/config.inc.php:91
 msgid "email"
 msgstr "Email"
 
-#: lib/config.inc.php:91
+#: lib/config.inc.php:92
 msgid "phone"
 msgstr "Telefon"
 
-#: lib/config.inc.php:94
+#: lib/config.inc.php:95
 msgid "Token or Payment required"
 msgstr ""
 "Es wurde kein Bezahlschlüssel generiert oder der vorhandene wurde bereits "
 "genutzt."
 
-#: lib/config.inc.php:95
+#: lib/config.inc.php:96
 msgid "Subscription already connected"
 msgstr "Abonnement bereits abgeschlossen"
 
-#: lib/config.inc.php:109
+#: lib/config.inc.php:110
 msgid "General Plugin Settings"
 msgstr "Generelle Plugin Einstellungen"
 
-#: lib/config.inc.php:111
+#: lib/config.inc.php:112
 msgid "Paymill PRIVATE API key"
 msgstr "Paymill PRIVATE API Key"
 
-#: lib/config.inc.php:112
+#: lib/config.inc.php:113
 msgid "Paymill PUBLIC API key"
 msgstr "Paymill PUBLIC API Key"
 
-#: lib/config.inc.php:113
+#: lib/config.inc.php:114
 msgid "Display Payment Types"
 msgstr "Zeige Bezahlmöglichkeiten"
 
-#: lib/config.inc.php:114
+#: lib/config.inc.php:115
 msgid "Do not load default CSS"
 msgstr "Standard-CSS nicht laden"
 
-#: lib/config.inc.php:133
+#: lib/config.inc.php:134
 msgid "Number Format: Decimal Point"
 msgstr "Nummern Formatierung: Dezimalpunkt"
 
-#: lib/config.inc.php:134
+#: lib/config.inc.php:135
 msgid "Number Format: Thousands Seperator"
 msgstr "Nummern Formatierung: Tausender-Trenner"
 
-#: lib/config.inc.php:135
+#: lib/config.inc.php:136
 msgid "Currency"
 msgstr "Währung"
 
-#: lib/config.inc.php:136
+#: lib/config.inc.php:137
 msgid "Currency Format"
 msgstr "Währungsformat"
 
-#: lib/config.inc.php:137
+#: lib/config.inc.php:138
 msgid "Outgoing Email"
 msgstr "Ausgehende Emailadresse"
 
-#: lib/config.inc.php:138
+#: lib/config.inc.php:139
 msgid "Incoming Email"
 msgstr "Eingehende Emailadresse"
 
-#: lib/config.inc.php:139
+#: lib/config.inc.php:140
 msgid "Thank You URL"
 msgstr "Danke-Seite"
 
-#: lib/config.inc.php:140
+#: lib/config.inc.php:141
 msgid "Show Fields"
 msgstr "Zeige Felder"
 
-#: lib/config.inc.php:161
+#: lib/config.inc.php:162
 msgid "Product"
 msgstr "Produkt"
 
-#: lib/config.inc.php:162 lib/integration/woocommerce.inc.php:421
+#: lib/config.inc.php:163 lib/integration/woocommerce.inc.php:424
 msgid "Description"
 msgstr "Beschreibung"
 
-#: lib/config.inc.php:163
+#: lib/config.inc.php:164
 msgid "Hide Quantity"
 msgstr "Verstecke Volumenauswahl"
 
-#: lib/config.inc.php:164
+#: lib/config.inc.php:165
 msgid "Delivery Time"
 msgstr "Lieferzeit"
 
-#: lib/config.inc.php:165
+#: lib/config.inc.php:166
 msgid "VAT"
 msgstr "Umsatzsteuer"
 
-#: lib/config.inc.php:166
+#: lib/config.inc.php:167
 msgid "Subscription Offer"
 msgstr "Abonnement Angebot"
 
-#: lib/config.inc.php:167
+#: lib/config.inc.php:168
 msgid "Price"
 msgstr "Preis"
 
@@ -499,6 +499,35 @@ msgstr ""
 "Performancegründen werden Abonnements gecached (zwischengespeichert). Rufe "
 "diese Seite auf, um die Abonnements zu aktualisieren.</strong>"
 
+#: lib/integration/cart66.inc.php:68
+msgid "Payment Information"
+msgstr "Bezahlinformationen"
+
+#: lib/integration/cart66.inc.php:203 lib/integration/magicmembers.inc.php:953
+#: lib/integration/marketpress.inc.php:346
+#: lib/integration/pay_button.inc.php:245
+#: lib/integration/shopplugin.inc.php:243
+#: lib/integration/woocommerce.inc.php:675
+msgid "There was an issue with adding you as client for the payment process."
+msgstr ""
+"Es gab ein Problem dabei, Sie als neuen Kunden im Bezahlprozess hinzuzufügen."
+
+#: lib/integration/cart66.inc.php:210
+msgid "Email address is required"
+msgstr "Email Adresse benötigt"
+
+#: lib/integration/cart66.inc.php:215
+msgid "Phone number is required"
+msgstr "Telefonnummer benötigt"
+
+#: lib/integration/cart66.inc.php:220
+msgid "Email address is not valid"
+msgstr "Emailadresse nicht gültig"
+
+#: lib/integration/cart66.inc.php:225
+msgid "The Special Instructions Field is required"
+msgstr "Spezielle Instruktionen Feld benötigt"
+
 #: lib/integration/magicmembers.inc.php:50
 msgid "PAYMILL - Online payments made easy"
 msgstr "PAYMILL - Online Payments made easy"
@@ -519,20 +548,11 @@ msgid "%s settings updated"
 msgstr "%s Einstellungen aktualisiert"
 
 #: lib/integration/magicmembers.inc.php:885
-#: lib/integration/marketpress.inc.php:287
+#: lib/integration/marketpress.inc.php:290
 #: lib/integration/shopplugin.inc.php:173
-#: lib/integration/woocommerce.inc.php:617
+#: lib/integration/woocommerce.inc.php:620
 msgid "Order #"
 msgstr "Bestellung #"
-
-#: lib/integration/magicmembers.inc.php:953
-#: lib/integration/marketpress.inc.php:343
-#: lib/integration/pay_button.inc.php:245
-#: lib/integration/shopplugin.inc.php:243
-#: lib/integration/woocommerce.inc.php:672
-msgid "There was an issue with adding you as client for the payment process."
-msgstr ""
-"Es gab ein Problem dabei, Sie als neuen Kunden im Bezahlprozess hinzuzufügen."
 
 #: lib/integration/magicmembers.inc.php:1039
 msgid "Error while cancelling subscription"
@@ -665,22 +685,22 @@ msgid "Please <a href=\"%s\">go back and try again</a>."
 msgstr "Bitte <a href=\"%s\">noch einmal versuchen</a>."
 
 #: lib/integration/marketpress.inc.php:166
-#: lib/integration/marketpress.inc.php:413
+#: lib/integration/marketpress.inc.php:470
 msgid "Paymill for WordPress"
 msgstr "Paymill for WordPress"
 
-#: lib/integration/marketpress.inc.php:167
-msgid "Paymill"
-msgstr "Paymill"
-
-#: lib/integration/marketpress.inc.php:347
+#: lib/integration/marketpress.inc.php:350
 msgid "There was a problem finalizing your purchase with Paymill."
 msgstr "Es gab ein Problem die Bestellung via Paymill durchzuführen."
 
-#: lib/integration/marketpress.inc.php:379
+#: lib/integration/marketpress.inc.php:382
 #, php-format
 msgid "Your order(s) for %s store(s) totaling %s were successful."
 msgstr "Deine Bestellung(en) für %s in Höhe von %s war erfolgreich."
+
+#: lib/integration/marketpress.inc.php:406
+msgid "Paymill"
+msgstr "Paymill"
 
 #: lib/integration/pay_button.inc.php:5
 msgid "Error:"
@@ -762,37 +782,37 @@ msgstr "Zeige nur diese Produkte:"
 msgid "All Products"
 msgstr "Alle Produkte"
 
-#: lib/integration/woocommerce.inc.php:408
+#: lib/integration/woocommerce.inc.php:411
 msgid "Enable/Disable"
 msgstr "Aktivieren/Deaktivieren"
 
-#: lib/integration/woocommerce.inc.php:410
+#: lib/integration/woocommerce.inc.php:413
 msgid "Enable PAYMILL Payment"
 msgstr "Aktiviere Paymill Bezahlung"
 
-#: lib/integration/woocommerce.inc.php:414
+#: lib/integration/woocommerce.inc.php:417
 msgid "Title"
 msgstr "Titel"
 
-#: lib/integration/woocommerce.inc.php:416
+#: lib/integration/woocommerce.inc.php:419
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 "Dies legt den Titel fest, den ein Benutzer während des Bezahlprozesses sieht."
 
-#: lib/integration/woocommerce.inc.php:417
+#: lib/integration/woocommerce.inc.php:420
 msgid "PAYMILL Payment"
 msgstr "Bezahlung"
 
-#: lib/integration/woocommerce.inc.php:422
+#: lib/integration/woocommerce.inc.php:425
 msgid "This controls the description which the user sees during checkout."
 msgstr ""
 "Dies legt den Titel fest, den ein Benutzer während des Bezahlprozesses sieht"
 
-#: lib/integration/woocommerce.inc.php:542
+#: lib/integration/woocommerce.inc.php:545
 msgid "Subscription already subscribed."
 msgstr "Abonnement bereits abgeschlossen."
 
-#: lib/integration/woocommerce.inc.php:646
+#: lib/integration/woocommerce.inc.php:649
 msgid "Awaiting payment confirmation from Paymill."
 msgstr "Warten auf Zahlungsbestätigung von Paymill."
 
@@ -873,74 +893,78 @@ msgid "Invalid cardholder"
 msgstr "Ungültiger Karteninhaber"
 
 #: lib/scripts.inc.php:65
-msgid "Invalid or missing amount for 3-D Secure"
+msgid "Invalid or missing amount"
 msgstr "Fehlerhafter oder fehlender Bestellwert für 3-D Secure"
 
 #: lib/scripts.inc.php:66
+msgid "Invalid or missing amount for 3-D Secure"
+msgstr "Fehlerhafter oder fehlender Bestellwert für 3-D Secure"
+
+#: lib/scripts.inc.php:67
 msgid "Invalid or missing currency code for 3-D Secure"
 msgstr "Fehlerhafter oder fehlender Währungscode für 3-D Secure"
 
-#: lib/scripts.inc.php:67
+#: lib/scripts.inc.php:68
 msgid "Missing or invalid bank account number"
 msgstr "Fehlende oder ungültige Kontonummer"
 
-#: lib/scripts.inc.php:68
+#: lib/scripts.inc.php:69
 msgid "Missing or invalid bank account holder"
 msgstr "Fehlender oder ungültiger Kontoinhaber"
 
-#: lib/scripts.inc.php:69
+#: lib/scripts.inc.php:70
 msgid "Missing or invalid bank code"
 msgstr "Fehlende oder ungültige Bankleitzahl"
 
-#: lib/scripts.inc.php:70
+#: lib/scripts.inc.php:71
 msgid "Missing or invalid IBAN"
 msgstr "Fehlender oder ungültiger IBAN"
 
-#: lib/scripts.inc.php:71
+#: lib/scripts.inc.php:72
 msgid "Missing or invalid BIC"
 msgstr "Fehlende oder ungültige BIC"
 
-#: lib/scripts.inc.php:72
+#: lib/scripts.inc.php:73
 msgid "Missing or unsupported country (with IBAN)"
 msgstr "Fehlendes oder nicht unterstütztes Land (für IBAN)"
 
-#: lib/scripts.inc.php:73
+#: lib/scripts.inc.php:74
 msgid "Missing or invalid bank data combination"
 msgstr "Fehlende oder fehlerhafte Bankdaten-Kombination"
 
-#: lib/scripts.inc.php:79
+#: lib/scripts.inc.php:80
 msgid "Must be {is} characters long!"
 msgstr "Muss genau {is} Zeichen lang sein!"
 
-#: lib/scripts.inc.php:80
+#: lib/scripts.inc.php:81
 msgid "Must not be less than {minimum} characters long!"
 msgstr "Darf nicht weniger als {minimum} Zeichen lang sein!"
 
-#: lib/scripts.inc.php:81
+#: lib/scripts.inc.php:82
 msgid "Must not be more than {maximum} characters long!"
 msgstr "Darf nicht mehr als {maximum} Zeichen lang sein!"
 
-#: lib/scripts.inc.php:82
+#: lib/scripts.inc.php:83
 msgid "Must be a number!"
 msgstr "Muss eine Nummer sein."
 
-#: lib/scripts.inc.php:83
+#: lib/scripts.inc.php:84
 msgid "Must be an integer!"
 msgstr "Muss eine Zahl sein."
 
-#: lib/scripts.inc.php:84
+#: lib/scripts.inc.php:85
 msgid "Must be {is}!"
 msgstr "Muss {is} sein."
 
-#: lib/scripts.inc.php:85
+#: lib/scripts.inc.php:86
 msgid "Must not be less than {minimum}!"
 msgstr "Darf nicht kleiner sein als {minimum}!"
 
-#: lib/scripts.inc.php:86
+#: lib/scripts.inc.php:87
 msgid "Must not be more than {maximum}!"
 msgstr "Darf nicht größer sein als {maximum}!"
 
-#: lib/scripts.inc.php:87
+#: lib/scripts.inc.php:88
 msgid "Supply a value!"
 msgstr "Darf nicht leer sein."
 

@@ -2,6 +2,11 @@
 
 Changelog
 =========
+1.8.0
+-----
+* Cart66: Final released
+* Common: Some Error Messages were not displayed - fixed
+
 1.7.2
 -----
 * Common: ELV/SEPA issue in checkout fixed
