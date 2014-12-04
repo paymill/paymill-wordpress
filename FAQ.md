@@ -65,3 +65,8 @@ Are there actions/filters/hooks in the Pay Button?
 --------------------------------------------------
 Yes, all of them have 1 parameter as array with several vars.
 You may use var_dump to get their content and structure.
+
+Does WooCommerce Subscriptions Integration allows setup fees? How are Coupons applied?
+--------------------------------------------------
+Yes, but it's working through a workaround. There are two transactions made, one for the subscription and one for initial fee.
+Subscriptions fee cannot be changed, even through coupons. Please be aware that coupons are working on initial fee only.

@@ -3,7 +3,7 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.8.0
+Version: 1.8.1
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
@@ -31,10 +31,6 @@ Author URI: http://elbnetz.com
 		/*define('paymill_BENCHMARK', true);
 		require_once(PAYMILL_DIR.'lib/benchmark.inc.php');
 		paymill_doBenchmark(false,'init'); // start benchmark*/
-	}else{
-		define('paymill_BENCHMARK', false);
-		error_reporting(0);
-		ini_set('display_errors',0);
 	}
 
 	// load translation

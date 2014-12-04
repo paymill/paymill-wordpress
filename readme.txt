@@ -1,10 +1,10 @@
 === PAYMILL for WordPress ===
 Contributors: Matthias Reuter
 Donate link: 
-Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, ecommerce, debitcard, subscriptions
+Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
 Requires at least: 4.0
 Tested up to: 4.0
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -136,6 +136,10 @@ The Pay Button is made for customizing and you should make intensive use of CSS 
 Additionally, you may want to replace the default order form with your own. Create a
 custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymill/lib/tpl/pay_button.php')
 
+= Does WooCommerce Subscriptions Integration allows setup fees? How are Coupons applied? =
+Yes, but it's working through a workaround. There are two transactions made, one for the subscription and one for initial fee.
+Subscriptions fee cannot be changed, even through coupons. Please be aware that coupons are working on initial fee only.
+
 == Screenshots ==
 
 1. Common Settings
@@ -147,6 +151,12 @@ custom theme file on 'THEME_DIR/paymill/pay_button.php' (it will replace '/paymi
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.8.1 =
+
+* WooCommeerce: 3Dsecure amount mismatch issue fixed
+* WooCommerce: Separated Payment for order feature support
+* Common: Debug Mode now has no effect when not activated
 
 = 1.8.0 =
 

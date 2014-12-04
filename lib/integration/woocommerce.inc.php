@@ -566,7 +566,7 @@
 							$GLOBALS['paymill_loader']->request_transaction->setPayment($this->paymentClass->getPaymentID());
 						}
 						$GLOBALS['paymill_loader']->request_transaction->setClient($this->client->getId());
-						$GLOBALS['paymill_loader']->request_transaction->setDescription($_SERVER['HTTP_HOST'].': '.$this->order_desc);
+						$GLOBALS['paymill_loader']->request_transaction->setDescription($this->order_desc);
 						$GLOBALS['paymill_loader']->request->setSource(serialize($GLOBALS['paymill_source']));
 						
 						$GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_transaction);
@@ -617,7 +617,7 @@
 					// client retrieved, now we are ready to process the payment
 					if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
 						$this->order_id				= $order_id;
-						$this->order_desc			= __('Order #','paymill').$this->order_id;
+						$this->order_desc			= $_SERVER['HTTP_HOST'].': '.__('Order #','paymill').$this->order_id.__(', Customer-ID #','paymill').get_current_user_id();
 						$this->order				= new WC_Order($this->order_id);
 						$cart						= $woocommerce->cart->get_cart();
 						$cart						= reset($cart);
@@ -693,13 +693,13 @@
 						
 						// settings
 						$GLOBALS['paymill_active']		= true;
-						$cart_total						= $woocommerce->cart->total*100;
+						$cart_total						= WC_Payment_Gateway::get_order_total()*100;
 						$currency						= get_woocommerce_currency();
 						$no_logos						= true;
 						
 						// form ids
 						echo '<script>
-						paymill_form_checkout_id = ".checkout";
+						paymill_form_checkout_id = ".checkout, #order_review";
 						paymill_form_checkout_submit_id = "#place_order";
 						paymill_shop_name = "woocommerce";
 						</script>';

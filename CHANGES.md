@@ -2,6 +2,12 @@
 
 Changelog
 =========
+1.8.1
+-----
+* WooCommeerce: 3Dsecure amount mismatch issue fixed
+* WooCommerce: Separated Payment for order feature support
+* Common: Debug Mode now has no effect when not activated
+
 1.8.0
 -----
 * Cart66: Final released
