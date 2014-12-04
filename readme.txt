@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
 Requires at least: 4.0
 Tested up to: 4.0
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,10 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.8.2 =
+
+* Common: Benchmark error fixed
 
 = 1.8.1 =
 
@@ -331,6 +335,21 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.8.2 =
+
+* Common: Benchmark error fixed
+
+= 1.8.1 =
+
+* WooCommeerce: 3Dsecure amount mismatch issue fixed
+* WooCommerce: Separated Payment for order feature support
+* Common: Debug Mode now has no effect when not activated
+
+= 1.8.0 =
+
+* Cart66: Final released
+* Common: Some Error Messages were not displayed - fixed
 
 = 1.7.2 =
 

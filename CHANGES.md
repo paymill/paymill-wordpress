@@ -2,6 +2,10 @@
 
 Changelog
 =========
+1.8.2
+-----
+* Common: Benchmark error fixed
+
 1.8.1
 -----
 * WooCommeerce: 3Dsecure amount mismatch issue fixed
