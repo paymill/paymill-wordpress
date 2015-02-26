@@ -14,10 +14,10 @@
 		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_load_admin_scripts'); // benchmark
 	}
 	
-	add_action('admin_init', 'paymill_load_admin_styles');
+	//add_action('admin_init', 'paymill_load_admin_styles');
 	function paymill_load_admin_styles() {
 		// Register our stylesheet
-		wp_register_style( 'paymill_admin.css', plugins_url('/css/paymill_admin.css', __FILE__) );
+		wp_enqueue_style( 'paymill_admin.css', plugins_url('css/paymill_admin.css', __FILE__) );
 	}
 	
 	// load frontend scripts

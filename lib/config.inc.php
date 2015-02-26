@@ -220,7 +220,7 @@
 		public function add_admin_menus() {
 			if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_add_admin_menus'); // benchmark
 			$page = add_menu_page('Paymill', 'Paymill', 'manage_options', $this->plugin_options_key, array( &$this, 'plugin_options_page' ),  plugins_url('',__FILE__ ).'/img/icon.png');
-			add_action( 'admin_print_styles-' . $page, 'paymill_admin_styles' );
+			add_action( 'admin_print_styles-' . $page, 'paymill_load_admin_styles' );
 			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_add_admin_menus'); // benchmark
 		}
 		// Plugin Options page rendering goes here, checks for active tab and replaces key with the related settings key. Uses the plugin_options_tabs method to render the tabs.
