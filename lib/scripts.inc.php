@@ -16,16 +16,9 @@
 	
 	add_action('admin_init', 'paymill_load_admin_styles');
 	function paymill_load_admin_styles() {
-		/* Register our stylesheet. */
+		// Register our stylesheet
 		wp_register_style( 'paymill_admin.css', plugins_url('/css/paymill_admin.css', __FILE__) );
 	}
-	
-   function paymill_admin_styles() {
-       /*
-        * It will be called only on your plugin admin page, enqueue our stylesheet here
-        */
-       wp_enqueue_style( 'paymill_admin.css' );
-   }
 	
 	// load frontend scripts
 	

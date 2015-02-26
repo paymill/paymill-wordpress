@@ -2,6 +2,18 @@
 
 Changelog
 =========
+1.9.0
+-----
+* Common: Update to v2.1 Paymill API
+* WooCommerce: Support for Subscription Product End Settings, only newly created subscriptions will be affected. Old subscriptions need to be terminated manually on Paymill Dashboard
+* WooCommerce: Support for Subscription pause/start, thanks to https://twitter.com/osma
+* WooCommerce: Several minor bugfixes contributed by https://twitter.com/osma
+
+1.8.3
+-----
+* WooCommerce: Support for javascript based Multi-Step-Checkout like in "Bazar Shop")
+* WooCommerce: Subscriptions-Support added for order delivery date plugin https://wordpress.org/plugins/order-delivery-date-for-woocommerce/
+
 1.8.2
 -----
 * Common: Benchmark error fixed

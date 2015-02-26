@@ -209,7 +209,6 @@ pip-log.txt
 .tox
 
 #Translations
-*.mo
 
 #Mr Developer
 .mr.developer.cfg

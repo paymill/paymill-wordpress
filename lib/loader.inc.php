@@ -33,6 +33,7 @@
 			
 			// for use within API
 			'Paymill\Models\Response\Base'				=> array('lib/api/lib/Paymill/Models/Response/Base.php'),
+			'Paymill\Services\Util'						=> array('lib/api/lib/Paymill/Services/Util.php'),
 			'Paymill\Models\Response\Client'			=> array('lib/api/lib/Paymill/Models/Response/Client.php',				'Paymill\Models\Response\Client'),
 			'Paymill\Models\Response\Error'				=> array('lib/api/lib/Paymill/Models/Response/Error.php',				'Paymill\Models\Response\Error'),
 			'Paymill\Models\Response\Offer'				=> array('lib/api/lib/Paymill/Models/Response/Offer.php',				'Paymill\Models\Response\Offer'),

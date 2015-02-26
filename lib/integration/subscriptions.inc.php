@@ -39,7 +39,7 @@ class paymill_subscriptions{
 		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_details'); // benchmark
 		return $output;
 	}
-	public function create($client, $offer, $payment){
+	public function create($client, $offer, $payment, $startAt=false, $periodOfValidity=false){
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_create'); // benchmark
 		load_paymill(); // this function-call can and should be used whenever working with Paymill API
 		
@@ -47,6 +47,11 @@ class paymill_subscriptions{
 			$GLOBALS['paymill_loader']->request_subscription->setClient($client);
 			$GLOBALS['paymill_loader']->request_subscription->setOffer($offer);
 			$GLOBALS['paymill_loader']->request_subscription->setPayment($payment);
+
+			if($startAt && intval($startAt) > 0 && intval($startAt) > time()){
+				$GLOBALS['paymill_loader']->request_subscription->setStartAt(intval($startAt));
+			}
+			$GLOBALS['paymill_loader']->request_subscription->setPeriodOfValidity($periodOfValidity);
 
 			$subscription	= $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_subscription);
 			$output			= $subscription->getId();
@@ -84,7 +89,43 @@ class paymill_subscriptions{
 		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_remove'); // benchmark
 		return $output;
 	}
-	
+	public function pause($sub_id){
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_pause'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+
+		try{
+			$GLOBALS['paymill_loader']->request_subscription->setId($sub_id);
+			$GLOBALS['paymill_loader']->request_subscription->setPause(true);
+
+			$response = $GLOBALS['paymill_loader']->request->update($GLOBALS['paymill_loader']->request_subscription);
+			$output			= $response;
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
+		}
+
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_pause'); // benchmark
+		return $output;
+	}
+	public function unpause($sub_id){
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_unpause'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+
+		try{
+			$GLOBALS['paymill_loader']->request_subscription->setId($sub_id);
+			$GLOBALS['paymill_loader']->request_subscription->setPause(false);
+
+			$response = $GLOBALS['paymill_loader']->request->update($GLOBALS['paymill_loader']->request_subscription);
+			$output			= $response;
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
+		}
+
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_unpause'); // benchmark
+		return $output;
+	}
+
 	public function offerGetList($reCache=false){
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_offerGetList'); // benchmark
 		global $wpdb;

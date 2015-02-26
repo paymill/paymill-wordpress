@@ -28,7 +28,10 @@ class PaymentTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_service = new Request();
-        $this->_service->setConnectionClass(new Curl(API_TEST_KEY));
+        $this->_service->setConnectionClass(
+            new Curl(API_TEST_KEY, API_HOST, array(CURLOPT_SSL_VERIFYPEER => SSL_VERIFY_PEER))
+        );
+
         $this->_model = new Models\Request\Payment();
         parent::setUp();
     }
@@ -96,16 +99,29 @@ class PaymentTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      * @codeCoverageIgnore
+     * @depends createPayment
+     */
+    public function getAllPaymentAsModel()
+    {
+        $this->_model;
+        $result = $this->_service->getAllAsModel($this->_model);
+        $this->assertInternalType('array', $result, var_export($result, true));
+		$this->assertInstanceOf('Paymill\Models\Response\Payment', array_pop($result));
+    }
+
+    /**
+     * @test
+     * @codeCoverageIgnore
      */
     public function getAllPaymentWithFilter()
     {
         $this->_model->setFilter(array(
-            'count' => 2,
+            'count' => 1,
             'offset' => 0
             )
         );
         $result = $this->_service->getAll($this->_model);
-        $this->assertEquals(2, count($result), var_export($result, true));
+        $this->assertEquals(1, count($result), var_export($result, true));
     }
 
     /**
@@ -119,7 +135,7 @@ class PaymentTest extends PHPUnit_Framework_TestCase
     {
         $this->_model->setId($model->getId());
         $result = $this->_service->delete($this->_model);
-        $this->assertInternalType('array', $result, var_export($result, true));
+        $this->assertEquals(null, $result, var_export($result, true));
     }
 
 }

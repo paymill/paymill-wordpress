@@ -7,6 +7,7 @@
 			try{
 				$GLOBALS['paymill_loader']->request_webhook->setId(get_option('paymill_webhook_id'));
 				$GLOBALS['paymill_loader']->request_webhook->setUrl(get_site_url().'/?wc-api=WC_Gateway_Paymill_Gateway');
+				$GLOBALS['paymill_loader']->request_webhook->setActive(true);
 				$GLOBALS['paymill_loader']->request_webhook->setEventTypes(array(
 					'subscription.created',
 					'subscription.deleted',
@@ -53,6 +54,7 @@
 		try{
 			$GLOBALS['paymill_loader']->request_webhook = new $GLOBALS['paymill_loader']->request_webhook; // re-init class
 			$GLOBALS['paymill_loader']->request_webhook->setUrl(get_site_url().'/?wc-api=WC_Gateway_Paymill_Gateway');
+			$GLOBALS['paymill_loader']->request_webhook->setActive(true);
 			$GLOBALS['paymill_loader']->request_webhook->setEventTypes(array(
 				'subscription.created',
 				'subscription.deleted',

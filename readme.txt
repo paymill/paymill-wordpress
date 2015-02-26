@@ -2,9 +2,9 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
-Requires at least: 4.0
-Tested up to: 4.0
-Stable tag: 1.8.2
+Requires at least: 4.1
+Tested up to: 4.1.1
+Stable tag: 1.9
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,12 +14,12 @@ With PAYMILL you are able to provide credit card based payments for your custome
 
 = Requires: =
 * PHP 5.3 or higher
-* WordPress 4.0.x or higher
+* WordPress 4.1.x or higher
 * CuRL PHP extension
 
 = Supported Shops including subscriptions support: =
 
-* WooCommerce (2.2.x) + WooCommerce Subscriptions (1.5.x)
+* WooCommerce (2.3.x) + WooCommerce Subscriptions (1.5.x)
 * Magic Members (1.8.x)
 * Pay Button (independent, light-weight payment form)
 
@@ -151,6 +151,18 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.9.0 =
+
+* Common: Update to v2.1 Paymill API
+* WooCommerce: Support for Subscription Product End Settings, only newly created subscriptions will be affected. Old subscriptions need to be terminated manually on Paymill Dashboard
+* WooCommerce: Support for Subscription pause/start, thanks to https://twitter.com/osma
+* WooCommerce: Several minor bugfixes contributed by https://twitter.com/osma
+
+= 1.8.3 =
+
+* WooCommerce: Support for javascript based Multi-Step-Checkout like in "Bazar Shop")
+* WooCommerce: Subscriptions-Support added for order delivery date plugin https://wordpress.org/plugins/order-delivery-date-for-woocommerce/
 
 = 1.8.2 =
 
@@ -335,6 +347,11 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.8.3 =
+
+* WooCommerce: Support for javascript based Multi-Step-Checkout like in "Bazar Shop")
+* WooCommerce: Subscriptions-Support added for order delivery date plugin https://wordpress.org/plugins/order-delivery-date-for-woocommerce/
 
 = 1.8.2 =
 

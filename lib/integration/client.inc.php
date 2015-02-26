@@ -69,7 +69,7 @@ class paymill_client{
 				$user_id = 0;
 			}
 			
-			$wpdb->query('DELETE FROM '.$wpdb->prefix.'paymill_clients WHERE wp_member_id="'.$user_id.'"');
+			$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_clients WHERE wp_member_id="%s"',array($user_id)));
 
 			$sql = $wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_clients
 			SET paymill_client_id="%s", paymill_client_email="%s", paymill_client_description="%s", wp_member_id="%s"',

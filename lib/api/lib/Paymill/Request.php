@@ -12,7 +12,7 @@ use Paymill\Services\ResponseHandler;
 
 /**
  * Base
- * @version 3.0.2
+ * @version 3.2.1
  */
 class Request
 {
@@ -35,12 +35,17 @@ class Request
     /**
      * @var string
      */
-    private $_version = "3.0.2";
+    private $_version = "3.2.1";
 
     /**
      * @var string
      */
     private $_source;
+
+  /**
+     * @var \Paymill\Services\Util
+     */
+    private $_util;
 
 
     /**
@@ -49,7 +54,8 @@ class Request
      */
     public function __construct($privateKey = null)
     {
-        if(!is_null($privateKey)){
+        $this->_util = new \Paymill\Services\Util();
+    if(!is_null($privateKey)){
             $this->setConnectionClass(new Curl($privateKey));
         }
     }
@@ -104,6 +110,17 @@ class Request
      * @return array
      */
     public function getAll($model)
+    {
+        return $this->_request($model, __FUNCTION__);
+    }
+
+    /**
+     * Sends a getAll request using the provided model
+     * @param \Paymill\Models\Request\Base $model
+     * @throws PaymillException
+     * @return array of \Paymill\Models\Request\Base
+     */
+    public function getAllAsModel($model)
     {
         return $this->_request($model, __FUNCTION__);
     }
@@ -179,6 +196,7 @@ class Request
                 $httpMethod = 'DELETE';
                 break;
             case 'getAll':
+            case 'getAllAsModel':
             case 'getOne':
                 $httpMethod = 'GET';
                 break;
@@ -196,16 +214,16 @@ class Request
     private function _request(Base $model, $method)
     {
         if(!is_a($this->_connectionClass, '\Paymill\API\CommunicationAbstract')){
-            throw new PaymillException(null,'The connenction class is missing!');
+            throw new PaymillException(null,'The connection class is missing!');
         }
-        $httpMethod = $this->_getHTTPMethod($method);
+        $convertedResponse = null;
+    $httpMethod = $this->_getHTTPMethod($method);
         $parameter = $model->parameterize($method);
         $serviceResource = $model->getServiceResource() . $model->getId();
         if(is_a($model, "\Paymill\Models\Request\Transaction") && $method === "create"){
-            $source = empty($this->_source) ? "PhpLib" . $this->getVersion(): "PhpLib" . $this->getVersion() . "_" . $this->getSource();
+            $source = !array_key_exists('source',$parameter) ? "PhpLib" . $this->getVersion(): "PhpLib" . $this->getVersion() . "_" . $parameter['source'];
             $parameter['source'] = $source;
         }
-
         try {
             $this->_lastRequest = $parameter;
             $response = $this->_connectionClass->requestApi(
@@ -213,23 +231,24 @@ class Request
             );
             $this->_lastResponse = $response;
             $responseHandler = new ResponseHandler();
-            if ($method === 'getAll') {
-                if ($responseHandler->validateResponse($response)) {
-                    $convertedResponse = $response['body']['data'];
-                } else {
-                    $convertedResponse = $responseHandler->convertResponse($response, $model->getServiceResource());
-                }
-            } else {
-                $convertedResponse = $responseHandler->convertResponse($response, $model->getServiceResource());
-            }
+      if($method === "getAllAsModel" && $responseHandler->validateResponse($response) && $this->_util->isNumericArray($response['body']['data'])){
+        foreach($response['body']['data'] as $object){
+          $convertedResponse[] = $responseHandler->convertResponse($object, $model->getServiceResource());
+        }
+      }elseif($method === "getAll" && $responseHandler->validateResponse($response)){
+                $convertedResponse = $response['body']['data'];
+      }elseif($responseHandler->validateResponse($response)){
+        $convertedResponse = $responseHandler->convertResponse($response['body']['data'], $model->getServiceResource());
+      }else{
+        $convertedResponse = $responseHandler->convertErrorToModel($response, $model->getServiceResource());
+      }
         } catch (\Exception $e) {
             $errorModel = new Error();
             $convertedResponse = $errorModel->setErrorMessage($e->getMessage());
         }
-
         if (is_a($convertedResponse, '\Paymill\Models\Response\Error')) {
             throw new PaymillException(
-            $convertedResponse->getResponseCode(), $convertedResponse->getErrorMessage(), $convertedResponse->getHttpStatusCode()
+                $convertedResponse->getResponseCode(), $convertedResponse->getErrorMessage(), $convertedResponse->getHttpStatusCode(), $convertedResponse->getRawObject()
             );
         }
 

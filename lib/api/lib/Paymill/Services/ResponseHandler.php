@@ -60,13 +60,7 @@ class ResponseHandler
     public function convertResponse($response, $serviceResource)
     {
         $resourceName = substr($serviceResource, 0, -2);
-        $resultValue = null;
-        if ($this->validateResponse($response)) {
-            $resultValue = $this->_convertResponseToModel($response['body']['data'], $resourceName);
-        } else {
-            $resultValue = $this->_convertErrorToModel($response);
-        }
-        return $resultValue;
+        return $this->_convertResponseToModel($response, $resourceName);
     }
 
     /**
@@ -109,6 +103,9 @@ class ResponseHandler
                 break;
             case 'webhook':
                 $model = $this->_createWebhook($response);
+                break;
+            case 'fraud':
+                $model = $this->_createFraud($response);
                 break;
         }
 
@@ -215,7 +212,9 @@ class ResponseHandler
         $model->setUpdatedAt($response['updated_at']);
         $model->setPayment($this->_convertResponseToModel($response['payment'], "payment"));
         $model->setClient($this->_convertResponseToModel($response['client'], "client"));
+        $model->setTransaction(isset($response['transaction']) ? $this->_convertResponseToModel($response['transaction'], 'transaction') : null);
         $model->setAppId($response['app_id']);
+        $model->setDescription($response['description']);
         return $model;
     }
 
@@ -276,7 +275,6 @@ class ResponseHandler
         $model->setId($response['id']);
         $model->setOffer($this->_convertResponseToModel($response['offer'], 'offer'));
         $model->setLivemode($response['livemode']);
-        $model->setCancelAtPeriodEnd($response['cancel_at_period_end']);
         $model->setTrialStart($response['trial_start']);
         $model->setTrialEnd($response['trial_end']);
         $model->setNextCaptureAt($response['next_capture_at']);
@@ -286,6 +284,11 @@ class ResponseHandler
         $model->setPayment($this->_convertResponseToModel($response['payment'], "payment"));
         $model->setClient($this->_convertResponseToModel($response['client'], "client"));
         $model->setAppId($response['app_id']);
+        $model->setIsCanceled($response['is_canceled']);
+        $model->setIsDeleted($response['is_deleted']);
+        $model->setStatus($response['status']);
+        $model->setAmount($response['amount']);
+        $model->setTempAmount($response['temp_amount']);
         return $model;
     }
 
@@ -305,6 +308,24 @@ class ResponseHandler
         $model->setCreatedAt($response['created_at']);
         $model->setUpdatedAt($response['updated_at']);
         $model->setAppId($response['app_id']);
+        $model->setActive($response['active']);
+        return $model;
+    }
+
+    /**
+     * Creates and fills a fraudmodel
+     *
+     * @param array $response
+     * @return \Paymill\Models\Response\Fraud
+     */
+    private function _createFraud($response)
+    {
+        $model = new Models\Fraud();
+        $model->setId($response['id']);
+        $model->setLivemode($response['livemode']);
+        $model->setStatus($response['status']);
+        $model->setCreatedAt($response['created_at']);
+        $model->setUpdatedAt($response['updated_at']);
         return $model;
     }
 
@@ -332,9 +353,10 @@ class ResponseHandler
     /**
      * Generates an error model based on the provided response array
      * @param array $response
+     * @param string $resourceName
      * @return Error
      */
-    private function _convertErrorToModel($response)
+    public function convertErrorToModel($response, $resourceName = null)
     {
         $errorModel = new Error();
 
@@ -349,6 +371,12 @@ class ResponseHandler
             $errorCode = $this->_errorCodes[$responseCode];
         }
 
+        if (isset($resourceName) && isset($response['body']['data'])) {
+            try {
+                $errorModel->setRawObject($this->convertResponse($response['body']['data'], $resourceName));
+            } catch (\Exception $e) { }
+        }
+        
         if (isset($response['body'])) {
             if (is_array($response['body'])) {
                 if (isset($response['body']['error'])) {
@@ -377,10 +405,10 @@ class ResponseHandler
     public function validateResponse($response)
     {
         $returnValue = false;
-        if ($response['header']['status'] === 200) {
+        if ($response['header']['status'] == 200) {
             if (isset($response['body']['data']['response_code'])) {
                 $returnValue = false;
-                if ($response['body']['data']['response_code'] === 20000) {
+                if ($response['body']['data']['response_code'] == 20000) {
                     $returnValue = true;
                 }
             } else {

@@ -82,8 +82,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function clientTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "client_88a388d9dd48f86c3136",
             "email" => "lovely-client@example.com",
             "description" => null,
@@ -116,9 +115,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function clientMultiPaymentTest()
     {
-        $response = array();
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             'id' => "client_018dcaf0d8d03dde3ff6",
             'email' => "Some@Testemail.de",
             'description' => "This is a Testuser.123",
@@ -168,8 +165,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function paymentCCTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response= array(
             "id" => "pay_3af44644dd6d25c820a8",
             "type" => "creditcard",
             "client" => null,
@@ -193,8 +189,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function paymentSEPATest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "pay_3af44644dd6d25c820a8",
             "type" => "debit",
             "client" => null,
@@ -219,8 +214,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function transactionTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "tran_54645bcb98ba7acfe204",
             "amount" => "4200",
             "origin_amount" => 4200,
@@ -284,8 +278,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function preauthorizationTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "tran_54645bcb98ba7acfe204",
             "amount" => "4200",
             "origin_amount" => 4200,
@@ -337,6 +330,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
                 )),
             "preauthorization" => array(
                 "id" => "preauth_0b771c503680c341548e",
+                "description" => "Test Description",
                 "amount" => "4200",
                 "currency" => "EUR",
                 "status" => "closed",
@@ -395,8 +389,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function refundTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "refund_87bc404a95d5ce616049",
             "amount" => "042",
             "status" => "refunded",
@@ -471,8 +464,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function offerTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "offer_40237e20a7d5a231d99b",
             "name" => "Nerd Special",
             "amount" => 4200,
@@ -497,37 +489,40 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function subscriptionTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
-            "id" => "sub_012db05186ccfe22d86c",
-            "offer" => array(
-                "id" => "offer_40237e20a7d5a231d99b",
-                "name" => "Nerd Special",
-                "amount" => 4200,
-                "currency" => "EUR",
-                "interval" => "1 WEEK",
-                "trial_period_days" => 0,
-                "created_at" => 1341935129,
-                "updated_at" => 1341935129,
-                "subscription_count" => array(
-                    "active" => "3",
-                    "inactive" => 0
+        $response = array(
+            'id' => 'sub_012db05186ccfe22d86c',
+            'amount' => 4200,
+            'temp_amount' => 4000,
+            'offer' => array(
+                'id' => 'offer_40237e20a7d5a231d99b',
+                'name' => 'Nerd Special',
+                'amount' => 4200,
+                'currency' => 'EUR',
+                'interval' => '1 WEEK',
+                'trial_period_days' => 0,
+                'created_at' => 1341935129,
+                'updated_at' => 1341935129,
+                'subscription_count' => array(
+                    'active' => '3',
+                    'inactive' => 0
                 ),
-                "app_id" => null
+                'app_id' => null
             ),
-            "livemode" => false,
-            "cancel_at_period_end" => false,
-            "trial_start" => null,
-            "trial_end" => null,
-            "next_capture_at" => 1369563095,
-            "created_at" => 1341935490,
-            "updated_at" => 1341935490,
-            "canceled_at" => null,
-            "payment" => array(
-                'id' => "pay_be64260ee1b0a368efe597e8",
-                'type' => "creditcard",
-                'client' => "client_018dcaf0d8d03dde3ff6",
-                'card_type' => "visa",
+            'livemode' => false,
+            'trial_start' => null,
+            'trial_end' => null,
+            'next_capture_at' => 1369563095,
+            'created_at' => 1341935490,
+            'updated_at' => 1341935490,
+            'canceled_at' => null,
+            'is_canceled' => false,
+            'is_deleted' => false,
+            'status' => 'active',
+            'payment' => array(
+                'id' => 'pay_be64260ee1b0a368efe597e8',
+                'type' => 'creditcard',
+                'client' => 'client_018dcaf0d8d03dde3ff6',
+                'card_type' => 'visa',
                 'country' => null,
                 'expire_month' => 12,
                 'expire_year' => 2015,
@@ -537,19 +532,19 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
                 'updated_at' => 1378472387,
                 'app_id' => null
             ),
-            "client" => array(
-                "id" => "client_88a388d9dd48f86c3136",
-                "email" => "lovely-client@example.com",
-                "description" => null,
-                "created_at" => 1340199740,
-                "updated_at" => 1340199760,
-                "subscription" => null,
+            'client' => array(
+                'id' => 'client_88a388d9dd48f86c3136',
+                'email' => 'lovely-client@example.com',
+                'description' => null,
+                'created_at' => 1340199740,
+                'updated_at' => 1340199760,
+                'subscription' => null,
                 'app_id' => null,
-                "payment" => array(
-                    'id' => "pay_be64260ee1b0a368efe597e8",
-                    'type' => "creditcard",
-                    'client' => "client_018dcaf0d8d03dde3ff6",
-                    'card_type' => "visa",
+                'payment' => array(
+                    'id' => 'pay_be64260ee1b0a368efe597e8',
+                    'type' => 'creditcard',
+                    'client' => 'client_018dcaf0d8d03dde3ff6',
+                    'card_type' => 'visa',
                     'country' => null,
                     'expire_month' => 12,
                     'expire_year' => 2015,
@@ -559,7 +554,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
                     'updated_at' => 1378472387,
                     'app_id' => null
                 )),
-            "app_id" => null
+            'app_id' => null
         );
         $subject = $this->_responseHandler->convertResponse($response, "subscriptions/");
         $this->assertInstanceOf("\Paymill\Models\Response\Subscription", $subject, var_export($subject, true));
@@ -571,8 +566,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function urlWebhookTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "hook_40237e20a7d5a231d99b",
             "url" => "your-webhook-url",
             "livemode" => false,
@@ -582,7 +576,9 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
             ),
             "created_at" => 1358982000,
             "updated_at" => 1358982000,
-            "app_id" => null
+            "app_id" => null,
+            "version" => '2.0',
+            "active" => true
         );
         $subject = $this->_responseHandler->convertResponse($response, "webhooks/");
         $this->assertInstanceOf("\Paymill\Models\Response\Webhook", $subject, var_export($subject, true));
@@ -594,8 +590,7 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function emailWebhookTest()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
+        $response = array(
             "id" => "hook_40237e20a7d5a231d99b",
             "email" => "your-webhook-email",
             "livemode" => false,
@@ -605,7 +600,10 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
             ),
             "created_at" => 1358982000,
             "updated_at" => 1358982000,
-            "app_id" => null
+            "app_id" => null,
+            "version" => '2.0',
+            "active" => true
+
         );
         $subject = $this->_responseHandler->convertResponse($response, "webhooks/");
         $this->assertInstanceOf("\Paymill\Models\Response\Webhook", $subject, var_export($subject, true));
@@ -617,37 +615,16 @@ class ResponseHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function checkResponseCodes()
     {
-        $response['header']['status'] = 200;
-        $response['body']['data'] = array(
-            "id" => "tran_54645bcb98ba7acfe204",
-            "amount" => "4200",
-            "origin_amount" => 4200,
-            "status" => "closed",
-            "description" => null,
-            "livemode" => false,
-            "refunds" => null,
-            "currency" => "EUR",
-            "created_at" => 1349946151,
-            "updated_at" => 1349946151,
-            "short_id" => '0000.1212.3434',
-            "invoices" => array(),
-            "payment" => new Models\Response\Payment(),
-            "client" => new Models\Response\Client(),
-            "preauthorization" => null,
-            "fees" => array(),
-            "app_id" => null
-        );
-
         foreach ($this->_errorCodes as $responseCode => $errorMessage) {
             if ($responseCode === 20000) {
                 continue;
             }
             $response['body']['data']['response_code'] = $responseCode;
-            $subject = $this->_responseHandler->convertResponse($response, "transactions/");
+			$subject = $this->_responseHandler->convertErrorToModel($response);
             $this->assertInstanceOf("\Paymill\Models\Response\Error", $subject);
             $this->assertEquals($responseCode, $subject->getResponseCode(), "ResponseCode:" . $responseCode . "==" . $subject->getResponseCode() . "\n");
             $this->assertEquals($errorMessage, $subject->getErrorMessage(), "ErrorMessage:" . $errorMessage . "==" . $subject->getErrorMessage() . "\n");
-            $response['body']['data']['response_code'] = null;
+            $response['response_code'] = null;
         }
     }
 

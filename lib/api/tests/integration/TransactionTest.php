@@ -28,7 +28,10 @@ class Transaction extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->_service = new Request();
-        $this->_service->setConnectionClass(new Curl(API_TEST_KEY));
+        $this->_service->setConnectionClass(
+            new Curl(API_TEST_KEY, API_HOST, array(CURLOPT_SSL_VERIFYPEER => SSL_VERIFY_PEER))
+        );
+
         $this->_model = new Models\Request\Transaction();
         parent::setUp();
     }
@@ -125,16 +128,29 @@ class Transaction extends PHPUnit_Framework_TestCase
     /**
      * @test
      * @codeCoverageIgnore
+     * @depends createTransactionWithToken
+     */
+    public function getAllTransactionAsModel()
+    {
+        $this->_model;
+        $result = $this->_service->getAllAsModel($this->_model);
+        $this->assertInternalType('array', $result, var_export($result, true));
+		$this->assertInstanceOf('Paymill\Models\Response\Transaction', array_pop($result));
+    }
+
+    /**
+     * @test
+     * @codeCoverageIgnore
      */
     public function getAllTransactionWithFilter()
     {
         $this->_model->setFilter(array(
-            'count' => 2,
+            'count' => 1,
             'offset' => 0
             )
         );
         $result = $this->_service->getAll($this->_model);
-        $this->assertEquals(2, count($result), var_export($result, true));
+        $this->assertEquals(1, count($result), var_export($result, true));
     }
 
     /**

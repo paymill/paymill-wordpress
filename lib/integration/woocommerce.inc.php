@@ -311,31 +311,51 @@
 		}
 	}
 	add_action('woocommerce_api_wc_gateway_paymill_gateway', 'paymill_webhooks');
-	
+
 	add_action('cancelled_subscription_paymill','woo_cancelled_subscription_paymill', 10, 2);
 	//add_action( 'updated_users_subscriptions','woo_updated_subscription_paymill', 10, 2 );
-	//add_action( 'subscription_put_on-hold_paymill','woo_subscription_put_on_hold_paymill', 10, 2 );
-	//add_action( 'reactivated_subscription_paymill','woo_reactivated_subscription_paymill', 10, 2 );
-	function woo_cancelled_subscription_paymill($user,$subscription_key){
+	add_action( 'subscription_put_on-hold_paymill','woo_subscription_put_on_hold_paymill', 10, 2 );
+	add_action( 'reactivated_subscription_paymill','woo_reactivated_subscription_paymill', 10, 2 );
+	function woo_cancelled_subscription_paymill($order, $product_id){
 		global $wpdb;
-		
-		$userInfo			= get_userdata(get_current_user_id());
-		$client_cache		= $wpdb->get_results($wpdb->prepare('SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($userInfo->ID,$user->id.'_'.$subscription_key)),ARRAY_A);
-		
+
+		$client_cache		= $wpdb->get_results($wpdb->prepare('SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($order->user_id,$order->id.'_'.$product_id)),ARRAY_A);
+
+		if (!isset($client_cache[0]['paymill_sub_id']))
+			error_log("could not find paymill sub while trying to cancel $order->user_id $order->id $product_id");
+
 		$subscriptions		= new paymill_subscriptions('woocommerce');
 		$subscriptions->remove($client_cache[0]['paymill_sub_id']);
-		$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($userInfo->ID,$user->id.'_'.$subscription_key)));
+		$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($user,$subscription_key)));
 	}
 	function woo_updated_subscription_paymill($user,$subscription_details){
 		// @todo: implement support for changing/creating offer later
 	}
-	function woo_subscription_put_on_hold_paymill(){
-		// currently not supported with Paymill
+	function woo_subscription_put_on_hold_paymill($order, $product_id){
+		global $wpdb;
+
+		$client_cache		= $wpdb->get_results($wpdb->prepare('SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($order->user_id,$order->id.'_'.$product_id)),ARRAY_A);
+
+		if (!isset($client_cache[0]['paymill_sub_id']))
+			error_log("could not find paymill sub while trying to pause $order->user_id $order->id $product_id");
+
+		if ($order->status == 'on-hold') return; // all subs begin by being on-hold, so don't pause them again
+
+		$subscriptions		= new paymill_subscriptions('woocommerce');
+		$subscriptions->pause($client_cache[0]['paymill_sub_id']);
+    }
+	function woo_reactivated_subscription_paymill($order, $product_id){
+		global $wpdb;
+
+		$client_cache		= $wpdb->get_results($wpdb->prepare('SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($order->user_id,$order->id.'_'.$product_id)),ARRAY_A);
+
+		if (!isset($client_cache[0]['paymill_sub_id']))
+			error_log("could not find paymill sub while trying to reactivate $order->user_id $order->id $product_id");
+
+		$subscriptions		= new paymill_subscriptions('woocommerce');
+		$subscriptions->unpause($client_cache[0]['paymill_sub_id']);
 	}
-	function woo_reactivated_subscription_paymill($user,$subscription_key){
-		// currently not supported with Paymill
-	}
-	
+
 	function add_paymill_gateway_class($methods){
 		$methods[] = 'WC_Gateway_Paymill_Gateway'; 
 		return $methods;
@@ -382,9 +402,9 @@
 					$this->supports = array(
 						'products',
 						'subscriptions',
-						'subscription_cancellation',/*
-						'subscription_suspension', 
-						'subscription_reactivation',
+						'subscription_cancellation',
+						'subscription_suspension',
+						'subscription_reactivation',/*
 						'subscription_amount_changes',
 						'subscription_date_changes',
 						'subscription_payment_method_change'*/
@@ -479,27 +499,33 @@
 								$woo_sub_key	= WC_Subscriptions_Manager::get_subscription_key($this->order_id,$product['product_id']);
 
 								// check wether user already has subscription
-								if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
+								//if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
 
 									// required vars
-									$amount			= (floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
-									$currency		= get_woocommerce_currency();
-									$interval		= '1 '.strtoupper(WC_Subscriptions_Order::get_subscription_period($this->order,$product['product_id']));
-
-									$trial_end		= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($this->order->order_date)));
+									$amount						= (floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
+									$currency					= get_woocommerce_currency();
+									$interval					= WC_Subscriptions_Order::get_subscription_interval($this->order,$product['product_id']);
+									$length						= intval(WC_Subscriptions_Order::get_subscription_length($this->order,$product['product_id']));
+									$period						= strtoupper(WC_Subscriptions_Order::get_subscription_period($this->order,$product['product_id']));
+									if ($length > 0) {
+										$periodOfValidity		= $length.' '.$period;
+									} else{
+										$periodOfValidity		= false;
+									}
+									$trial_end					= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($this->order->order_date)));
 									if($trial_end === false){
-										$trial_time		= 0;
+										$trial_time				= 0;
 									}else{
-										$datediff		= $trial_end - time();
-										$trial_time		= ceil($datediff/(60*60*24));
+										$datediff				= $trial_end - time();
+										$trial_time				= ceil($datediff/(60*60*24));
 									}
 									
 									// md5 name
-									$woo_sub_md5	= md5($amount.$currency.$interval.$trial_time);
+									$woo_sub_md5				= md5($amount.$currency.$interval.$trial_time);
 
 									// get offer
-									$name			= 'woo_'.$product['product_id'].'_'.$woo_sub_md5;
-									$offer			= $this->subscriptions->offerGetDetailByName($name);
+									$name						= 'woo_'.$product['product_id'].'_'.$woo_sub_md5;
+									$offer						= $this->subscriptions->offerGetDetailByName($name);
 
 									// check wether offer exists in paymill
 									if($offer === false){
@@ -507,7 +533,7 @@
 										$params = array(
 											'amount'			=> $amount,
 											'currency'			=> $currency,
-											'interval'			=> $interval,
+											'interval'			=> $interval.' '.$period,
 											'name'				=> $name,
 											'trial_period_days'	=> intval($trial_time)
 										);
@@ -519,7 +545,7 @@
 									}
 
 									// create user subscription
-									$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID());
+									$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
 										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 										return false;
@@ -540,14 +566,14 @@
 										
 										return true;
 									}
-								}else{
+								/*}else{
 									// @todo: currently, WooCommerce does not support multiple subscriptions on checkout, so we can stop processing here if first subscription is already subscribed
 									$GLOBALS['paymill_loader']->paymill_errors->setError(__('Subscription already subscribed.', 'paymill'));
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
 										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 									}
 									return false;
-								}
+								}*/
 							}
 						//}
 					}else{
@@ -699,7 +725,7 @@
 						
 						// form ids
 						echo '<script>
-						paymill_form_checkout_id = ".checkout, #order_review";
+						paymill_form_checkout_id = "form.checkout, form#order_review";
 						paymill_form_checkout_submit_id = "#place_order";
 						paymill_shop_name = "woocommerce";
 						</script>';

@@ -3198,13 +3198,20 @@ class mgm_paymill extends mgm_payment{
 		if($pack_id && $user_id){
 			$userInfo			= get_userdata($user_id);
 
-			$query				= 'SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="'.$user_id.'" AND mgm_offer_id="'.$pack_id.'"';
-			$client_cache		= $wpdb->get_results($query,ARRAY_A);
+			$client_cache		= $wpdb->get_results($wpdb->prepare('SELECT paymill_sub_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="%s" AND mgm_offer_id="%s"',
+				array(
+					$user_id,
+					$pack_id
+				)),ARRAY_A);
 			
 			if(isset($client_cache[0]['paymill_sub_id']) && strlen($client_cache[0]['paymill_sub_id']) > 0){
 				$this->subscriptions->remove($client_cache[0]['paymill_sub_id']);
 				
-				$query				= 'DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="'.$user_id.'" AND mgm_offer_id="'.$pack_id.'"';
+				$query = $wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE mgm_user_id="%s" AND mgm_offer_id="%s"',
+				array(
+					$user_id,
+					$pack_id
+				));
 				$wpdb->query($query);
 				
 				return true;
