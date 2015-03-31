@@ -2,9 +2,11 @@
 	// PAYMILL Payment Class
 	if(!function_exists('paymill_woocommerce_errorHandling')){
 		function paymill_woocommerce_errorHandling($errors){
-			global $woocommerce;
-			foreach($errors as $error){
-				$woocommerce->add_error('<div class="paymill_error">'.$error.'</div>');
+			if(!defined('PAYMILL_WOO_NOTICES_SENT')){
+				foreach($errors as $error){
+					wc_add_notice('<div class="paymill_error">'.$error.'</div>', 'error' );
+				}
+				define('PAYMILL_WOO_NOTICES_SENT',true);
 			}
 		}
 	}
@@ -278,12 +280,17 @@
 						error_log(var_export($subscription,true)."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
 						
 						if(count($subscription['completed_payments']) >= 1){
-							WC_Subscriptions_Manager::process_subscription_payments_on_order($subscription['order_id'], $subscription['product_id']);
+							$order = new WC_Order($subscription['order_id']);
+							
+							//WC_Subscriptions_Manager::process_subscription_payments_on_order($order, $subscription['product_id']);
+							WC_Subscriptions_Manager::process_subscription_payments_on_order($order);
 						}else{
-							WC_Subscriptions_Manager::activate_subscriptions_for_order($subscription['order_id']);
 							$order				= new WC_Order($subscription['order_id']);
 							$order->payment_complete();
+							
+							WC_Subscriptions_Manager::activate_subscriptions_for_order($subscription['order_id']);
 						}
+						WC_Subscriptions_Manager::set_next_payment_date($sub_cache['woo_offer_id'], $order->customer_user);
 					}
 					// cancel subscription, as it was deleted through Paymill dashboard
 					if($event_json['event']['event_type'] == 'subscription.deleted'){
@@ -546,6 +553,7 @@
 
 									// create user subscription
 									$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
+									
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
 										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 										return false;
@@ -558,10 +566,10 @@
 										)));
 									
 										// subscription successful
-											do_action('paymill_woocommerce_subscription_created', array(
-												'product_id'	=> $product['product_id'],
-												'offer_id'		=> $offer['id'],
-												'offer_data'	=> $offer
+										do_action('paymill_woocommerce_subscription_created', array(
+											'product_id'	=> $product['product_id'],
+											'offer_id'		=> $offer['id'],
+											'offer_data'	=> $offer
 										));
 										
 										return true;

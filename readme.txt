@@ -152,6 +152,10 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 
 == Changelog ==
 
+= 1.9.1 =
+
+* WooCommerce: Error Management on Checkout fixed
+
 = 1.9.0 =
 
 * Common: Update to v2.1 Paymill API
