@@ -83,7 +83,6 @@
 		<div class="paymill_holdername"><input id="paymill_holdername_e" type="text" size="20" value="" autocomplete="off" placeholder="<?php echo __('Account Holder', 'paymill'); ?>" /></div>
 		<div class="paymill_elv_number"><input id="paymill_elv_number" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('Account Number', 'paymill'); ?>"></div>
 		<div class="paymill_elv_bank"><input id="paymill_elv_bank_code" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('Bank Code', 'paymill'); ?>"></div>
-		<!--[if gte IE 8]><!--><div class="paymill_elv_bankname"></div><!--<![endif]-->
 	</div>
 	<input class="paymill_amount" type="hidden" size="5" value="<?php if(isset($cart_total)){ echo $cart_total; } ?>"/>
 	<input class="paymill_currency" type="hidden" size="3" value="<?php echo $currency; ?>"/>

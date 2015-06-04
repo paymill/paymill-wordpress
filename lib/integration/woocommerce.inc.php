@@ -714,7 +714,7 @@
 					global $woocommerce;
 					// check Paymill payment
 					if(empty($_POST['paymillToken'])){
-						$woocommerce->add_error(__('Token not Found','paymill'));
+						wc_add_notice(__('Token not Found','paymill'));
 						return false;
 					}
 					return true;

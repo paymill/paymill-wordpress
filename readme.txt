@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
 Requires at least: 4.2.2
 Tested up to: 4.2.2
-Stable tag: 1.10.0
+Stable tag: 1.10.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -151,6 +151,11 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.10.1 =
+
+* WooCommerce: Error Management Fix
+* Common: Checkout Form fix
 
 = 1.10.0 =
 
@@ -354,6 +359,25 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.10.1 =
+
+* WooCommerce: Error Management Fix
+* Common: Checkout Form fix
+
+= 1.10.0 =
+
+* WooCommerce: Error Management on Checkout fixed
+* WooCommerce: Subscription Handling reviewed and optimized
+* Common: Support for PCI DSS 3.0 (iframe-based credit card form)
+* WooCommerce: Several improvements and bugfixes
+
+= 1.9.0 =
+
+* Common: Update to v2.1 Paymill API
+* WooCommerce: Support for Subscription Product End Settings, only newly created subscriptions will be affected. Old subscriptions need to be terminated manually on Paymill Dashboard
+* WooCommerce: Support for Subscription pause/start, thanks to https://twitter.com/osma
+* WooCommerce: Several minor bugfixes contributed by https://twitter.com/osma
 
 = 1.8.3 =
 

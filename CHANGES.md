@@ -2,6 +2,13 @@
 
 Changelog
 =========
+
+1.10.1
+-----
+* WooCommerce: Error Management Fix
+* Common: Checkout Form fix
+
+
 1.10.0
 -----
 * WooCommerce: Error Management on Checkout fixed

@@ -3,13 +3,13 @@
 Plugin Name: Paymill
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.10.0
+Version: 1.10.1
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
 
 	// common information
-	define('PAYMILL_VERSION',11000);
+	define('PAYMILL_VERSION',11010);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	define('PAYMILL_PLUGIN_URL',str_replace('http:','',plugins_url( '' , __FILE__ ).'/'));
 	$GLOBALS['paymill_active'] = false; // eCommerce channels will set Paymill as active later to prevent showing payment form twice on same page.
