@@ -113,6 +113,7 @@
 				'api_key_public'	=> __('Paymill PUBLIC API key', 'paymill'),
 				'payments_display'	=> __('Display Payment Types', 'paymill'),
 				'no_default_css'	=> __('Do not load default CSS', 'paymill'),
+				'pci_dss_3'			=> __('Deactivate PCI DSS 3.0 Compatibility', 'paymill'),
 			);
 			
 			foreach($settings as $setting => $description){
@@ -343,7 +344,7 @@
 					}
 					echo '</select>';
 				}
-			}elseif($args['desc'] == 'products_quantityhide' || $args['desc'] == 'no_default_css'){ // products_quantityhide, no_default_css
+			}elseif($args['desc'] == 'products_quantityhide' || $args['desc'] == 'no_default_css' || $args['desc'] == 'pci_dss_3'){ // products_quantityhide, no_default_css, pci_dss_3
 				echo '
 					<input
 					type="checkbox"
@@ -433,6 +434,7 @@
 			$descriptions['thankyou_url']					= __('Redirect URL for custom thank your page.', 'paymill');
 
 			$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.', 'paymill');
+			$descriptions['pci_dss_3']						= __('Please ask Paymill customer support before deactivating this feature.', 'paymill');
 			$descriptions['currency']						= __('Currency, <a href="http://en.wikipedia.org/wiki/ISO_4217#Active_codes" target="_blank">ISO 4217</a> e.g. "EUR" or "GBP"', 'paymill');
 			$descriptions['currency_format']				= __('Currency Format - use the following variables: %n = number, %s = symbol.', 'paymill');
 			$descriptions['api_key_private']				= __('Insert your Paymill <strong>PRIVATE</strong> API key.', 'paymill');

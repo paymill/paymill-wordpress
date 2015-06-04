@@ -2,6 +2,14 @@
 
 Changelog
 =========
+1.10.0
+-----
+* WooCommerce: Error Management on Checkout fixed
+* WooCommerce: Subscription Handling reviewed and optimized
+* Common: Support for PCI DSS 3.0 (iframe-based credit card form)
+* WooCommerce: Several improvements and bugfixes
+
+
 1.9.0
 -----
 * Common: Update to v2.1 Paymill API

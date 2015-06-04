@@ -83,7 +83,6 @@
 	background-image:url('../img/payment_logos.png');
 	background-repeat:no-repeat;
 	background-position:0px 30px;
-	font-size:90%;
 }
 #paymill_framebox img{
 	box-shadow:none !important;
@@ -130,6 +129,9 @@ paymill_#form_credit, paymill_#form_elv{
 }
 .paymill_payment_logos{
 	margin-bottom:10px;
+}
+.paymill_payment_logos img{
+	display:inline;
 }
 
 /* error box */

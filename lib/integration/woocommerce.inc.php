@@ -736,6 +736,7 @@
 						paymill_form_checkout_id = "form.checkout, form#order_review";
 						paymill_form_checkout_submit_id = "#place_order";
 						paymill_shop_name = "woocommerce";
+						paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
 						</script>';
 						
 						

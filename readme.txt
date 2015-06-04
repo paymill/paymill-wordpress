@@ -2,9 +2,9 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
-Requires at least: 4.1
-Tested up to: 4.1.1
-Stable tag: 1.9
+Requires at least: 4.2.2
+Tested up to: 4.2.2
+Stable tag: 1.10.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,9 +152,12 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 
 == Changelog ==
 
-= 1.9.1 =
+= 1.10.0 =
 
 * WooCommerce: Error Management on Checkout fixed
+* WooCommerce: Subscription Handling reviewed and optimized
+* Common: Support for PCI DSS 3.0 (iframe-based credit card form)
+* WooCommerce: Several improvements and bugfixes
 
 = 1.9.0 =
 
