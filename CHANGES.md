@@ -3,6 +3,10 @@
 Changelog
 =========
 
+1.10.2
+-----
+* Subscriptions: "required_offer_or_amount_and_currency_and_interval" error fixed
+
 1.10.1
 -----
 * WooCommerce: Error Management Fix

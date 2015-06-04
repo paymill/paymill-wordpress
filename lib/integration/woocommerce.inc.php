@@ -545,14 +545,14 @@
 											'trial_period_days'	=> intval($trial_time)
 										);
 										$offer = $this->subscriptions->offerCreate($params);
+										
 										if($GLOBALS['paymill_loader']->paymill_errors->status()){
 											$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 											return false;
 										}
 									}
-
 									// create user subscription
-									$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
+									$user_sub = $this->subscriptions->create($this->client->getId(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
 									
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
 										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
@@ -568,8 +568,8 @@
 										// subscription successful
 										do_action('paymill_woocommerce_subscription_created', array(
 											'product_id'	=> $product['product_id'],
-											'offer_id'		=> $offer['id'],
-											'offer_data'	=> $offer
+											'offer_id'		=> $offer,
+											//'offer_data'	=> $offer
 										));
 										
 										return true;

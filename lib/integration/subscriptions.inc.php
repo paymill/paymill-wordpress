@@ -227,14 +227,17 @@ class paymill_subscriptions{
 			$GLOBALS['paymill_loader']->request_offer->setTrialPeriodDays($params['trial_period_days']);
 
 			$output			= $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_offer);
+			
 			$offerID		= $output->getId();
+
 			$this->offerGetList(true);
-			$output			= $this->offerGetDetailByID($offerID);
+			//$output			= $this->offerGetDetailByID($offerID);
+			$output			= $offerID;
 		}catch(Exception $e){
 			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
 			$output			= false;
 		}
-		
+
 		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_offerCreate'); // benchmark
 		return $output;
 	}
