@@ -1428,6 +1428,7 @@ class mgm_paymill extends mgm_payment{
 			paymill_form_checkout_submit_id = "#place_order";
 			paymill_shop_name = "magicmembers";
 			paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
+			paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), $domain),0,2).'";
 			</script>';
 			
 			echo '<div id="payment" class="paymill_pay_button paymill_magicmembers"><form action="'. $this->_get_endpoint('return') .'" name="' . $this->code . '_form" method="post" id="' . $this->code . '_form" class="checkout">';
