@@ -31,11 +31,7 @@
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_load_frontend_scripts'); // benchmark
 		wp_deregister_script(array('paymill_bridge','paymill_bridge_custom'));
 		wp_enqueue_script('jquery.formatCurrency-1.4.0.js',PAYMILL_PLUGIN_URL.'lib/js/jquery.formatCurrency-1.4.0.js', array('jquery'), PAYMILL_VERSION);
-		if(empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1'){
-			wp_enqueue_script('paymill_bridge', 'https://bridge.paymill.com/dss3', array('jquery'), PAYMILL_VERSION);
-		}else{
-			wp_enqueue_script('paymill_bridge', 'https://bridge.paymill.de/', array('jquery'), PAYMILL_VERSION);
-		}
+		wp_enqueue_script('paymill_bridge', 'https://bridge.paymill.de/', array('jquery'), PAYMILL_VERSION);
 		wp_localize_script('paymill_bridge', 'paymill_lang', array(
 			'validateCardNumber'				=> esc_attr__('Invalid Credit Card Number', 'paymill'),
 			'validateExpiry'					=> esc_attr__('Invalid Expiration Date', 'paymill'),
