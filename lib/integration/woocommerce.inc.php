@@ -333,7 +333,7 @@
 
 		$subscriptions		= new paymill_subscriptions('woocommerce');
 		$subscriptions->remove($client_cache[0]['paymill_sub_id']);
-		$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($user,$subscription_key)));
+		$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($order->user_id,$order->id.'_'.$product_id)));
 	}
 	function woo_updated_subscription_paymill($user,$subscription_details){
 		// @todo: implement support for changing/creating offer later
@@ -545,14 +545,14 @@
 											'trial_period_days'	=> intval($trial_time)
 										);
 										$offer = $this->subscriptions->offerCreate($params);
+										
 										if($GLOBALS['paymill_loader']->paymill_errors->status()){
 											$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 											return false;
 										}
 									}
-
 									// create user subscription
-									$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
+									$user_sub = $this->subscriptions->create($this->client->getId(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
 									
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
 										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
@@ -568,8 +568,8 @@
 										// subscription successful
 										do_action('paymill_woocommerce_subscription_created', array(
 											'product_id'	=> $product['product_id'],
-											'offer_id'		=> $offer['id'],
-											'offer_data'	=> $offer
+											'offer_id'		=> $offer,
+											//'offer_data'	=> $offer
 										));
 										
 										return true;
@@ -714,7 +714,7 @@
 					global $woocommerce;
 					// check Paymill payment
 					if(empty($_POST['paymillToken'])){
-						$woocommerce->add_error(__('Token not Found','paymill'));
+						wc_add_notice(__('Token not Found','paymill'));
 						return false;
 					}
 					return true;
@@ -736,6 +736,8 @@
 						paymill_form_checkout_id = "form.checkout, form#order_review";
 						paymill_form_checkout_submit_id = "#place_order";
 						paymill_shop_name = "woocommerce";
+						paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
+						paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), $domain),0,2).'";
 						</script>';
 						
 						

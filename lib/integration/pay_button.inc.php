@@ -304,6 +304,8 @@
 					paymill_form_checkout_id = ".checkout";
 					paymill_form_checkout_submit_id = "#place_order";
 					paymill_shop_name = "paybutton";
+					paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
+					paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), $domain),0,2).'";
 					</script>';
 					
 					if($this->subscriptions === false){
@@ -365,9 +367,11 @@
 					<select class="widefat" style="width:220px;overflow:hidden;" id="'.$this->get_field_id('products').'" name="'.$this->get_field_name('products').'[]" multiple>
 						<option value=""'.((!is_array($products_whitelist) || $products_whitelist[0] == '') ? ' selected="selected"' : '').'>'.__('All Products', 'paymill').'</option>
 ';
-						foreach($GLOBALS['paymill_settings']->paymill_pay_button_settings['products'] as $id => $product){
-							if(strlen($product['products_title']) > 0){
-								echo '<option value="'.$id.'"'.(is_array(unserialize($instance['products'])) && in_array($id,unserialize($instance['products'])) ? ' selected="selected"' : '').'>'.$product['products_title'].'</option>';
+						if(isset($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) && is_array($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) && count($GLOBALS['paymill_settings']->paymill_pay_button_settings['products']) > 0){
+							foreach($GLOBALS['paymill_settings']->paymill_pay_button_settings['products'] as $id => $product){
+								if(strlen($product['products_title']) > 0){
+									echo '<option value="'.$id.'"'.(is_array(unserialize($instance['products'])) && in_array($id,unserialize($instance['products'])) ? ' selected="selected"' : '').'>'.$product['products_title'].'</option>';
+								}
 							}
 						}
 echo '

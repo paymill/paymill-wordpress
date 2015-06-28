@@ -113,6 +113,7 @@
 				'api_key_public'	=> __('Paymill PUBLIC API key', 'paymill'),
 				'payments_display'	=> __('Display Payment Types', 'paymill'),
 				'no_default_css'	=> __('Do not load default CSS', 'paymill'),
+				'pci_dss_3'			=> __('Deactivate PCI DSS 3.0 Compatibility', 'paymill'),
 			);
 			
 			foreach($settings as $setting => $description){
@@ -282,7 +283,7 @@
 			$descriptions['products_desc']					= __('Detailed description of the product', 'paymill');
 			$descriptions['products_price']					= __('Gross Price of the product, e.g. 40 or 6.99', 'paymill');
 			$descriptions['products_offer']					= __('If you have created a subscription in your <a href="https://app.paymill.com/de-de#!/offers">Paymill Cockpit</a>, you can select it here. If selected, it will overwrite the following settings for this product. Important: For Performance purposes, subscription plans will be cached. Open this page to recache it.', 'paymill');
-			$descriptions['products_vat']					= __('Value-Added-Tax Rate in % for the product, e.g. 19 or 7', 'paymill');
+			$descriptions['products_vat']					= __('Value-Added-Tax Rate in &#37; for the product, e.g. 19 or 7', 'paymill');
 			$descriptions['products_delivery']				= __('Delivery Time of the product, e.g. 2 Days or 1 Week', 'paymill');
 			$descriptions['products_quantityhide']			= __('Hide quantity select field, quantity will be set to 1', 'paymill');
 			$descriptions['products_freeamount']			= __('Allow free amounts (donation feature)', 'paymill');
@@ -351,7 +352,14 @@
 					value="1"
 					class="regular-text code" '.($value ? 'checked="checked"' : '').' />
 				';
-			}elseif($args['desc'] == 'fields_show'){
+			}elseif($args['desc'] == 'pci_dss_3'){ // pci_dss_3
+				echo '
+					<select name="'.$this->setting_keys[$page].$option.'">
+						<option value="0">'.__('embedded PayFrame (requires PCI SAQ A)', 'paymill').'</option>
+						<option value="1"'.($value ? ' selected="selected"' : '').'>'.__('direct integration (requires PCI SAQ A-EP)', 'paymill').'</option>
+					</select>
+				';
+				}elseif($args['desc'] == 'fields_show'){
 				echo __('You may want to gather some additional information from your customers. Select them here:', 'paymill').'<br />';
 			
 				$fields_show = array(
@@ -433,20 +441,21 @@
 			$descriptions['thankyou_url']					= __('Redirect URL for custom thank your page.', 'paymill');
 
 			$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.', 'paymill');
+			$descriptions['pci_dss_3']						= __('Please ask Paymill customer support for further information.', 'paymill');
 			$descriptions['currency']						= __('Currency, <a href="http://en.wikipedia.org/wiki/ISO_4217#Active_codes" target="_blank">ISO 4217</a> e.g. "EUR" or "GBP"', 'paymill');
-			$descriptions['currency_format']				= __('Currency Format - use the following variables: %n = number, %s = symbol.', 'paymill');
+			$descriptions['currency_format']				= __('Currency Format - use the following variables: &#37;n = number, &#37;s = symbol.', 'paymill');
 			$descriptions['api_key_private']				= __('Insert your Paymill <strong>PRIVATE</strong> API key.', 'paymill');
 			$descriptions['api_key_public']					= __('Insert your Paymill <strong>PUBLIC</strong> API key.', 'paymill');
 			
 			$descriptions['flat_shipping_country']			= __('Name of the available delivery country, e.g. England', 'paymill');
 			$descriptions['flat_shipping_costs']			= __('Gross fee for the flat shipping costs., e.g. 7 or 4.90', 'paymill');
-			$descriptions['flat_shipping_vat']				= __('Value-Added-Tax Rate in % for the flat shipping costs., e.g. 19 or 7', 'paymill');
+			$descriptions['flat_shipping_vat']				= __('Value-Added-Tax Rate in &#37; for the flat shipping costs., e.g. 19 or 7', 'paymill');
 
 			$descriptions['products_title']					= __('Name of the product', 'paymill');
 			$descriptions['products_desc']					= __('Detailed description of the product', 'paymill');
 			$descriptions['products_price']					= __('Gross Price of the product, e.g. 40 or 6.99', 'paymill');
 			$descriptions['products_offer']					= __('If you have created a subscription in your Paymill Cockpit, can select it here. If selected, it will overwrite the following settings for this product. Important: For Performance purposes, subscription plans will be cached. Open this page to recache it.', 'paymill');
-			$descriptions['products_vat']					= __('Value-Added-Tax Rate in % for the product, e.g. 19 or 7', 'paymill');
+			$descriptions['products_vat']					= __('Value-Added-Tax Rate in &#37; for the product, e.g. 19 or 7', 'paymill');
 			$descriptions['products_delivery']				= __('Delivery Time of the product, e.g. 2 Days or 1 Week', 'paymill');
 			$descriptions['products_quantityhide']			= __('Hide quantity select field, quantity will be set to 1', 'paymill');
 			$descriptions['products_freeamount']			= __('Allow free amounts (donation feature)', 'paymill');

@@ -2,6 +2,43 @@
 
 Changelog
 =========
+
+1.10.3
+-----
+* Common: Integration of PayFrame to enable use of SAQ A for easier PCI DSS 3.0 compliance.
+
+PayFrame
+We’ve introduced a “payment form” option for easier compliance with PCI requirements.
+
+In addition to having a payment form directly integrated in your checkout page, you
+can use our embedded PayFrame solution to ensure that payment data never
+touches your website.
+
+PayFrame is enabled by default, but you can choose between both options in the
+plugin settings. Later this year, we’re bringing you the ability to customise the
+appearance and text content of the PayFrame version.
+
+To learn more about the benefits of PayFrame, please visit our FAQ:
+https://www.paymill.com/en/faq/howdoespaymillspayframesolutionwork
+
+1.10.2
+-----
+* Subscriptions: "required_offer_or_amount_and_currency_and_interval" error fixed
+
+1.10.1
+-----
+* WooCommerce: Error Management Fix
+* Common: Checkout Form fix
+
+
+1.10.0
+-----
+* WooCommerce: Error Management on Checkout fixed
+* WooCommerce: Subscription Handling reviewed and optimized
+* Common: Support for PCI DSS 3.0 (iframe-based credit card form)
+* WooCommerce: Several improvements and bugfixes
+
+
 1.9.0
 -----
 * Common: Update to v2.1 Paymill API
