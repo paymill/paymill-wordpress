@@ -130,7 +130,7 @@ paymill_#form_credit, paymill_#form_elv{
 .paymill_payment_logos{
 	margin-bottom:10px;
 }
-.paymill_payment_logos img{
+.paymill_payment_logos img, .payment_method_paymill label img{
 	display:inline;
 }
 

@@ -19,10 +19,10 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 	var $plugin_name = 'paymill-for-wordpress';
 
 	//name of your gateway, for the admin side.
-	var $admin_name = '';
+	var $admin_name = 'Paymill for WordPress';
 
 	//public name of your gateway, for lists and such.
-	var $public_name = '';
+	var $public_name = 'Paymill';
 
 	//url for an image for your checkout method. Displayed on checkout form if set
 	var $method_img_url = '';
@@ -164,7 +164,7 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 
 		//set names here to be able to translate
 		$this->admin_name					= __('Paymill for WordPress', 'paymill');
-		$this->public_name					= $this->method_button_img_url = $settings['gateways']['paymill-for-wordpress']['name'];
+		$this->public_name					= $settings['gateways']['paymill-for-wordpress']['name'] ? $settings['gateways']['paymill-for-wordpress']['name'] : 'Paymill';
 
 		//button img
 		$this->method_img_url				=  $this->method_button_img_url = $settings['gateways']['paymill-for-wordpress']['image-url'];

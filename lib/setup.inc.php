@@ -79,7 +79,7 @@
 				return '<div>'.__('No Webhook created yet.','paymill').' '.__('Please insert API Keys in <strong>General Settings</strong> and submit the form.','paymill').'</div>';
 			}else{
 				$webhooks = $GLOBALS['paymill_loader']->request->getAll($GLOBALS['paymill_loader']->request_webhook);
-				
+
 				$webhook_found				= false;
 				$nothing_found				= true;
 				$additional_webhooks		= array();

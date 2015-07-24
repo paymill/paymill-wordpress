@@ -2,24 +2,15 @@
 
 Changelog
 =========
+1.10.4
+-----
+* MarketPress: Error upon payment activation fixed
+* WooCommerce: Official support for custom intervals (e.g. every 3rd month) added
+* WooCommerce: Different bugs in order processing and subscription handling fixed
 
 1.10.3
 -----
 * Common: Integration of PayFrame to enable use of SAQ A for easier PCI DSS 3.0 compliance.
-
-PayFrame
-We’ve introduced a “payment form” option for easier compliance with PCI requirements.
-
-In addition to having a payment form directly integrated in your checkout page, you
-can use our embedded PayFrame solution to ensure that payment data never
-touches your website.
-
-PayFrame is enabled by default, but you can choose between both options in the
-plugin settings. Later this year, we’re bringing you the ability to customise the
-appearance and text content of the PayFrame version.
-
-To learn more about the benefits of PayFrame, please visit our FAQ:
-https://www.paymill.com/en/faq/howdoespaymillspayframesolutionwork
 
 1.10.2
 -----

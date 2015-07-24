@@ -7,7 +7,7 @@ PAYMILL for WordPress
 * Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 * Requires at least: 4.2.2
 * Tested up to: 4.2.2
-* Stable tag: 1.10.3
+* Stable tag: 1.10.4
 * License: [GPLv3 or later](http://www.gnu.org/licenses/gpl-3.0.html)
 
 With PAYMILL you are able to provide credit card based payments for your customers.
@@ -46,6 +46,21 @@ Accept payments in up to 100 currencies.
 All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported.
 Available in 40 countries across Europe so far.
 
+Pay Frame
+=========
+
+We’ve introduced a “payment form” option for easier compliance with PCI requirements.
+
+In addition to having a payment form directly integrated in your checkout page, you
+can use our embedded PayFrame solution to ensure that payment data never
+touches your website.
+
+PayFrame is enabled by default, but you can choose between both options in the
+plugin settings. Later this year, we’re bringing you the ability to customise the
+appearance and text content of the PayFrame version.
+
+To learn more about the benefits of PayFrame, please visit our FAQ:
+https://www.paymill.com/en/faq/how-does-paymills-payframe-solution-work
 
 Team
 ====

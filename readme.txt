@@ -4,7 +4,7 @@ Donate link:
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
 Requires at least: 4.2.2
 Tested up to: 4.2.2
-Stable tag: 1.10.3
+Stable tag: 1.10.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,6 +32,20 @@ With PAYMILL you are able to provide credit card based payments for your custome
 = Service Description =
 
 PAYMILL offers the fastest and easiest way to accept payments online. The innovative payment solution enables online businesses and services to integrate payments into their websites within a very short time. The developer-friendly REST API is flexibly integrable. Customize the check-out process the way you want or use the PAYMILL PayButton which allows an even easier integration. Super-fast account activation within a few days only. Top-notch customer support. Subscriptions supported and Mobile SDKs for iOS and Android available. Accept payments in up to 100 currencies. All major card brands like MasterCard, VISA, American Express, Diner's Club, Maestro etc. supported. Available in 40 countries across Europe so far.
+
+= Pay Frame =
+We’ve introduced a “payment form” option for easier compliance with PCI requirements.
+
+In addition to having a payment form directly integrated in your checkout page, you
+can use our embedded PayFrame solution to ensure that payment data never
+touches your website.
+
+PayFrame is enabled by default, but you can choose between both options in the
+plugin settings. Later this year, we’re bringing you the ability to customise the
+appearance and text content of the PayFrame version.
+
+To learn more about the benefits of PayFrame, please visit our FAQ:
+https://www.paymill.com/en/faq/how-does-paymills-payframe-solution-work
 
 = Team =
 
@@ -152,23 +166,15 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 
 == Changelog ==
 
+= 1.10.4 =
+
+* MarketPress: Error upon payment activation fixed
+* WooCommerce: Official support for custom intervals (e.g. every 3rd month) added
+* WooCommerce: Different bugs in order processing and subscription handling fixed
+
 = 1.10.3 =
 
 * Common: Integration of PayFrame to enable use of SAQ A for easier PCI DSS 3.0 compliance.
-
-PayFrame
-We’ve introduced a “payment form” option for easier compliance with PCI requirements.
-
-In addition to having a payment form directly integrated in your checkout page, you
-can use our embedded PayFrame solution to ensure that payment data never
-touches your website.
-
-PayFrame is enabled by default, but you can choose between both options in the
-plugin settings. Later this year, we’re bringing you the ability to customise the
-appearance and text content of the PayFrame version.
-
-To learn more about the benefits of PayFrame, please visit our FAQ:
-https://www.paymill.com/en/faq/howdoespaymillspayframesolutionwork
 
 = 1.10.2 =
 
@@ -381,6 +387,12 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.10.4 =
+
+* MarketPress: Error upon payment activation fixed
+* WooCommerce: Official support for custom intervals (e.g. every 3rd month) added
+* WooCommerce: Different bugs in order processing and subscription handling fixed
 
 = 1.10.3 =
 

@@ -42,7 +42,7 @@ class paymill_subscriptions{
 	public function create($client, $offer, $payment, $startAt=false, $periodOfValidity=false){
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_create'); // benchmark
 		load_paymill(); // this function-call can and should be used whenever working with Paymill API
-		
+
 		try{
 			$GLOBALS['paymill_loader']->request_subscription->setClient($client);
 			$GLOBALS['paymill_loader']->request_subscription->setOffer($offer);

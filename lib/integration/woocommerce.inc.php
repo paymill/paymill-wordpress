@@ -279,11 +279,31 @@
 						*/
 						error_log(var_export($subscription,true)."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
 						
+						// prevent multiple subscription renewals because of multiple webhook attempts.
+						$whole_period = 0;
+						switch ($subscription['period']) {
+							case 'day':
+							default:
+							$whole_period = intval($subscription['interval']) * 86400;
+							break;
+							case 'week':
+							$whole_period = intval($subscription['interval']) * 604800;
+							break;
+							case 'month':
+							$whole_period = intval($subscription['interval']) * 2160000; // using 25 days to prevent problems with shorter months
+							break;
+							case 'year':
+							$whole_period = intval($subscription['interval']) * 30240000; // using 350 days to prevent any timezone problems whatsoever
+							break;
+						}
+						
 						if(count($subscription['completed_payments']) >= 1){
-							$order = new WC_Order($subscription['order_id']);
-							
-							//WC_Subscriptions_Manager::process_subscription_payments_on_order($order, $subscription['product_id']);
-							WC_Subscriptions_Manager::process_subscription_payments_on_order($order);
+							if (strtotime(date(DATE_RFC822)) > strtotime($subscription['last_payment_date']) + $whole_period - 18000) { // minus 5 hours to prevent any problems with pending triggers
+								$order = new WC_Order($subscription['order_id']);
+								
+								//WC_Subscriptions_Manager::process_subscription_payments_on_order($order, $subscription['product_id']);
+								WC_Subscriptions_Manager::process_subscription_payments_on_order($order);
+							}
 						}else{
 							$order				= new WC_Order($subscription['order_id']);
 							$order->payment_complete();
@@ -374,9 +394,8 @@
 		if(class_exists('WC_Payment_Gateway')){
 			class WC_Gateway_Paymill_Gateway extends WC_Payment_Gateway{
 			
-				private $total					= 0;
-				private $total_complete			= 0;
-				private $total_sub_refund		= 0;
+				private $totalProducts			= 0;
+				private $totalSub				= 0;
 				private $cart					= false;
 				private $order_id				= false;
 				private $order					= false;
@@ -472,127 +491,129 @@
 					return $this->clientClass->getCurrentClient();
 				}
 				private function getTotals(){
+					$this->totalProducts		= (floatval($this->order->get_total())*100);
+					
 					// retrieve subscriptions amount
 					if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
-						foreach($this->cart as $product){
-							if(is_object($product) && isset($product->id) && intval($product->id) > 0){
-								$woo_sub_key		= WC_Subscriptions_Manager::get_subscription_key($this->order_id,$product->id);
-								
-								if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
-									$sub_amount_total				= floatval(floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
-									$this->total					= $this->total-$sub_amount_total;
-									if($this->total_complete == 0){
-										$this->total_complete = $this->total_complete+$sub_amount_total;
-									}
-								}
-							}
-						}
-						// currently, there is no initial payment fee possible through paymill, so we are required to make a refund if a coupon is reducing initial fee.
-						/*if($this->total < 0){
-							$this->total_sub_refund = (($this->total)*(-1));
-						}*/
+						$this->totalSub				= floatval(floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
+						$this->totalProducts		= $this->totalProducts-$this->totalSub;
 					}
 				}
 				private function processSubscriptions(){
 					global $wpdb;
-
+					
 					// check wether subscriptions addon is activated
 					if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
 
-						$product	= $this->cart;
-						//foreach($this->cart as $product){
-							if(is_array($product) && isset($product['product_id']) && intval($product['product_id']) > 0){
+						$products	= $this->order->get_items();
+						foreach($products as $product){
+							if(is_array($product) && isset($product['product_id']) && intval($product['product_id']) > 0 && isset($product['subscription_period']) && $product['subscription_period'] != ''){
 								// product is a subscription?
 								$woo_sub_key	= WC_Subscriptions_Manager::get_subscription_key($this->order_id,$product['product_id']);
 
-								// check wether user already has subscription
-								//if(!WC_Subscriptions_Manager::user_has_subscription(get_current_user_id(), $woo_sub_key)){
+								// required vars
+								$amount						= (floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
+								$currency					= get_woocommerce_currency();
+								$interval					= intval($product['subscription_interval']);
+								$period						= strtoupper($product['subscription_period']);
+								$length						= strtoupper($product['subscription_length']);
+								
+								if ($length > 0) {
+									$periodOfValidity		= $length.' '.$period;
+								} else{
+									$periodOfValidity		= false;
+								}
+								$trial_end					= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($this->order->order_date)));
+								if($trial_end === false){
+									$trial_time				= 0;
+								}else{
+									$datediff				= $trial_end - time();
+									$trial_time				= ceil($datediff/(60*60*24));
+								}
+								
+								// md5 name
+								$woo_sub_md5				= md5($amount.$currency.$interval.$trial_time);
 
-									// required vars
-									$amount						= (floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
-									$currency					= get_woocommerce_currency();
-									$interval					= WC_Subscriptions_Order::get_subscription_interval($this->order,$product['product_id']);
-									$length						= intval(WC_Subscriptions_Order::get_subscription_length($this->order,$product['product_id']));
-									$period						= strtoupper(WC_Subscriptions_Order::get_subscription_period($this->order,$product['product_id']));
-									if ($length > 0) {
-										$periodOfValidity		= $length.' '.$period;
-									} else{
-										$periodOfValidity		= false;
-									}
-									$trial_end					= strtotime(WC_Subscriptions_Product::get_trial_expiration_date($product['product_id'], get_gmt_from_date($this->order->order_date)));
-									if($trial_end === false){
-										$trial_time				= 0;
-									}else{
-										$datediff				= $trial_end - time();
-										$trial_time				= ceil($datediff/(60*60*24));
-									}
+								// get offer
+								$name						= 'woo_'.$product['product_id'].'_'.$woo_sub_md5;
+								$offer						= $this->subscriptions->offerGetDetailByName($name);
+
+								// check wether offer exists in paymill
+								if($offer === false){
+									// offer does not exist in paymill yet, create it
+									$params = array(
+										'amount'				=> $amount,
+										'currency'				=> $currency,
+										'interval'				=> $interval.' '.$period,
+										'name'					=> $name,
+										'trial_period_days'		=> intval($trial_time)
+									);
+									$offer = $this->subscriptions->offerCreate($params);
 									
-									// md5 name
-									$woo_sub_md5				= md5($amount.$currency.$interval.$trial_time);
-
-									// get offer
-									$name						= 'woo_'.$product['product_id'].'_'.$woo_sub_md5;
-									$offer						= $this->subscriptions->offerGetDetailByName($name);
-
-									// check wether offer exists in paymill
-									if($offer === false){
-										// offer does not exist in paymill yet, create it
-										$params = array(
-											'amount'			=> $amount,
-											'currency'			=> $currency,
-											'interval'			=> $interval.' '.$period,
-											'name'				=> $name,
-											'trial_period_days'	=> intval($trial_time)
-										);
-										$offer = $this->subscriptions->offerCreate($params);
-										
-										if($GLOBALS['paymill_loader']->paymill_errors->status()){
-											$GLOBALS['paymill_loader']->paymill_errors->getErrors();
-											return false;
-										}
+									if($GLOBALS['paymill_loader']->paymill_errors->status()){
+										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+										return false;
 									}
-									// create user subscription
+								}
+								// create user subscription
+								$user_sub = $this->subscriptions->create($this->client->getId(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
+								
+								if($GLOBALS['paymill_loader']->paymill_errors->status()){
+									//maybe offer cache is outdated, recache and try again
+									
+									$GLOBALS['paymill_loader']->paymill_errors->reset(); // reset error status
+
+									$this->subscriptions->offerGetList(true);
+									
+									$params = array(
+										'amount'				=> $amount,
+										'currency'				=> $currency,
+										'interval'				=> $interval.' '.$period,
+										'name'					=> $name,
+										'trial_period_days'		=> intval($trial_time)
+									);
+									$offer = $this->subscriptions->offerCreate($params);
+									
+									if($GLOBALS['paymill_loader']->paymill_errors->status()){
+										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+										return false;
+									}
+
 									$user_sub = $this->subscriptions->create($this->client->getId(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
 									
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
 										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 										return false;
-									}else{
-										$wpdb->query($wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, woo_user_id, woo_offer_id) VALUES (%s, %s, %s)',
-										array(
-											$user_sub,
-											get_current_user_id(),
-											$woo_sub_key
-										)));
-									
-										// subscription successful
-										do_action('paymill_woocommerce_subscription_created', array(
-											'product_id'	=> $product['product_id'],
-											'offer_id'		=> $offer,
-											//'offer_data'	=> $offer
-										));
-										
-										return true;
 									}
-								/*}else{
-									// @todo: currently, WooCommerce does not support multiple subscriptions on checkout, so we can stop processing here if first subscription is already subscribed
-									$GLOBALS['paymill_loader']->paymill_errors->setError(__('Subscription already subscribed.', 'paymill'));
-									if($GLOBALS['paymill_loader']->paymill_errors->status()){
-										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
-									}
-									return false;
-								}*/
+								}
+								
+								$wpdb->query($wpdb->prepare('INSERT INTO '.$wpdb->prefix.'paymill_subscriptions (paymill_sub_id, woo_user_id, woo_offer_id) VALUES (%s, %s, %s)',
+								array(
+									$user_sub,
+									get_current_user_id(),
+									$woo_sub_key
+								)));
+							
+								// subscription successful
+								do_action('paymill_woocommerce_subscription_created', array(
+									'product_id'	=> $product['product_id'],
+									'offer_id'		=> $offer,
+									//'offer_data'	=> $offer
+								));
+								
+								return true;
 							}
-						//}
+						}
 					}else{
 						return true;
 					}
 				}
-				private function processProducts(){
+				private function processProducts(){					
 					global $wpdb;
-					if($this->total > 0){
+
+					if($this->totalProducts > 0){
 						// make transaction
-						$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->total,2)); // e.g. "4200" for 42.00 EUR
+						$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->totalProducts,2)); // e.g. "4200" for 42.00 EUR
 						$GLOBALS['paymill_loader']->request_transaction->setCurrency(get_woocommerce_currency());
 						if($this->paymentClass->getPreauthID() != false){
 							$GLOBALS['paymill_loader']->request_transaction->setPreauthorization($this->paymentClass->getPreauthID());
@@ -629,7 +650,7 @@
 						)));
 						
 						do_action('paymill_woocommerce_products_paid', array(
-							'total'			=> $this->total,
+							'total'			=> $this->totalProducts,
 							'currency'		=> get_woocommerce_currency(),
 							'client'		=> $response['body']['data']['client']['id']
 						));
@@ -653,11 +674,6 @@
 						$this->order_id				= $order_id;
 						$this->order_desc			= $_SERVER['HTTP_HOST'].': '.__('Order #','paymill').$this->order_id.__(', Customer-ID #','paymill').get_current_user_id();
 						$this->order				= new WC_Order($this->order_id);
-						$cart						= $woocommerce->cart->get_cart();
-						$cart						= reset($cart);
-						$this->cart					= $cart;
-						$this->total_complete		=
-						$this->total				= (floatval($this->order->get_total())*100);
 
 						// load subscription class
 						$this->subscriptions		= new paymill_subscriptions('woocommerce');
@@ -668,7 +684,7 @@
 
 						// create payment object and preauthorization
 						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
-						$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,get_woocommerce_currency()); // create payment object, as it should be used for next processing instead of the token.
+						$this->paymentClass		= new paymill_payment($this->client->getId(),($this->totalProducts+$this->totalSub),get_woocommerce_currency()); // create payment object, as it should be used for next processing instead of the token.
 						if($GLOBALS['paymill_loader']->paymill_errors->status()){
 							$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 							return false;

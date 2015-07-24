@@ -49,6 +49,10 @@ class paymill_errors{
 			$this->errors = array();
 		}
 	}
+	
+	public function reset(){
+		$this->errors		= array();
+	}
 }
 
 ?>
