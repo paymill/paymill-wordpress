@@ -2,6 +2,10 @@
 
 Changelog
 =========
+1.10.5
+-----
+* WooCommerce: Zero Amount Error fixed
+
 1.10.4
 -----
 * MarketPress: Error upon payment activation fixed

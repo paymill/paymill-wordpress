@@ -354,6 +354,11 @@
 		$subscriptions		= new paymill_subscriptions('woocommerce');
 		$subscriptions->remove($client_cache[0]['paymill_sub_id']);
 		$wpdb->query($wpdb->prepare('DELETE FROM '.$wpdb->prefix.'paymill_subscriptions WHERE woo_user_id=%s AND woo_offer_id=%s',array($order->user_id,$order->id.'_'.$product_id)));
+		
+		
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+		error_log(date(DATE_RFC822).' - Subscription '.$client_cache[0]['paymill_sub_id'].' from order '.$order.' with product '.$product_id.' cancelled through function woo_cancelled_subscription_paymill'."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
 	}
 	function woo_updated_subscription_paymill($user,$subscription_details){
 		// @todo: implement support for changing/creating offer later
@@ -370,6 +375,10 @@
 
 		$subscriptions		= new paymill_subscriptions('woocommerce');
 		$subscriptions->pause($client_cache[0]['paymill_sub_id']);
+		
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+		error_log(date(DATE_RFC822).' - Subscription '.$client_cache[0]['paymill_sub_id'].' from order '.$order.' with product '.$product_id.' paused through function woo_subscription_put_on_hold_paymill'."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
     }
 	function woo_reactivated_subscription_paymill($order, $product_id){
 		global $wpdb;
@@ -381,6 +390,10 @@
 
 		$subscriptions		= new paymill_subscriptions('woocommerce');
 		$subscriptions->unpause($client_cache[0]['paymill_sub_id']);
+		
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+		error_log(date(DATE_RFC822).' - Subscription '.$client_cache[0]['paymill_sub_id'].' from order '.$order.' with product '.$product_id.' reactivated through function woo_reactivated_subscription_paymill'."\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/PHP_errors.log');
 	}
 
 	function add_paymill_gateway_class($methods){
@@ -496,7 +509,6 @@
 					// retrieve subscriptions amount
 					if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
 						$this->totalSub				= floatval(floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
-						$this->totalProducts		= $this->totalProducts-$this->totalSub;
 					}
 				}
 				private function processSubscriptions(){

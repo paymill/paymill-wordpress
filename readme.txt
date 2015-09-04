@@ -2,9 +2,9 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
-Requires at least: 4.2.2
-Tested up to: 4.2.2
-Stable tag: 1.10.4
+Requires at least: 4.3.0
+Tested up to: 4.3.0
+Stable tag: 1.10.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -65,6 +65,12 @@ There is a manual included in English and German as PDF. But in short:
 6. Play around in test mode.
 7. If you are happy how the plugin works, enable your live account on https://www.paymill.com/ - this could take a couple of days.
 8. After your paymill account has been activated for LIVE mode, switch your account to live and replace your TEST API Keys with your LIVE API Keys in plugin settings.
+
+== Troubleshooting ==
+
+= Error: Paymill can be loaded once only on the same page. =
+
+This error is self explaining but still might be a bit confusing, as some users will be sure that there is no doubled call of the payment form. There actually is one. For example: you may have the Paybutton widget in a sidebar which is loaded, but hidden by a sidebarmanager. In most cases, some plugins or themes cause this issue, so you may want to try deactivating all plugins except Paymill and try a default theme. Our development site is using Mystile from Woothemes, a free theme which is also certified for WooCommerce compatibility.
 
 == Frequently asked questions ==
 
@@ -165,6 +171,10 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.10.5 =
+
+* WooCommerce: Zero Amount Error fixed
 
 = 1.10.4 =
 
@@ -387,6 +397,10 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.10.5 =
+
+* WooCommerce: Zero Amount Error fixed
 
 = 1.10.4 =
 
