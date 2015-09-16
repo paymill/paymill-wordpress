@@ -508,8 +508,10 @@
 					
 					// retrieve subscriptions amount
 					if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
-						$this->totalSub				= floatval(floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
+						$this->totalSub			= floatval(floatval(WC_Subscriptions_Order::get_recurring_total($this->order))*100);
 					}
+					
+					$this->totalProducts		= $this->totalProducts-$this->totalSub;
 				}
 				private function processSubscriptions(){
 					global $wpdb;
@@ -568,7 +570,7 @@
 									}
 								}
 								// create user subscription
-								$user_sub = $this->subscriptions->create($this->client->getId(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
+								$user_sub = $this->subscriptions->create($this->clientClass->getCurrentClientID(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
 								
 								if($GLOBALS['paymill_loader']->paymill_errors->status()){
 									//maybe offer cache is outdated, recache and try again
@@ -591,7 +593,7 @@
 										return false;
 									}
 
-									$user_sub = $this->subscriptions->create($this->client->getId(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
+									$user_sub = $this->subscriptions->create($this->clientClass->getCurrentClientID(), $offer, $this->paymentClass->getPaymentID(),(isset($_POST['paymill_delivery_date']) ? $_POST['paymill_delivery_date'] : false),$periodOfValidity);
 									
 									if($GLOBALS['paymill_loader']->paymill_errors->status()){
 										$GLOBALS['paymill_loader']->paymill_errors->getErrors();
@@ -632,7 +634,7 @@
 						}else{
 							$GLOBALS['paymill_loader']->request_transaction->setPayment($this->paymentClass->getPaymentID());
 						}
-						$GLOBALS['paymill_loader']->request_transaction->setClient($this->client->getId());
+						$GLOBALS['paymill_loader']->request_transaction->setClient($this->clientClass->getCurrentClientID());
 						$GLOBALS['paymill_loader']->request_transaction->setDescription($this->order_desc);
 						$GLOBALS['paymill_loader']->request->setSource(serialize($GLOBALS['paymill_source']));
 						
@@ -680,61 +682,65 @@
 				public function process_payment($order_id){
 					global $woocommerce,$wpdb;
 					
-					$this->client					= $this->getCurrentClient();
-					// client retrieved, now we are ready to process the payment
-					if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
-						$this->order_id				= $order_id;
-						$this->order_desc			= $_SERVER['HTTP_HOST'].': '.__('Order #','paymill').$this->order_id.__(', Customer-ID #','paymill').get_current_user_id();
-						$this->order				= new WC_Order($this->order_id);
+					$this->client					= $this->getCurrentClient(); // retrieve client
 
-						// load subscription class
-						$this->subscriptions		= new paymill_subscriptions('woocommerce');
-						$this->offers				= $this->subscriptions->offerGetList();
+					$this->order_id				= $order_id;
+					$this->order_desc			= $_SERVER['HTTP_HOST'].': '.__('Order #','paymill').$this->order_id.__(', Customer-ID #','paymill').get_current_user_id();
+					$this->order				= new WC_Order($this->order_id);
 
-						// get the totals for pre authorization
-						$this->getTotals();
+					// load subscription class
+					$this->subscriptions		= new paymill_subscriptions('woocommerce');
+					$this->offers				= $this->subscriptions->offerGetList();
 
-						// create payment object and preauthorization
-						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
-						$this->paymentClass		= new paymill_payment($this->client->getId(),($this->totalProducts+$this->totalSub),get_woocommerce_currency()); // create payment object, as it should be used for next processing instead of the token.
+					// get the totals for pre authorization
+					$this->getTotals();
+					/*
+				$GLOBALS['paymill_loader']->paymill_errors->setError($this->totalProducts,'paymill');
+				$GLOBALS['paymill_loader']->paymill_errors->setError($this->totalSub,'paymill');
+				if($GLOBALS['paymill_loader']->paymill_errors->status()){
+					$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+					return false;
+				}
+				
+				die('end');
+*/
+					// create payment object and preauthorization
+					require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
+					$this->paymentClass		= new paymill_payment($this->clientClass->getCurrentClientID(),($this->totalProducts+$this->totalSub),get_woocommerce_currency()); // create payment object, as it should be used for next processing instead of the token.
+					if($GLOBALS['paymill_loader']->paymill_errors->status()){
+						$GLOBALS['paymill_loader']->paymill_errors->getErrors();
+						return false;
+					}
+
+					// process subscriptions & products
+					if($this->processSubscriptions() && $this->processProducts()){
+						// success
+						if(method_exists($this->order, 'payment_complete')){
+							// if order contains subscription, mark payment complete later when webhook triggers succeeded payment
+							if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
+								$this->order->update_status('on-hold', __( 'Awaiting payment confirmation from Paymill.', 'paymill' ));
+							}else{
+								$this->order->payment_complete();
+							}
+						}
+
+						// Reduce stock levels
+						/*if(method_exists($this->order, 'reduce_order_stock')){
+							$this->order->reduce_order_stock();
+						}*/
+
+						// Remove cart
+						$woocommerce->cart->empty_cart();
+						
+						// Return thankyou redirect
+						return array(
+							'result' => 'success',
+							'redirect' => $this->get_return_url($this->order)
+						);
+					}else{
 						if($GLOBALS['paymill_loader']->paymill_errors->status()){
 							$GLOBALS['paymill_loader']->paymill_errors->getErrors();
-							return false;
 						}
-
-						// process subscriptions & products
-						if($this->processSubscriptions() && $this->processProducts()){
-							// success
-							if(method_exists($this->order, 'payment_complete')){
-								// if order contains subscription, mark payment complete later when webhook triggers succeeded payment
-								if(class_exists('WC_Subscriptions_Order') && WC_Subscriptions_Order::order_contains_subscription($this->order)){
-									$this->order->update_status('on-hold', __( 'Awaiting payment confirmation from Paymill.', 'paymill' ));
-								}else{
-									$this->order->payment_complete();
-								}
-							}
-
-							// Reduce stock levels
-							/*if(method_exists($this->order, 'reduce_order_stock')){
-								$this->order->reduce_order_stock();
-							}*/
-
-							// Remove cart
-							$woocommerce->cart->empty_cart();
-							
-							// Return thankyou redirect
-							return array(
-								'result' => 'success',
-								'redirect' => $this->get_return_url($this->order)
-							);
-						}else{
-							if($GLOBALS['paymill_loader']->paymill_errors->status()){
-								$GLOBALS['paymill_loader']->paymill_errors->getErrors();
-							}
-							return false;
-						}
-					}else{
-						$GLOBALS['paymill_loader']->paymill_errors->setError(__('There was an issue with adding you as client for the payment process.', 'paymill'));
 						return false;
 					}
 				}

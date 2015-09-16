@@ -92,7 +92,19 @@ class paymill_client{
 	}
 	
 	public function getCurrentClient(){
-		return $this->client;
+		if(get_current_user_id()){
+			return $this->client;
+		}else{
+			return false;
+		}
 	}
+	public function getCurrentClientID(){
+		if(get_current_user_id()){
+			return $this->client->getId();
+		}else{
+			return false;
+		}
+	}
+	
 }
 ?>

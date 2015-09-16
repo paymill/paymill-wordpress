@@ -2,9 +2,9 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
-Requires at least: 4.3.0
-Tested up to: 4.3.0
-Stable tag: 1.10.5
+Requires at least: 4.3.1
+Tested up to: 4.3.1
+Stable tag: 1.10.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,12 +14,12 @@ With PAYMILL you are able to provide credit card based payments for your custome
 
 = Requires: =
 * PHP 5.3 or higher
-* WordPress 4.1.x or higher
+* WordPress 4.3.x or higher
 * CuRL PHP extension
 
 = Supported Shops including subscriptions support: =
 
-* WooCommerce (2.3.x) + WooCommerce Subscriptions (1.5.x)
+* WooCommerce (2.4.x) + WooCommerce Subscriptions (1.5.x)
 * Magic Members (1.8.x)
 * Pay Button (independent, light-weight payment form)
 
@@ -65,12 +65,6 @@ There is a manual included in English and German as PDF. But in short:
 6. Play around in test mode.
 7. If you are happy how the plugin works, enable your live account on https://www.paymill.com/ - this could take a couple of days.
 8. After your paymill account has been activated for LIVE mode, switch your account to live and replace your TEST API Keys with your LIVE API Keys in plugin settings.
-
-== Troubleshooting ==
-
-= Error: Paymill can be loaded once only on the same page. =
-
-This error is self explaining but still might be a bit confusing, as some users will be sure that there is no doubled call of the payment form. There actually is one. For example: you may have the Paybutton widget in a sidebar which is loaded, but hidden by a sidebarmanager. In most cases, some plugins or themes cause this issue, so you may want to try deactivating all plugins except Paymill and try a default theme. Our development site is using Mystile from Woothemes, a free theme which is also certified for WooCommerce compatibility.
 
 == Frequently asked questions ==
 
@@ -171,6 +165,11 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.10.6 =
+
+* WooCommerce: Doubled payments issue fixed
+* WooCommerce: Client handling for guest orders fixed
 
 = 1.10.5 =
 
@@ -398,6 +397,11 @@ WooCommerce support added
 
 == Upgrade Notice ==
 
+= 1.10.6 =
+
+* WooCommerce: Doubled payments issue fixed
+* WooCommerce: Client handling for guest orders fixed
+
 = 1.10.5 =
 
 * WooCommerce: Zero Amount Error fixed
@@ -598,3 +602,13 @@ Nevertheless, feel free to hire the plugin author Matthias Reuter <info@straight
 * get a customization
 * get a feature rapidly / on time
 * get a custom WordPress plugin developed to exactly fit your needs.
+
+== Troubleshooting ==
+
+= Error: Paymill can be loaded once only on the same page. =
+
+This error is self explaining but still might be a bit confusing, as some users will be sure that there is no doubled call of the payment form. There actually is one. For example: you may have the Paybutton widget in a sidebar which is loaded, but hidden by a sidebarmanager. In most cases, some plugins or themes cause this issue, so you may want to try deactivating all plugins except Paymill and try a default theme. Our development site is using Mystile from Woothemes, a free theme which is also certified for WooCommerce compatibility.
+
+= When logging into Paymill Dashboard, once activated Test Mode is switched back to Live Mode =
+
+Test Mode and Live Mode are both always active simultaneously. Even if the Dashboard is showing Live Mode upon (re-)login per default, both modes remain active, even when switching to Test Mode and vice versa.

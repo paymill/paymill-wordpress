@@ -3,7 +3,7 @@
 Plugin Name: PAYMILL GmbH
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.10.5
+Version: 1.10.6
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */

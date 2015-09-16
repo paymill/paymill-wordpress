@@ -2,6 +2,11 @@
 
 Changelog
 =========
+1.10.6
+-----
+* WooCommerce: Doubled payments issue fixed
+* WooCommerce: Client handling for guest orders fixed
+
 1.10.5
 -----
 * WooCommerce: Zero Amount Error fixed
