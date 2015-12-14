@@ -69,7 +69,6 @@
 
 				$webhook_found				= false;
 				$nothing_found				= true;
-				$additional_webhooks		= array();
 				$output						= false;
 				
 				$output .= '<div><h3>'.__('Webhook Status Check','paymill').'</h3><h4>'.__('Please note that Webhooks are currently used in WooCommerce integration only.','paymill').'</h4>';
