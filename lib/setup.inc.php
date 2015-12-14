@@ -35,19 +35,6 @@
 			}catch(Exception $e){
 				echo __($e->getMessage(),'paymill');
 			}
-			
-			// orphaned webhooks found, delete them
-			try{
-				if($webhooks != false){
-					foreach($webhooks as $hook){
-						$GLOBALS['paymill_loader']->request_webhook = new $GLOBALS['paymill_loader']->request_webhook; // re-init class
-						$GLOBALS['paymill_loader']->request_webhook->setId($hook['id']);
-						$response = $GLOBALS['paymill_loader']->request->delete($GLOBALS['paymill_loader']->request_webhook);
-					}
-				}
-			}catch(Exception $e){
-				echo __($e->getMessage(),'paymill');
-			}
 		}
 		
 		// still here? create new webhook
@@ -107,8 +94,6 @@
 							$webhook_found	.= '</div>';
 							
 							$nothing_found = false;
-						}else{
-							$additional_webhooks[] = $webhook['id'];
 						}
 					}
 				}
@@ -119,12 +104,7 @@
 				}elseif($webhook_found){
 					$output .= $webhook_found;
 				}
-				
-				if(count($additional_webhooks) > 0){
-					$output .= '<h3>'.__('Orphaned Webhooks found:').'</h3><div>'.implode('<br />',$additional_webhooks).'</div>';
-					$output .= '<p>'.__('These orphaned Webhooks should be deleted. Normally this will be done automaticly when saving new API keys via General Settings, but you can delete them via Paymill Dashboard, too.').'</p>';
-				}
-				
+
 				$output .= '</div>';
 				
 				return $output;
