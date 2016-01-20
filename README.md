@@ -11,7 +11,7 @@ PAYMILL for WordPress
 * License: [GPLv3 or later](http://www.gnu.org/licenses/gpl-3.0.html)
 
 With PAYMILL you are able to provide credit card based payments for your customers.
-German users can use ELV payment, too.
+Users with German bank account can use ELV payment, too.
 
 Plugin Description
 ==================
