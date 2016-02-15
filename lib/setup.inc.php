@@ -3,6 +3,10 @@
 		load_paymill(); // this function-call can and should be used whenever working with Paymill API
 
 		if(get_option('paymill_webhook_id') != false){
+			error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
+			error_log(date(DATE_RFC822).' - Updating Webhook "'.get_option('paymill_webhook_id').'" with webhook url "'.get_site_url().'/?wc-api=WC_Gateway_Paymill_Gateway'.'"', 3, PAYMILL_DIR.'lib/debug/debug.log');
+			error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
+			
 			// webhook exists?
 			try{
 				$GLOBALS['paymill_loader']->request_webhook->setId(get_option('paymill_webhook_id'));
@@ -12,7 +16,10 @@
 					'subscription.created',
 					'subscription.deleted',
 					'subscription.failed',
-					'subscription.succeeded'
+					'subscription.succeeded',
+					'subscription.canceled',
+					'transaction.failed',
+					'transaction.succeeded'
 				));
 				$webhook = $GLOBALS['paymill_loader']->request->update($GLOBALS['paymill_loader']->request_webhook);
 				update_option('paymill_webhook_id', $webhook->getId());
@@ -35,21 +42,11 @@
 			}catch(Exception $e){
 				echo __($e->getMessage(),'paymill');
 			}
-			
-			// orphaned webhooks found, delete them
-			try{
-				if($webhooks != false){
-					foreach($webhooks as $hook){
-						$GLOBALS['paymill_loader']->request_webhook = new $GLOBALS['paymill_loader']->request_webhook; // re-init class
-						$GLOBALS['paymill_loader']->request_webhook->setId($hook['id']);
-						$response = $GLOBALS['paymill_loader']->request->delete($GLOBALS['paymill_loader']->request_webhook);
-					}
-				}
-			}catch(Exception $e){
-				echo __($e->getMessage(),'paymill');
-			}
 		}
-		
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
+		error_log(date(DATE_RFC822).' - Creating new Webhook with webhook url "'.get_site_url().'/?wc-api=WC_Gateway_Paymill_Gateway'.'"', 3, PAYMILL_DIR.'lib/debug/debug.log');
+		error_log("\n\n########################################################################################################################\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
+			
 		// still here? create new webhook
 		try{
 			$GLOBALS['paymill_loader']->request_webhook = new $GLOBALS['paymill_loader']->request_webhook; // re-init class
@@ -59,7 +56,8 @@
 				'subscription.created',
 				'subscription.deleted',
 				'subscription.failed',
-				'subscription.succeeded'
+				'subscription.succeeded',
+				'subscription.canceled'
 			));
 			$webhook = $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_webhook);
 			add_option('paymill_webhook_id', $webhook->getId());
@@ -121,8 +119,7 @@
 				}
 				
 				if(count($additional_webhooks) > 0){
-					$output .= '<h3>'.__('Orphaned Webhooks found:').'</h3><div>'.implode('<br />',$additional_webhooks).'</div>';
-					$output .= '<p>'.__('These orphaned Webhooks should be deleted. Normally this will be done automaticly when saving new API keys via General Settings, but you can delete them via Paymill Dashboard, too.').'</p>';
+					$output .= '<h3>'.__('Other Webhooks found:').'</h3><div>'.implode('<br />',$additional_webhooks).'</div>';
 				}
 				
 				$output .= '</div>';

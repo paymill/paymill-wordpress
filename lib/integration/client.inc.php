@@ -60,6 +60,7 @@ class paymill_client{
 				$client = $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_client);
 			}catch(Exception $e){
 				$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+				return false;
 			}
 			
 			// insert new client in local cache
@@ -99,7 +100,7 @@ class paymill_client{
 		}
 	}
 	public function getCurrentClientID(){
-		if(get_current_user_id()){
+		if(get_current_user_id() && is_object($this->client)){
 			return $this->client->getId();
 		}else{
 			return false;

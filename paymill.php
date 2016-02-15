@@ -3,25 +3,19 @@
 Plugin Name: PAYMILL GmbH
 Plugin URI: https://www.paymill.com
 Description: Payments made easy
-Version: 1.10.6
+Version: 1.10.7
 Author: Matthias Reuter info@straightvisions.com
 Author URI: http://elbnetz.com
 */
 
 	// common information
-	define('PAYMILL_VERSION',11010);
+	define('PAYMILL_VERSION',11070);
 	define('PAYMILL_DIR',WP_PLUGIN_DIR.'/'.dirname(plugin_basename(__FILE__)).'/');
 	define('PAYMILL_PLUGIN_URL',str_replace('http:','',plugins_url( '' , __FILE__ ).'/'));
 	$GLOBALS['paymill_active'] = false; // eCommerce channels will set Paymill as active later to prevent showing payment form twice on same page.
 
 	// service mode
-	if(file_exists(PAYMILL_DIR.'lib/debug/PHP_errors.log')){
-		// error logging
-		error_reporting(E_ALL ^ E_NOTICE);
-		ini_set('log_errors',1);
-		ini_set('display_errors',0);
-		ini_set('error_log',PAYMILL_DIR.'lib/debug/PHP_errors.log');
-		
+	if(file_exists(PAYMILL_DIR.'lib/debug/debug.log')){
 		// query logging
 		// define('SAVEQUERIES', true);
 		

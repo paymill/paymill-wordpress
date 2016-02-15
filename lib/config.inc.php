@@ -14,6 +14,7 @@
 		// Fired during plugins_loaded (very very early), so don't miss-use this, only actions and filters, current ones speak for themselves.
 		public function __construct() {
 			$this->setting_keys['paymill_general_settings']			= 'paymill_general_settings';
+			$this->setting_keys['paymill_advanced_settings']		= 'paymill_advanced_settings';
 			$this->setting_keys['paymill_pay_button_settings']		= 'paymill_pay_button_settings';
 			$this->setting_keys['paymill_maintenance_settings']		= 'paymill_maintenance_settings';
 			
@@ -37,6 +38,7 @@
 		
 			add_action('admin_init', array(&$this, 'paymill_register_general_settings'));
 			if(defined('PAYMILL_ACTIVE') && PAYMILL_ACTIVE === true){
+				add_action('admin_init', array(&$this, 'paymill_register_advanced_settings'));
 				add_action('admin_init', array(&$this, 'paymill_register_pay_button_settings'));
 				add_action('admin_init', array(&$this, 'paymill_register_maintenance_settings'));
 			}
@@ -112,7 +114,6 @@
 				'api_key_private'	=> __('Paymill PRIVATE API key', 'paymill'),
 				'api_key_public'	=> __('Paymill PUBLIC API key', 'paymill'),
 				'payments_display'	=> __('Display Payment Types', 'paymill'),
-				'no_default_css'	=> __('Do not load default CSS', 'paymill'),
 				'pci_dss_3'			=> __('Deactivate PCI DSS 3.0 Compatibility', 'paymill'),
 			);
 			
@@ -121,6 +122,26 @@
 			}
 			
 			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_register_general_settings'); // benchmark
+		}
+		// Registers the general settings via the Settings API, appends the setting to the tabs array of the object.
+		public function paymill_register_advanced_settings(){
+			if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_register_advanced_settings'); // benchmark
+			
+			$this->plugin_settings_tabs[$this->setting_keys['paymill_advanced_settings']] = 'Advanced';
+			register_setting($this->setting_keys['paymill_advanced_settings'], $this->setting_keys['paymill_advanced_settings']);
+
+			add_settings_section('section_advanced', __('Advanced Plugin Settings', 'paymill'), array( &$this, 'section_advanced_desc'), $this->setting_keys['paymill_advanced_settings'] );
+			$settings = array(
+				'no_default_css'	=> __('Do not load default CSS', 'paymill'),
+				'custom_form_key'	=> __('Custom Form Key', 'paymill'),
+				'custom_submit_key'	=> __('Custom Submit Key', 'paymill')
+			);
+			
+			foreach($settings as $setting => $description){
+				add_settings_field($setting, $description, array(&$this, 'print_config_form_fields'), $this->setting_keys['paymill_advanced_settings'], 'section_advanced', array('desc' => $setting, 'page' => $this->setting_keys['paymill_advanced_settings']));
+			}
+			
+			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_register_advanced_settings'); // benchmark
 		}
 		// Registers the pay_button settings and appends the key to the plugin settings tabs array.
 		public function paymill_register_pay_button_settings(){
@@ -150,7 +171,10 @@
 			add_settings_section('section_pay_button_products', false, array( &$this, 'section_pay_button_products_desc' ), $this->setting_keys['paymill_pay_button_settings']);
 
 			if(isset($this->paymill_pay_button_settings['products'])){
-				if(isset($this->paymill_pay_button_settings['products'][count($this->paymill_pay_button_settings['products'])]['products_title']) && strlen($this->paymill_pay_button_settings['products'][count($this->paymill_pay_button_settings['products'])]['products_title']) > 0){
+				if(
+					isset($this->paymill_pay_button_settings['products'][count($this->paymill_pay_button_settings['products'])]['products_title'])
+					&& strlen($this->paymill_pay_button_settings['products'][count($this->paymill_pay_button_settings['products'])]['products_title']) > 0
+				){
 					$products = count($this->paymill_pay_button_settings['products'])+5;
 				}else{
 					$products = count($this->paymill_pay_button_settings['products']);
@@ -212,13 +236,14 @@
 			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_register_maintenance_settings'); // benchmark
 		}
 		// The following methods provide descriptions for their respective sections, used as callbacks with add_settings_section
-		public function section_maintenance_desc() { echo paymill_check_webhook(); }
-		public function section_general_desc() { echo __('Please insert your API settings here.', 'paymill'); }
-		public function section_pay_button_desc() { echo '<p>'.__('The Paymill Pay Buton is a simple, independent payment solution. As Paymill for WordPress is GPL licensed, feel free to customize that Pay Button to fit your needs.', 'paymill').'</p><h3>'.__('Common Settings', 'paymill').'</h3>'.'<p><strong>'.__('Configure common settings', 'paymill').'</strong></p><a href="#" id="common_toggle">'.__('Toggle View', 'paymill').'</a><div id="common_content" style="display:none;">'; }
-		public function section_pay_button_products_desc() { echo '</div><h3>'.__('Products', 'paymill').'</h3><p><strong>'.__('Configure products for the Pay Button. This list has a dynamic length and extends for 5 extra slots when last slot\'s Product Title is filled and saved.', 'paymill').'</strong></p><a href="#" id="products_toggle">'.__('Toggle View', 'paymill').'</a><div id="products_content" style="display:none;">'; }
-		public function section_pay_button_shipping_desc() { echo '</div><h3>'.__('Shipping', 'paymill').'</h3><p><strong>'.__('Set delivery countries and shipping costs. This list has a dynamic length and extends for 5 extra slots when last slot\'s Shipping Country is filled and saved.', 'paymill').'</strong></p><a href="#" id="shipping_toggle">'.__('Toggle View', 'paymill').'</a><div id="shipping_content" style="display:none;">'; }
+		public function section_maintenance_desc(){ echo paymill_check_webhook(); }
+		public function section_general_desc(){ echo __('Please insert your API settings here.', 'paymill'); }
+		public function section_advanced_desc(){ echo __('These settings allow professional users making advanced changes to behavior of the plugin.', 'paymill'); }
+		public function section_pay_button_desc(){ echo '<p>'.__('The Paymill Pay Buton is a simple, independent payment solution. As Paymill for WordPress is GPL licensed, feel free to customize that Pay Button to fit your needs.', 'paymill').'</p><h3>'.__('Common Settings', 'paymill').'</h3>'.'<p><strong>'.__('Configure common settings', 'paymill').'</strong></p><a href="#" id="common_toggle">'.__('Toggle View', 'paymill').'</a><div id="common_content" style="display:none;">'; }
+		public function section_pay_button_products_desc(){ echo '</div><h3>'.__('Products', 'paymill').'</h3><p><strong>'.__('Configure products for the Pay Button. This list has a dynamic length and extends for 5 extra slots when last slot\'s Product Title is filled and saved.', 'paymill').'</strong></p><a href="#" id="products_toggle">'.__('Toggle View', 'paymill').'</a><div id="products_content" style="display:none;">'; }
+		public function section_pay_button_shipping_desc(){ echo '</div><h3>'.__('Shipping', 'paymill').'</h3><p><strong>'.__('Set delivery countries and shipping costs. This list has a dynamic length and extends for 5 extra slots when last slot\'s Shipping Country is filled and saved.', 'paymill').'</strong></p><a href="#" id="shipping_toggle">'.__('Toggle View', 'paymill').'</a><div id="shipping_content" style="display:none;">'; }
 		// Called during admin_menu, adds an options page under Settings called My Settings, rendered using the plugin_options_page method.
-		public function add_admin_menus() {
+		public function add_admin_menus(){
 			if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_add_admin_menus'); // benchmark
 			$page = add_menu_page('Paymill', 'Paymill', 'manage_options', $this->plugin_options_key, array( &$this, 'plugin_options_page' ),  plugins_url('',__FILE__ ).'/img/icon.png');
 			add_action( 'admin_print_styles-' . $page, 'paymill_load_admin_styles' );
@@ -240,7 +265,7 @@
 			if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_plugin_options_page'); // benchmark
 		}
 		// pay_button Option field callback, same as above.
-		private function print_config_form_fields($args) {
+		private function print_config_form_fields($args){
 			if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_field_pay_button_option'); // benchmark
 
 			// setup of value fields
@@ -258,7 +283,7 @@
 						$value		= esc_attr($this->{$page}[$args['desc']]);
 					}
 				}
-			}elseif(isset($args['id']) && isset($args['desc'][$args['id']])){
+			}elseif(isset($args['id']) || isset($args['desc'][$args['id']])){
 				$option		= '['.$args['group'].']['.$args['id'].']['.$args['desc'].']';
 				
 				if(isset($args['group'])){
@@ -296,13 +321,13 @@
 					'cb',
 					'dc',
 					'discover',
-					'elv',
+					//'elv',
 					'jcb',
 					'maestro',
 					'mastercard',
 					'sepa',
-					'unionpay',
 					'visa',
+					//'paypal'
 				);
 				foreach($payment_types as $type){
 					if(isset($this->{$page}[$args['desc']][$type])){
@@ -440,12 +465,15 @@
 			$descriptions['email_incoming']					= __('Incoming Emailaddress for Copy of customer order confirmation mail.', 'paymill');
 			$descriptions['thankyou_url']					= __('Redirect URL for custom thank your page.', 'paymill');
 
-			$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.', 'paymill');
 			$descriptions['pci_dss_3']						= __('Please ask Paymill customer support for further information.', 'paymill');
 			$descriptions['currency']						= __('Currency, <a href="http://en.wikipedia.org/wiki/ISO_4217#Active_codes" target="_blank">ISO 4217</a> e.g. "EUR" or "GBP"', 'paymill');
 			$descriptions['currency_format']				= __('Currency Format - use the following variables: &#37;n = number, &#37;s = symbol.', 'paymill');
 			$descriptions['api_key_private']				= __('Insert your Paymill <strong>PRIVATE</strong> API key.', 'paymill');
 			$descriptions['api_key_public']					= __('Insert your Paymill <strong>PUBLIC</strong> API key.', 'paymill');
+			
+			$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.', 'paymill');
+			$descriptions['custom_form_key']				= __('Sometimes, default form form key is not working, as some plugins or themes are changing these. This could, for example, occur on multistep-checkout cases. You can set your custom key here following CSS/jQuery standards for targeting an element. Developer skills are required to avoid issues breaking checkout process by submitting false values here.', 'paymill');
+			$descriptions['custom_submit_key']				= __('Same case as described in Custom Form Key setting, but this applies a custom submit key.', 'paymill');
 			
 			$descriptions['flat_shipping_country']			= __('Name of the available delivery country, e.g. England', 'paymill');
 			$descriptions['flat_shipping_costs']			= __('Gross fee for the flat shipping costs., e.g. 7 or 4.90', 'paymill');
@@ -498,7 +526,7 @@
 			}
 		}
 		// Renders our tabs in the plugin options page, walks through the object's tabs array and prints them one by one. Provides the heading for the plugin_options_page method.
-		private function plugin_options_tabs() {
+		private function plugin_options_tabs(){
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_plugin_options_tabs'); // benchmark
 		$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : $this->setting_keys['paymill_general_settings'];
 

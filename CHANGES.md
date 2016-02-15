@@ -2,6 +2,17 @@
 
 Changelog
 =========
+1.10.7
+-----
+* Common: Advanced Settings added
+* Common: "Do not load CSS" moved to Advanced Settings
+* Common: New Advanced Settings: Set "Custom Form Key" and "Custom Submit Key"
+* WooCommerce: Support for WooCommerce Subscriptions 2.0
+* WooCommerce: Unnecessary Preauthorization for single credit card payments removed
+* WooCommerce: PayPal support added
+* PayButton: "Parameter is mandatory" issue fixed
+* PayButton: Amount of products limited to 10 fixed to unlimited again
+
 1.10.6
 -----
 * WooCommerce: Doubled payments issue fixed

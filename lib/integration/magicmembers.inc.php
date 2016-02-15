@@ -7,10 +7,8 @@
  
 if(!function_exists('paymill_mgm_errorHandling')){
 	function paymill_mgm_errorHandling($errors){
-		global $woocommerce;
-		
 		foreach($errors as $error){
-			$output		.= '<div class="paymill_error">'.$error.'</div>';
+			$output .= '<div class="paymill_error">'.$error.'</div>';
 		}
 
 		return $output;
@@ -316,7 +314,7 @@ class mgm_paymill extends mgm_payment{
 			}
 
 			// create user subscription
-			$user_sub = $this->subscriptions->create($this->client->getId(), $offer['id'], $this->paymentClass->getPaymentID());
+			$user_sub = $this->subscriptions->create($this->clientClass->getCurrentClientID(), $offer, $this->paymentClass->getPaymentID());
 			if($GLOBALS['paymill_loader']->paymill_errors->status()){
 				return false;
 			}else{
@@ -344,6 +342,7 @@ class mgm_paymill extends mgm_payment{
 		global $wpdb;
 		if($this->total > 0 && isset($this->order['payment_type']) && $this->order['payment_type'] == 'post_purchase' || (isset($this->order['num_cycles']) && $this->order['num_cycles'] == 1)){
 			// make transaction
+			
 			$GLOBALS['paymill_loader']->request_transaction->setAmount(round($this->total)); // e.g. "4200" for 42.00 EUR
 			$GLOBALS['paymill_loader']->request_transaction->setCurrency($this->order['currency']);
 			if($this->paymentClass->getPreauthID() != false){
@@ -351,7 +350,7 @@ class mgm_paymill extends mgm_payment{
 			}else{
 				$GLOBALS['paymill_loader']->request_transaction->setPayment($this->paymentClass->getPaymentID());
 			}
-			$GLOBALS['paymill_loader']->request_transaction->setClient($this->client->getId());
+			$GLOBALS['paymill_loader']->request_transaction->setClient($this->clientClass->getCurrentClientID());
 			$GLOBALS['paymill_loader']->request_transaction->setDescription($this->order_desc);
 			$GLOBALS['paymill_loader']->request->setSource(serialize($GLOBALS['paymill_source']));
 			
@@ -879,8 +878,9 @@ class mgm_paymill extends mgm_payment{
 		$this->user				= get_userdata($transaction['user_id']);
 
 		$this->client					= $this->getCurrentClient();
+		
 		// client retrieved, now we are ready to process the payment
-		if($this->client->getId() !== false && strlen($this->client->getId()) > 0){
+		//if($this->clientClass->getCurrentClientID() !== false && strlen($this->clientClass->getCurrentClientID()) > 0){
 			$this->order_id				= $_POST['tran_id'];
 			$this->order_desc			= __('Order #','paymill').$this->order_id;
 			$this->order				= $transaction;
@@ -906,7 +906,7 @@ class mgm_paymill extends mgm_payment{
 
 			// create payment object and preauthorization
 			require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
-			$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,$this->order['currency']); // create payment object, as it should be used for next processing instead of the token.
+			$this->paymentClass		= new paymill_payment($this->clientClass->getCurrentClientID(),$this->total_complete,$this->order['currency']); // create payment object, as it should be used for next processing instead of the token.
 			if($GLOBALS['paymill_loader']->paymill_errors->status()){
 				$GLOBALS['paymill_loader']->paymill_errors->getErrors();
 				return false;
@@ -949,10 +949,10 @@ class mgm_paymill extends mgm_payment{
 				}
 				return false;
 			}
-		}else{
+		/*}else{
 			$GLOBALS['paymill_loader']->paymill_errors->setError(__('There was an issue with adding you as client for the payment process.', 'paymill'));
 			return false;
-		}
+		}*/
 	}
 	// process cancel api hook 
 	function process_cancel(){
@@ -1422,10 +1422,22 @@ class mgm_paymill extends mgm_payment{
 			$currency = $tran['data']['currency'];
 			$cc_logo = plugins_url('',__FILE__ ).'/../img/cc_logos_v.png';
 		
-			// form ids
-			echo '<script>
-			paymill_form_checkout_id = ".checkout";
-			paymill_form_checkout_submit_id = "#place_order";
+			// form id
+			if(isset($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key']) && strlen($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key']) > 0){
+				$form_id = $GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key'];
+			}else{
+				$form_id = '.checkout';
+			}
+			// submit id
+			if(isset($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key']) && strlen($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key']) > 0){
+				$submit_id = $GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key'];
+			}else{
+				$submit_id = '#place_order';
+			}
+			
+			echo '<script type="text/javascript">
+			paymill_form_checkout_id = "'.$form_id.'";
+			paymill_form_checkout_submit_id = "'.$submit_id.'";
 			paymill_shop_name = "magicmembers";
 			paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
 			paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), $domain),0,2).'";
@@ -2080,7 +2092,7 @@ class mgm_paymill extends mgm_payment{
 				$post_obj = mgm_get_post($post_id);
 
 				// check
-
+/*
 				if( $this->send_payment_email($alt_tran_id) ) {	
 
 				// check
@@ -2093,7 +2105,7 @@ class mgm_paymill extends mgm_payment{
 
 					}	
 
-				}					
+				}		*/			
 
 			}			
 
@@ -2697,7 +2709,7 @@ class mgm_paymill extends mgm_payment{
 
 		// whether to acknowledge the user by email - This should happen only once
 
-		$acknowledge_user = $this->send_payment_email($alt_tran_id);
+		//$acknowledge_user = $this->send_payment_email($alt_tran_id);
 
 		// whether to subscriber the user to Autoresponder - This should happen only once
 

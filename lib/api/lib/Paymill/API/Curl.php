@@ -88,7 +88,7 @@ class Curl extends CommunicationAbstract
             $curlOpts[CURLOPT_USERPWD] = $this->_apiKey . ':';
         }
         $curl = curl_init();
-        curl_setopt_array($curl, $curlOpts);
+        $this->_curlOpts($curl, $curlOpts);
         $responseBody = $this->_curlExec($curl);
         $responseInfo = $this->_curlInfo($curl);
 
@@ -99,24 +99,38 @@ class Curl extends CommunicationAbstract
 
         if ('application/json' === $responseInfo['content_type']) {
             $responseBody = json_decode($responseBody, true);
-        } elseif('text/csv' === $responseInfo['content_type']
+        } elseif (strpos(strtolower($responseInfo['content_type']), 'text/csv') !== false
             && !isset($responseBody['error'])
         ) {
             return $responseBody;
         }
 
-        return array(
+        $result = array(
             'header' => array(
                 'status' => $responseInfo['http_code'],
                 'reason' => null,
             ),
             'body' => $responseBody
         );
+
+        return $result;
+    }
+
+    /**
+     * Wraps the curl_setopt_array function call
+     *
+     * @param resource $curl curl resource handle
+     * @param array $curlOpts array containing curl options
+     * @return bool
+     */
+    protected function _curlOpts($curl, array $curlOpts)
+    {
+        return curl_setopt_array($curl, $curlOpts);
     }
 
     /**
      * Wrapps the curlExec function call
-     * @param cURL handle success $curl
+     * @param resource $curl cURL handle passed to curl_exec
      * @return mixed
      */
     protected function _curlExec($curl)
@@ -126,7 +140,7 @@ class Curl extends CommunicationAbstract
 
     /**
      * Wrapps the curlInfo function call
-     * @param cURL handle success $curl
+     * @param resource $curl cURL handle passed to curl_getinfo
      * @return mixed
      */
     protected function _curlInfo($curl)
@@ -136,7 +150,7 @@ class Curl extends CommunicationAbstract
 
     /**
      * Wrapps the curlError function call
-     * @param cURL handle success $curl
+     * @param resource $curl cURL handle passed to curl_error
      * @return mixed
      */
     protected function _curlError($curl)

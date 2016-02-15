@@ -68,7 +68,7 @@ class Payment extends Base
         $this->_token = $token;
         return $this;
     }
-
+	
     /**
      * Returns an array of parameters customized for the argumented methodname
      * @param string $method
@@ -79,7 +79,7 @@ class Payment extends Base
         $parameterArray = array();
         switch ($method) {
             case 'create':
-                $parameterArray['token'] = $this->getToken();
+				$parameterArray['token'] = $this->getToken();
                 $parameterArray['client'] = $this->getClient();
                 break;
             case 'delete':

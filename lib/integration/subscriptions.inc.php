@@ -39,20 +39,30 @@ class paymill_subscriptions{
 		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_details'); // benchmark
 		return $output;
 	}
-	public function create($client, $offer, $payment, $startAt=false, $periodOfValidity=false){
+	public function create($client, $offer=false, $payment, $startAt=false, $periodOfValidity=false,$amount=false,$currency=false,$interval=false){
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_create'); // benchmark
 		load_paymill(); // this function-call can and should be used whenever working with Paymill API
 
 		try{
 			$GLOBALS['paymill_loader']->request_subscription->setClient($client);
-			$GLOBALS['paymill_loader']->request_subscription->setOffer($offer);
 			$GLOBALS['paymill_loader']->request_subscription->setPayment($payment);
-
+			
+			if($offer === false){
+				$GLOBALS['paymill_loader']->request_subscription->setAmount($amount);
+				$GLOBALS['paymill_loader']->request_subscription->setCurrency($currency);
+				$GLOBALS['paymill_loader']->request_subscription->setInterval($interval);
+			}else{
+				$GLOBALS['paymill_loader']->request_subscription->setOffer($offer);
+			}
+			
 			if($startAt && intval($startAt) > 0 && intval($startAt) > time()){
 				$GLOBALS['paymill_loader']->request_subscription->setStartAt(intval($startAt));
 			}
-			$GLOBALS['paymill_loader']->request_subscription->setPeriodOfValidity($periodOfValidity);
-
+			
+			if($periodOfValidity){
+				$GLOBALS['paymill_loader']->request_subscription->setPeriodOfValidity($periodOfValidity);
+			}
+			
 			$subscription	= $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_subscription);
 			$output			= $subscription->getId();
 		}catch(Exception $e){
@@ -79,7 +89,7 @@ class paymill_subscriptions{
 		try{
 			$GLOBALS['paymill_loader']->request_subscription->setId($sub_id);
 
-			$response = $GLOBALS['paymill_loader']->request->delete($GLOBALS['paymill_loader']->request_subscription);
+			$response = $GLOBALS['paymill_loader']->request->delete($GLOBALS['paymill_loader']->request_subscription,true);
 			$output			= $response;
 		}catch(Exception $e){
 			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
@@ -87,6 +97,23 @@ class paymill_subscriptions{
 		}
 		
 		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_remove'); // benchmark
+		return $output;
+	}
+	public function cancel($sub_id){
+		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_subscription_cancel'); // benchmark
+		load_paymill(); // this function-call can and should be used whenever working with Paymill API
+		
+		try{
+			$GLOBALS['paymill_loader']->request_subscription->setId($sub_id);
+
+			$response = $GLOBALS['paymill_loader']->request->delete($GLOBALS['paymill_loader']->request_subscription,false);
+			$output			= $response;
+		}catch(Exception $e){
+			$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
+			$output			= false;
+		}
+		
+		if(paymill_BENCHMARK)paymill_doBenchmark(false,'paymill_subscription_cancel'); // benchmark
 		return $output;
 	}
 	public function pause($sub_id){
@@ -220,11 +247,13 @@ class paymill_subscriptions{
 		load_paymill(); // this function-call can and should be used whenever working with Paymill API
 		
 		try{
-			$GLOBALS['paymill_loader']->request_offer->setAmount(round($params['amount']));
+			$GLOBALS['paymill_loader']->request_offer->setAmount(round($params['amount'],2));
 			$GLOBALS['paymill_loader']->request_offer->setCurrency($params['currency']);
 			$GLOBALS['paymill_loader']->request_offer->setInterval($params['interval']);
 			$GLOBALS['paymill_loader']->request_offer->setName($params['name']);
-			$GLOBALS['paymill_loader']->request_offer->setTrialPeriodDays($params['trial_period_days']);
+			if($params['trial_period_days'] !== false){
+				$GLOBALS['paymill_loader']->request_offer->setTrialPeriodDays($params['trial_period_days']);
+			}
 
 			$output			= $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_offer);
 			

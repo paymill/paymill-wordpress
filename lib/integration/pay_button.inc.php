@@ -219,10 +219,11 @@
 					// create payment object and preauthorization
 					require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
 					$this->paymentClass		= new paymill_payment($this->client->getId(),$this->total_complete,$GLOBALS['paymill_settings']->paymill_pay_button_settings['currency']); // create payment object, as it should be used for next processing instead of the token.
+
 					if($GLOBALS['paymill_loader']->paymill_errors->status()){
 						return false;
 					}
-					
+
 					// process subscriptions & products
 					if($this->processSubscriptions() && $this->processProducts()){
 						// order complete
@@ -230,7 +231,7 @@
 						
 						// prepare order confirmation mail
 						$this->sendMail();
-					
+
 						// success, redirect if thankyou url is set
 						if(isset($GLOBALS['paymill_settings']->paymill_pay_button_settings['thankyou_url']) && strlen($GLOBALS['paymill_settings']->paymill_pay_button_settings['thankyou_url']) > 0){
 							header('Location: '.$GLOBALS['paymill_settings']->paymill_pay_button_settings['thankyou_url']);
@@ -260,7 +261,7 @@
 		
 		/** constructor */
 		function __construct() {
-			parent::WP_Widget('paymill_pay_button_widget', 'Paymill Pay Button', array( 'description' => __('Shows a Paymill Payment Button.', 'paymill')));
+			parent::__construct('paymill_pay_button_widget', 'Paymill Pay Button', array( 'description' => __('Shows a Paymill Payment Button.', 'paymill')));
 			
 			load_paymill(); // this function-call can and should be used whenever working with Paymill API
 			$GLOBALS['paymill_loader']->paymill_errors->setFunction('paymill_pay_button_errorHandling');
@@ -299,10 +300,22 @@
 						$products_whitelist	= unserialize($instance['products']);
 					}
 					
-					// form ids
-					echo '<script>
-					paymill_form_checkout_id = ".checkout";
-					paymill_form_checkout_submit_id = "#place_order";
+					// form id
+					if(isset($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key']) && strlen($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key']) > 0){
+						$form_id = $GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key'];
+					}else{
+						$form_id = '.checkout';
+					}
+					// submit id
+					if(isset($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key']) && strlen($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key']) > 0){
+						$submit_id = $GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key'];
+					}else{
+						$submit_id = '#place_order';
+					}
+					
+					echo '<script type="text/javascript">
+					paymill_form_checkout_id = "'.$form_id.'";
+					paymill_form_checkout_submit_id = "'.$submit_id.'";
 					paymill_shop_name = "paybutton";
 					paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
 					paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), $domain),0,2).'";

@@ -20,6 +20,7 @@
 			'request_subscription'						=> array('lib/api/lib/Paymill/Models/Request/Subscription.php',			'Paymill\Models\Request\Subscription'),
 			'request_transaction'						=> array('lib/api/lib/Paymill/Models/Request/Transaction.php',			'Paymill\Models\Request\Transaction'),
 			'request_webhook'							=> array('lib/api/lib/Paymill/Models/Request/Webhook.php',				'Paymill\Models\Request\Webhook'),
+			'request_checksum'							=> array('lib/api/lib/Paymill/Models/Request/Checksum.php',				'Paymill\Models\Request\Checksum'),
 			'response_base'								=> array('lib/api/lib/Paymill/Models/Response/Base.php'),
 			'response_client'							=> array('lib/api/lib/Paymill/Models/Response/Client.php',				'Paymill\Models\Response\Client'),
 			'response_error'							=> array('lib/api/lib/Paymill/Models/Response/Error.php',				'Paymill\Models\Response\Error'),
@@ -30,6 +31,8 @@
 			'response_subscription'						=> array('lib/api/lib/Paymill/Models/Response/Subscription.php',		'Paymill\Models\Response\Subscription'),
 			'response_transaction'						=> array('lib/api/lib/Paymill/Models/Response/Transaction.php',			'Paymill\Models\Response\Transaction'),
 			'response_webhook'							=> array('lib/api/lib/Paymill/Models/Response/Webhook.php',				'Paymill\Models\Response\Webhook'),
+			'response_checksum'							=> array('lib/api/lib/Paymill/Models/Response/Checksum.php',			'Paymill\Models\Response\Checksum'),
+			'curl'										=> array('lib/api/lib/Paymill/API/Curl.php',							'PAYMILL\API\Curl'),
 			
 			// for use within API
 			'Paymill\Models\Response\Base'				=> array('lib/api/lib/Paymill/Models/Response/Base.php'),
@@ -43,6 +46,7 @@
 			'Paymill\Models\Response\Subscription'		=> array('lib/api/lib/Paymill/Models/Response/Subscription.php',		'Paymill\Models\Response\Subscription'),
 			'Paymill\Models\Response\Transaction'		=> array('lib/api/lib/Paymill/Models/Response/Transaction.php',			'Paymill\Models\Response\Transaction'),
 			'Paymill\Models\Response\Webhook'			=> array('lib/api/lib/Paymill/Models/Response/Webhook.php',				'Paymill\Models\Response\Webhook'),
+			'Paymill\Models\Response\Checksum'			=> array('lib/api/lib/Paymill/Models/Response/Checksum.php',			'Paymill\Models\Response\Checksum'),
 			
 			// paymill plugin classes
 			'paymill_errors'							=> array('lib/errors.inc.php',											'paymill_errors')

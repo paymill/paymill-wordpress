@@ -6,17 +6,17 @@
 		$count_all_payment_types	= 0;
 		$count_bank_payment_types	= 0;
 		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && is_array($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) && count($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']) > 0){
-			echo '<div class="paymill_payment_logos">';
+			if($no_logos != true){ echo '<div class="paymill_payment_logos">'; }
 			foreach($GLOBALS['paymill_settings']->paymill_general_settings['payments_display'] as $name => $type){
 				if($type==1){
 					if($no_logos != true){ echo '<img src="'.plugins_url('',__FILE__ ).'/../img/logos/'.$name.'.png" style="vertical-align:middle;" alt="'.$name.'" />'; }
-					if($name == 'elv' || $name == 'sepa'){
+					if($name == 'elv' || $name == 'sepa' || $name == 'paypal'){
 						$count_bank_payment_types++;
 					}
 				}
 				$count_all_payment_types++;
 			}
-			echo '</div>';
+			if($no_logos != true){ echo '</div>'; }
 		}
 		// count buttons
 		// credit card
@@ -28,6 +28,9 @@
 			$buttons++;
 		}
 		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['elv'] == 1){
+			$buttons++;
+		}
+		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['paypal']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['paypal'] == 1){
 			$buttons++;
 		}
 		
@@ -54,6 +57,13 @@
 				$show_elv = true;
 			}
 			echo '<div id="paymill_form_switch_elv" class="paymill_form_switch paymill_form_switch'.(isset($show_elv) ? '_active' : '').'"'.$visibility.'>'.__('ELV', 'paymill').'</div>';
+		}
+		// PayPal
+		if(isset($GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['paypal']) && $GLOBALS['paymill_settings']->paymill_general_settings['payments_display']['paypal'] == 1){
+			if(!isset($show_cc) && !isset($show_sepa) && !isset($show_elv)){
+				$show_paypal = true;
+			}
+			echo '<div id="paymill_form_switch_paypal" class="paymill_form_switch paymill_form_switch'.(isset($show_paypal) ? '_active' : '').'"'.$visibility.'>'.__('PayPal', 'paymill').'</div>';
 		}
 	if(empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1'){
 ?>
@@ -84,7 +94,14 @@
 		<div class="paymill_elv_number"><input id="paymill_elv_number" type="text" value="" autocomplete="off"  maxlength="31" placeholder="<?php echo __('Account Number', 'paymill'); ?>"></div>
 		<div class="paymill_elv_bank"><input id="paymill_elv_bank_code" type="text" value="" autocomplete="off"  maxlength="11" placeholder="<?php echo __('Bank Code', 'paymill'); ?>"></div>
 	</div>
+	<div id="paymill_form_paypal"<?php if(!isset($show_paypal)){ echo ' style="display:none;"'; } ?>>
+		<div class="paypal_description"><?php echo __('You will be redirected to PayPal to complete your order.', 'paymill'); ?></div>
+	</div>
 	<input class="paymill_amount" type="hidden" size="5" value="<?php if(isset($cart_total)){ echo $cart_total; } ?>"/>
 	<input class="paymill_currency" type="hidden" size="3" value="<?php echo $currency; ?>"/>
-	<div class="paymill_payment_errors" id="paymill_payment_errors"></div>
+	<?php
+		if(!function_exists('is_woocommerce') && !is_woocommerce() && !function_exists('is_checkout') && !is_checkout()){
+			echo '<div class="paymill_payment_errors" id="paymill_payment_errors"></div>';
+		}
+	?>
 </div>

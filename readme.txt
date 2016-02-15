@@ -2,24 +2,24 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
-Requires at least: 4.3.1
-Tested up to: 4.3.1
-Stable tag: 1.10.6
+Requires at least: 4.4.2
+Tested up to: 4.4.2
+Stable tag: 1.10.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-With PAYMILL you are able to provide credit card based payments for your customers. German users can use ELV payment, too.
+With PAYMILL you are able to provide credit card based payments for your customers. Users with German bank account can use ELV payment, too.
 
 == Description ==
 
 = Requires: =
 * PHP 5.3 or higher
-* WordPress 4.3.x or higher
+* WordPress 4.4.x or higher
 * CuRL PHP extension
 
 = Supported Shops including subscriptions support: =
 
-* WooCommerce (2.4.x) + WooCommerce Subscriptions (1.5.x)
+* WooCommerce (2.5.x) + WooCommerce Subscriptions (2.0.x)
 * Magic Members (1.8.x)
 * Pay Button (independent, light-weight payment form)
 
@@ -165,6 +165,17 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.10.7 =
+
+* Common: Advanced Settings added
+* Common: "Do not load CSS" moved to Advanced Settings
+* Common: New Advanced Settings: Set "Custom Form Key" and "Custom Submit Key"
+* WooCommerce: Support for WooCommerce Subscriptions 2.0
+* WooCommerce: Unnecessary Preauthorization for single credit card payments removed
+* WooCommerce: PayPal support added
+* PayButton: "Parameter is mandatory" issue fixed
+* PayButton: Amount of products limited to 10 fixed to unlimited again
 
 = 1.10.6 =
 
@@ -397,6 +408,17 @@ WooCommerce support added
 
 == Upgrade Notice ==
 
+= 1.10.7 =
+
+* Common: Advanced Settings added
+* Common: "Do not load CSS" moved to Advanced Settings
+* Common: New Advanced Settings: Set "Custom Form Key" and "Custom Submit Key"
+* WooCommerce: Support for WooCommerce Subscriptions 2.0
+* WooCommerce: Unnecessary Preauthorization for single credit card payments removed
+* WooCommerce: PayPal support added
+* PayButton: "Parameter is mandatory" issue fixed
+* PayButton: Amount of products limited to 10 fixed to unlimited again
+
 = 1.10.6 =
 
 * WooCommerce: Doubled payments issue fixed
@@ -612,3 +634,16 @@ This error is self explaining but still might be a bit confusing, as some users 
 = When logging into Paymill Dashboard, once activated Test Mode is switched back to Live Mode =
 
 Test Mode and Live Mode are both always active simultaneously. Even if the Dashboard is showing Live Mode upon (re-)login per default, both modes remain active, even when switching to Test Mode and vice versa.
+
+= How can I log API Requests for Subscription Handling? =
+
+If you feel subscriptions are not handled as intended, you'll find logs in directory /wp-content/paymill/lib/debug/
+You may need to CHMOD 777 logging files to enable logging.
+
+= What will be logged when enabling plugin logging* =
+
+* all PHP Errors and Notices since start of the plugin
+* supported and activated webhooks
+* Subscription Cancellation through WooCommerce
+* Subscription Pause (on Hold) through WooCommerce
+* Subscription Reactivation through WooCommerce

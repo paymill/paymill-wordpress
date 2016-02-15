@@ -69,6 +69,8 @@
 			'field_invalid_bic'					=> esc_attr__('Missing or invalid BIC', 'paymill'),
 			'field_invalid_country'				=> esc_attr__('Missing or unsupported country (with IBAN)', 'paymill'),
 			'field_invalid_bank_data'			=> esc_attr__('Missing or invalid bank data combination', 'paymill'),
+			'ajaxurl'							=> admin_url('admin-ajax.php'),
+			'paymill_paypal_checksum_nonce'		=> wp_create_nonce('paymill_paypal_checksum')
 		));
 		wp_enqueue_script('paymill_bridge_custom', PAYMILL_PLUGIN_URL.'lib/js/paymill.js', array('paymill_bridge'), PAYMILL_VERSION);
 		wp_enqueue_script('livevalidation', PAYMILL_PLUGIN_URL.'lib/js/livevalidation_standalone.compressed.js', array('paymill_bridge_custom'), PAYMILL_VERSION);
@@ -85,7 +87,7 @@
 			'notEmpty'					=> esc_attr__('Supply a value!', 'paymill'),
 		));
 		
-		if(empty($GLOBALS['paymill_settings']->paymill_general_settings['no_default_css']) || $GLOBALS['paymill_settings']->paymill_general_settings['no_default_css'] != '1'){
+		if(empty($GLOBALS['paymill_settings']->paymill_advanced_settings['no_default_css']) || $GLOBALS['paymill_settings']->paymill_advanced_settings['no_default_css'] != '1'){
 			wp_enqueue_style('paymill', PAYMILL_PLUGIN_URL.'lib/css/paymill.css', false, PAYMILL_VERSION, false);
 		}
 		

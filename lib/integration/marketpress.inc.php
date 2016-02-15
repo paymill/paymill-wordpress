@@ -196,10 +196,22 @@ class MP_Gateway_Paymill_for_WordPress extends MP_Gateway_API {
 			
 			ob_start();
 			
-			// form ids
-			echo '<script>
-			paymill_form_checkout_id = "#mp_payment_form";
-			paymill_form_checkout_submit_id = "#mp_payment_confirm";
+			// form id
+			if(isset($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key']) && strlen($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key']) > 0){
+				$form_id = $GLOBALS['paymill_settings']->paymill_advanced_settings['custom_form_key'];
+			}else{
+				$form_id = '#mp_payment_form';
+			}
+			// submit id
+			if(isset($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key']) && strlen($GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key']) > 0){
+				$submit_id = $GLOBALS['paymill_settings']->paymill_advanced_settings['custom_submit_key'];
+			}else{
+				$submit_id = '#mp_payment_confirm';
+			}
+			
+			echo '<script type="text/javascript">
+			paymill_form_checkout_id = "'.$form_id.'";
+			paymill_form_checkout_submit_id = "'.$submit_id.'";
 			paymill_shop_name = "marketpress";
 			paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
 			paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), $domain),0,2).'";
