@@ -1,14 +1,14 @@
 === PAYMILL for WordPress ===
 Contributors: Matthias Reuter
 Donate link: 
-Tags: paymill, creditcard, elv, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
+Tags: paymill, creditcard, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
 Requires at least: 4.4.2
-Tested up to: 4.4.2
-Stable tag: 1.10.7
+Tested up to: 4.5
+Stable tag: 1.10.9
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-With PAYMILL you are able to provide credit card based payments for your customers. Users with German bank account can use ELV payment, too.
+With PAYMILL you are able to provide credit card and SEPA based payments for your customers.
 
 == Description ==
 
@@ -106,12 +106,7 @@ The TEST mode always gives a positive feedback on 3D secure.
 
 = Which Credit Cards are supported? =
 
-Depending on your country and account status, the following credit card provider are currently supported: American Express, CB, Diners Club, Discover, JCB, Maestro, MasterCard, Union Pay, VISA
-
-= What is ELV and why it's supported? =
-
-ELV is a German banking service and stands for "Elektronisches Lastschriftverfahren".
-This is a very convenience payment solution for German users, as credit cards are not very common in Germany compared to e.g. USA.
+Depending on your country and account status, the following credit card provider are currently supported: American Express, CB, Diners Club, Discover, JCB, Maestro, MasterCard, VISA
 
 = What is SEPA and why it's supported? =
 
@@ -165,6 +160,17 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.10.9 =
+
+* WooCommerce: Webhook Failure improvements
+* WooCommerce: Better Multi-Step-Checkout support
+* PayButton: Error on Checkout fixed
+
+= 1.10.8 =
+
+* Readme: ELV support no longer listed
+* WooCommerce: Error while Webhook Execution fixed
 
 = 1.10.7 =
 
@@ -407,6 +413,17 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.10.9 =
+
+* WooCommerce: Webhook Failure improvements
+* WooCommerce: Better Multi-Step-Checkout support
+* PayButton: Error on Checkout fixed
+
+= 1.10.8 =
+
+* Readme: ELV support no longer listed
+* WooCommerce: Error while Webhook Execution fixed
 
 = 1.10.7 =
 

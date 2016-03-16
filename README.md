@@ -4,14 +4,13 @@ PAYMILL for WordPress
 =====================
 * Contributors: Matthias Reuter
 * Donate link:
-* Tags: paymill, creditcard, elv, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
+* Tags: paymill, creditcard, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 * Requires at least: 4.4.2
-* Tested up to: 4.4.2
-* Stable tag: 1.10.7
+* Tested up to: 4.5
+* Stable tag: 1.10.9
 * License: [GPLv3 or later](http://www.gnu.org/licenses/gpl-3.0.html)
 
-With PAYMILL you are able to provide credit card based payments for your customers.
-Users with German bank account can use ELV payment, too.
+With PAYMILL you are able to provide credit card and SEPA based payments for your customers.
 
 Plugin Description
 ==================

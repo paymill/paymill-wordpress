@@ -66,7 +66,9 @@
 		error_log("\n\nmethod paymill_webhook_subscription_get_order_by_transaction_event started\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
 		
 		// retrieve subscription ID
-		if(isset($event_json['event']['event_resource']['description']) && strlen($event_json['event']['event_resource']['description']) > 0){
+		if(isset($event_json['event']['event_resource']['description']) && strlen($event_json['event']['event_resource']['description']) > 0 &&
+			(function_exists('wcs_get_subscription') || function_exists('wcs_get_subscription_from_key'))
+		){
 			// explode if format is e.g. "Subscription#sub_dc11f28692123a0d8b0c woo_5874_194ee562f973a7fddb14565e8ef4bd84"
 			$desc					= explode(' ',$event_json['event']['event_resource']['description']);
 			
@@ -85,23 +87,28 @@
 			
 			error_log("\n\nWoo Offer ID: ".var_export($sub_cache,true).' / Query: '.$sql, 3, PAYMILL_DIR.'lib/debug/debug.log');
 			
-			$subscription = wcs_get_subscription($sub_cache);
+			$subscription = function_exists('wcs_get_subscription') ? wcs_get_subscription($sub_cache) : false;
 			
 			// since WC-Subscriptions v2.0, they subscription key is deprecated, instead, subscription id will be used
 			if(!$subscription){ // still subscription key
 				error_log("\n\nNo subscription found, trying to retrieve it by subscription key... ", 3, PAYMILL_DIR.'lib/debug/debug.log');
 			
-				$subscription = wcs_get_subscription_from_key($sub_cache);
-				
-				if($subscription){
-					// update cache
-					 $wpdb->update(
-						$wpdb->prefix.'paymill_subscriptions',
-						array('woo_offer_id'	=> $subscription->id),
-						array('paymill_sub_id'	=> $paymill_sub_id),
-						'%d',
-						'%s'
-					);
+				try{
+					$subscription = function_exists('wcs_get_subscription_from_key') ? wcs_get_subscription_from_key($sub_cache) : function_exists('wcs_get_subscription_from_key');
+					
+					if($subscription){
+						// update cache
+						 $wpdb->update(
+							$wpdb->prefix.'paymill_subscriptions',
+							array('woo_offer_id'	=> $subscription->id),
+							array('paymill_sub_id'	=> $paymill_sub_id),
+							'%d',
+							'%s'
+						);
+					}
+				}
+				catch(Exception $e) {
+					error_log("\n\n".$e->getMessage()."\n\n".'Subscription could not be loaded via wcs_get_subscription_from_key, submitted key: '.$sub_cache.', retrieved by subid '.$paymill_sub_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
 				}
 			}
 			
@@ -210,10 +217,21 @@
 			$subscription->add_order_note(__('Subscription succeeded via Paymill Webhook','paymill'));
 		}
 		try{
-			$subscription->update_dates(array('next_payment' => $subscription->calculate_date('next_payment')));
+			//$subscription->update_dates(array('next_payment' => $subscription->calculate_date('next_payment')));
+			
+			// Recalculate and set next payment date
+			$next_payment = $subscription->get_time('next_payment');
+
+			// Make sure the next payment date is more than 2 hours in the future
+			if($next_payment < ( gmdate( 'U' ) + 2 * HOUR_IN_SECONDS)){ // also accounts for a $next_payment of 0, meaning it's not set
+				$next_payment = $subscription->calculate_date('next_payment');
+				if($next_payment > 0){
+					$subscription->update_dates( array( 'next_payment' => $next_payment - 1 * HOUR_IN_SECONDS));
+				}
+			}
 		}
 		catch(Exception $e) {
-			error_log("\n\n".$e->getRawError()."\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
+			error_log("\n\n".$e->getMessage()."\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
 		}
 	}
 	function paymill_webhook_subscription_deleted($subscription){
@@ -233,7 +251,7 @@
 		try{
 			$subscription->payment_failed();
 		}catch(Exception $e){
-			$subscription->add_order_note('Paymill subscription payment failed: '.$e->getRawError());
+			$subscription->add_order_note('Paymill subscription payment failed: '.$e->getMessage());
 		}
 	}
 	function paymill_webhook_transaction_failed($order){
@@ -246,8 +264,8 @@
 				$order->payment_complete();
 			}
 			catch(Exception $e){
-				error_log("\n\n".'Failed to complete order: '.$e->getRawError(), 3, PAYMILL_DIR.'lib/debug/debug.log');
-				//$order->update_status('failed',$e->getRawError());
+				error_log("\n\n".'Failed to complete order: '.$e->getMessage(), 3, PAYMILL_DIR.'lib/debug/debug.log');
+				//$order->update_status('failed',$e->getMessage());
 			}
 		}else{
 			error_log("\n\n".'Method may not exist', 3, PAYMILL_DIR.'lib/debug/debug.log');
@@ -624,7 +642,7 @@
 						}
 						curl_close($ch);
 					}catch(Exception $e){
-						$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getRawError(),'paymill'));
+						$GLOBALS['paymill_loader']->paymill_errors->setError(__($e->getMessage(),'paymill'));
 					}
 					
 					if($GLOBALS['paymill_loader']->paymill_errors->status()){

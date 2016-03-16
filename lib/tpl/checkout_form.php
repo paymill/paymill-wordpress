@@ -100,7 +100,7 @@
 	<input class="paymill_amount" type="hidden" size="5" value="<?php if(isset($cart_total)){ echo $cart_total; } ?>"/>
 	<input class="paymill_currency" type="hidden" size="3" value="<?php echo $currency; ?>"/>
 	<?php
-		if(!function_exists('is_woocommerce') && !is_woocommerce() && !function_exists('is_checkout') && !is_checkout()){
+		if((!function_exists('is_woocommerce') || !is_woocommerce()) && (!function_exists('is_checkout') || !is_checkout())){
 			echo '<div class="paymill_payment_errors" id="paymill_payment_errors"></div>';
 		}
 	?>

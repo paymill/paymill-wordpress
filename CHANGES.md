@@ -2,6 +2,18 @@
 
 Changelog
 =========
+
+1.10.9
+-----
+* WooCommerce: Webhook Failure improvements
+* WooCommerce: Better Multi-Step-Checkout support
+* PayButton: Error on Checkout fixed
+
+1.10.8
+-----
+* Readme: ELV support no longer listed
+* WooCommerce: Error while Webhook Execution fixed
+
 1.10.7
 -----
 * Common: Advanced Settings added
