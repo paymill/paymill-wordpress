@@ -2,6 +2,10 @@
 
 Changelog
 =========
+1.11
+-----
+* WooCommerce: bug fixed: checkout submit action error
+* Bridge: compatibility to new standard
 
 1.10.9
 -----

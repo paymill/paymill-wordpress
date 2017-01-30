@@ -73,7 +73,6 @@ if(defined('CART66_VERSION_NUMBER')){
 				paymill_form_checkout_submit_id = "'.$submit_id.'";
 				paymill_shop_name = "cart66";
 				paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
-				paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), $domain),0,2).'";
 				</script>
 				';
 

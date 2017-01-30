@@ -134,7 +134,8 @@
 			$settings = array(
 				'no_default_css'	=> __('Do not load default CSS', 'paymill'),
 				'custom_form_key'	=> __('Custom Form Key', 'paymill'),
-				'custom_submit_key'	=> __('Custom Submit Key', 'paymill')
+				'custom_submit_key'	=> __('Custom Submit Key', 'paymill'),
+				'overwrite_lang'	=> __('Overwrite Language', 'paymill'),
 			);
 			
 			foreach($settings as $setting => $description){
@@ -474,6 +475,7 @@
 			$descriptions['no_default_css']					= __('Advanced users want to fully customize the payment button. Disabling default CSS from Pay Button will make that much easier.', 'paymill');
 			$descriptions['custom_form_key']				= __('Sometimes, default form form key is not working, as some plugins or themes are changing these. This could, for example, occur on multistep-checkout cases. You can set your custom key here following CSS/jQuery standards for targeting an element. Developer skills are required to avoid issues breaking checkout process by submitting false values here.', 'paymill');
 			$descriptions['custom_submit_key']				= __('Same case as described in Custom Form Key setting, but this applies a custom submit key.', 'paymill');
+			$descriptions['overwrite_lang']					= __('Per default, payment form loads correct language string automaticly. In some cases you want to set that manually. <a href="https://developers.paymill.com/guides/reference/bridge-payframe-migration#2-specify-in-which-language-to-display-the-form" target="_blank">Available Language Codes</a>', 'paymill');
 			
 			$descriptions['flat_shipping_country']			= __('Name of the available delivery country, e.g. England', 'paymill');
 			$descriptions['flat_shipping_costs']			= __('Gross fee for the flat shipping costs., e.g. 7 or 4.90', 'paymill');

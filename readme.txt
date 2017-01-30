@@ -2,9 +2,9 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
-Requires at least: 4.4.2
-Tested up to: 4.5
-Stable tag: 1.10.9
+Requires at least: 4.8
+Tested up to: 4.8
+Stable tag: 1.11
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,12 +14,12 @@ With PAYMILL you are able to provide credit card and SEPA based payments for you
 
 = Requires: =
 * PHP 5.3 or higher
-* WordPress 4.4.x or higher
+* WordPress 4.8.x or higher
 * CuRL PHP extension
 
 = Supported Shops including subscriptions support: =
 
-* WooCommerce (2.5.x) + WooCommerce Subscriptions (2.0.x)
+* WooCommerce (2.6.13) + WooCommerce Subscriptions (2.0.13)
 * Magic Members (1.8.x)
 * Pay Button (independent, light-weight payment form)
 
@@ -50,7 +50,6 @@ https://www.paymill.com/en/faq/how-does-paymills-payframe-solution-work
 = Team =
 
 * Officially supported by <a href="https://paymill.com">PAYMILL</a>
-* Attended by <a href="http://elbnetz.com">Elbnetz</a>
 * Developed and maintenanced by <a href="http://straightvisions.com">straightvisions</a>
 
 == Installation ==
@@ -160,6 +159,10 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.11 =
+* WooCommerce: bug fixed: checkout submit action error
+* Bridge: compatibility to new standard
 
 = 1.10.9 =
 

@@ -29,6 +29,13 @@
 	
 	function paymill_load_frontend_scripts(){
 		if(paymill_BENCHMARK)paymill_doBenchmark(true,'paymill_load_frontend_scripts'); // benchmark
+		
+		if(isset($GLOBALS['paymill_settings']->paymill_advanced_settings['overwrite_lang']) && strlen($GLOBALS['paymill_settings']->paymill_advanced_settings['overwrite_lang']) > 0){
+			$lang = $GLOBALS['paymill_settings']->paymill_advanced_settings['overwrite_lang'];
+		}else{
+			$lang = substr(apply_filters('plugin_locale', get_locale(), 'paymill'),0,2);
+		}
+		
 		wp_deregister_script(array('paymill_bridge','paymill_bridge_custom'));
 		wp_enqueue_script('jquery.formatCurrency-1.4.0.js',PAYMILL_PLUGIN_URL.'lib/js/jquery.formatCurrency-1.4.0.js', array('jquery'), PAYMILL_VERSION);
 		if(empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1'){
@@ -70,7 +77,8 @@
 			'field_invalid_country'				=> esc_attr__('Missing or unsupported country (with IBAN)', 'paymill'),
 			'field_invalid_bank_data'			=> esc_attr__('Missing or invalid bank data combination', 'paymill'),
 			'ajaxurl'							=> admin_url('admin-ajax.php'),
-			'paymill_paypal_checksum_nonce'		=> wp_create_nonce('paymill_paypal_checksum')
+			'paymill_paypal_checksum_nonce'		=> wp_create_nonce('paymill_paypal_checksum'),
+			'lang'								=> $lang
 		));
 		wp_enqueue_script('paymill_bridge_custom', PAYMILL_PLUGIN_URL.'lib/js/paymill.js', array('paymill_bridge'), PAYMILL_VERSION);
 		wp_enqueue_script('livevalidation', PAYMILL_PLUGIN_URL.'lib/js/livevalidation_standalone.compressed.js', array('paymill_bridge_custom'), PAYMILL_VERSION);

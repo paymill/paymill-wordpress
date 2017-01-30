@@ -1,4 +1,16 @@
 <?php
+
+	/**
+	 * @param $msg
+	 * @param $replacement,...
+	 */
+	function paymill_log_debug($msg, $replacement) {
+		$args = func_get_args();
+		$msg = array_shift($args);
+		// PATRICK printf tends to misbehave => suppress error
+		error_log("\n\n" . @vsprintf($msg, $args), 3, PAYMILL_DIR.'lib/debug/debug.log');
+	}
+
 	// PAYMILL Payment Class
 	if(!function_exists('paymill_woocommerce_errorHandling')){
 		function paymill_woocommerce_errorHandling($errors){
@@ -70,31 +82,18 @@
 			(function_exists('wcs_get_subscription') || function_exists('wcs_get_subscription_from_key'))
 		){
 			// explode if format is e.g. "Subscription#sub_dc11f28692123a0d8b0c woo_5874_194ee562f973a7fddb14565e8ef4bd84"
-			$desc					= explode(' ',$event_json['event']['event_resource']['description']);
+			preg_match_all("/#(\d+)/", $event_json['event']['event_resource']['description'], $paymill_sub_desc);
+			$woo_offer_id				= $paymill_sub_desc[1][0];
+			$paymill_sub_customer_id	= $paymill_sub_desc[1][1];
 			
-			error_log("\n\nPaymill sub desc: ".$event_json['event']['event_resource']['description'], 3, PAYMILL_DIR.'lib/debug/debug.log');
-			
-			$paymill_sub_id			= str_replace('Subscription#','',trim($desc[0]));
-			
-			error_log("\n\nPaymill sub id: ".$paymill_sub_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
-		
-			$sql = $wpdb->prepare('SELECT woo_offer_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE paymill_sub_id=%s',
-			array(
-				$paymill_sub_id
-			));
-			
-			$sub_cache			= $wpdb->get_var($sql);
-			
-			error_log("\n\nWoo Offer ID: ".var_export($sub_cache,true).' / Query: '.$sql, 3, PAYMILL_DIR.'lib/debug/debug.log');
-			
-			$subscription = function_exists('wcs_get_subscription') ? wcs_get_subscription($sub_cache) : false;
+			$subscription = function_exists('wcs_get_subscription') ? wcs_get_subscription($woo_offer_id) : false;
 			
 			// since WC-Subscriptions v2.0, they subscription key is deprecated, instead, subscription id will be used
 			if(!$subscription){ // still subscription key
 				error_log("\n\nNo subscription found, trying to retrieve it by subscription key... ", 3, PAYMILL_DIR.'lib/debug/debug.log');
 			
 				try{
-					$subscription = function_exists('wcs_get_subscription_from_key') ? wcs_get_subscription_from_key($sub_cache) : function_exists('wcs_get_subscription_from_key');
+					$subscription = function_exists('wcs_get_subscription_from_key') ? wcs_get_subscription_from_key($woo_offer_id) : function_exists('wcs_get_subscription_from_key');
 					
 					if($subscription){
 						// update cache
@@ -108,7 +107,7 @@
 					}
 				}
 				catch(Exception $e) {
-					error_log("\n\n".$e->getMessage()."\n\n".'Subscription could not be loaded via wcs_get_subscription_from_key, submitted key: '.$sub_cache.', retrieved by subid '.$paymill_sub_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
+					error_log("\n\n".$e->getMessage()."\n\n".'Subscription could not be loaded via wcs_get_subscription_from_key, submitted key: '.$woo_offer_id.', retrieved by subid '.$paymill_sub_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
 				}
 			}
 			
@@ -143,6 +142,8 @@
 			$paymill_sub_id			= $event_json['event']['event_resource']['subscription']['id'];
 		}
 		
+		error_log("\n\nPaymill sub ID: ".$paymill_sub_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
+		
 		// get subscription info, if available
 		if(isset($paymill_sub_id) && strlen($paymill_sub_id) > 0){
 			$sql = $wpdb->prepare('SELECT woo_offer_id FROM '.$wpdb->prefix.'paymill_subscriptions WHERE paymill_sub_id=%s',
@@ -152,25 +153,36 @@
 			
 			$sub_cache			= $wpdb->get_var($sql);
 			
+			error_log("\n\nSub Cache: ".$sub_cache, 3, PAYMILL_DIR.'lib/debug/debug.log');
+			
+			$subscription = function_exists('wcs_get_subscription') ? wcs_get_subscription($sub_cache) : false;
+			
 			// since WC-Subscriptions v2.0, they subscription key is deprecated, instead, subscription id will be used
-			if(intval($sub_cache) === 0){ // still subscription key
-				$subscription = wcs_get_subscription_from_key($sub_cache);
-				
-				if($subscription){
-					// update cache
-					 $wpdb->update(
-						$wpdb->prefix.'paymill_subscriptions',
-						array('woo_offer_id'	=> $subscription->id),
-						array('paymill_sub_id'	=> $paymill_sub_id),
-						'%d',
-						'%s'
-					);
+			if(!$subscription){ // still subscription key
+				error_log("\n\nNo subscription found, trying to retrieve it by subscription key... ", 3, PAYMILL_DIR.'lib/debug/debug.log');
+			
+				try{
+					// PATRICK this equals $x ? $y : $x => $x ? $y : false
+					$subscription = function_exists('wcs_get_subscription_from_key') ? wcs_get_subscription_from_key($sub_cache) : function_exists('wcs_get_subscription_from_key');
+					
+					if($subscription){
+						// update cache
+						 $wpdb->update(
+							$wpdb->prefix.'paymill_subscriptions',
+							array('woo_offer_id'	=> $subscription->id),
+							array('paymill_sub_id'	=> $paymill_sub_id),
+							'%d',
+							'%s'
+						);
+					}
 				}
-			}else{
-				$subscription = wcs_get_subscription($sub_cache);
+				catch(Exception $e) {
+					error_log("\n\n".$e->getMessage()."\n\n".'Subscription could not be loaded via wcs_get_subscription_from_key, submitted key: '.$sub_cache.', retrieved by subid '.$paymill_sub_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
+				}
 			}
 			
 			if($subscription){
+				paymill_log_debug("Subscription found: \n%s", var_export($subscription, true));
 				return $subscription;
 			}else{
 				return false;
@@ -184,7 +196,7 @@
 	}
 	function paymill_webhook_subscription_succeeded($subscription){
 		error_log("\n\nmethod paymill_webhook_subscription_succeeded started\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
-		
+
 		// prevent multiple subscription renewals because of multiple webhook attempts.
 		$whole_period = 0;
 		switch ($subscription->billing_period){
@@ -202,14 +214,30 @@
 			$whole_period = intval($subscription->billing_interval) * 30240000; // using 350 days to prevent any timezone problems whatsoever
 			break;
 		}
-		
-		if($subscription->get_completed_payment_count() >= 1){
-			if (strtotime(date(DATE_RFC822)) > strtotime($subscription->get_date('last_payment')) + $whole_period - 18000) { // minus 5 hours to prevent any problems with pending triggers
-				$renewal_order = wcs_create_renewal_order($subscription);
 
-				WC_Subscriptions_Manager::process_subscription_payments_on_order($order);
-			}
+		if($subscription->get_completed_payment_count() >= 1){
+			paymill_log_debug('BRANCH A');
+			paymill_log_debug('now %s vs last_payment %s', strtotime(date(DATE_RFC822)), strtotime($subscription->get_date('last_payment')) + $whole_period - 18000);
+			// PATRICK $subscription->get_date('last_payment') also seems to count pending renewal orders created by WCS - these can never be paid??
+			//if (strtotime(date(DATE_RFC822)) > strtotime($subscription->get_date('last_payment')) + $whole_period - 18000) { // minus 5 hours to prevent any problems with pending triggers
+			//paymill_log_debug(var_export($subscription->get_last_order( 'all' ),true));
+			
+				//$renewal_order = wcs_create_renewal_order($subscription);
+				//paymill_log_debug('Renewal Order:' . "\n", var_export($renewal_order, true));
+				
+				$renewal_order = $subscription->get_last_order( 'all' );
+				if(isset($renewal_order) && is_object($renewal_order) && isset($renewal_order->post_status) && $renewal_order->post_status == 'wc-pending'){
+					WC_Subscriptions_Manager::process_subscription_payments_on_order($renewal_order);
+					$renewal_order->payment_complete();
+				}elseif(strtotime(date(DATE_RFC822)) > strtotime($subscription->get_date('last_payment')) + $whole_period - 18000){
+					$renewal_order = wcs_create_renewal_order($subscription);
+					WC_Subscriptions_Manager::process_subscription_payments_on_order($renewal_order);
+					$renewal_order->payment_complete();
+				}
+			
+			//}
 		}else{
+			paymill_log_debug('BRANCH B');
 			$renewal_order = wcs_create_renewal_order($subscription);
 			$renewal_order->payment_complete();
 			
@@ -224,9 +252,18 @@
 
 			// Make sure the next payment date is more than 2 hours in the future
 			if($next_payment < ( gmdate( 'U' ) + 2 * HOUR_IN_SECONDS)){ // also accounts for a $next_payment of 0, meaning it's not set
-				$next_payment = $subscription->calculate_date('next_payment');
+				// PATRICK calculate_date() returns a formatted string, not a timestamp!
+				$next_payment_date = $subscription->calculate_date('next_payment');
+				paymill_log_debug('original %s', $next_payment_date);
 				if($next_payment > 0){
-					$subscription->update_dates( array( 'next_payment' => $next_payment - 1 * HOUR_IN_SECONDS));
+					// PATRICK plz comment on why the hour is subtracted
+					// (this will not work on < 5.3)
+					$next_payment_date = DateTime::createFromFormat('Y-m-d H:i:s', $next_payment_date)
+						->sub(DateInterval::createFromDateString('1 hour'))
+						->format('Y-m-d H:i:s');
+					paymill_log_debug('modified %s', $next_payment_date);
+
+					$subscription->update_dates( array( 'next_payment' => $next_payment_date));
 				}
 			}
 		}
@@ -245,7 +282,7 @@
 		$subscription->update_status('cancelled',__('Subscription deleted via Paymill Webhook','paymill'));
 	}
 	function paymill_webhook_subscription_cancelled($subscription){
-		$subscription->cancel_order__('Subscription cancelled via Paymill Webhook','paymill');
+		$subscription->cancel_order(__('Subscription cancelled via Paymill Webhook','paymill'));
 	}
 	function paymill_webhook_subscription_failed($subscription){
 		try{
@@ -297,7 +334,7 @@
 		error_log("\n\n".var_export(serialize($event_json),true)."\n\n", 3, PAYMILL_DIR.'lib/debug/event_json.log');
 		
 		
-		// subscriptionb or treansaction?
+		// subscriptionb or transaction?
 		if($event_json){
 			if($event_json['event']['event_type'] == 'subscription.created'){ // subscription successfully created
 				if($subscription = paymill_webhook_subscription_get_order($event_json)){
@@ -517,7 +554,7 @@
 					$this->has_fields			= true;
 					
 					add_action('woocommerce_update_options_payment_gateways_' . $this->id, array(&$this, 'process_admin_options'));
-					add_action('woocommerce_api_wc_gateway_paymill_gateway', array($this,'process_payment_paypal'));
+					//add_action('woocommerce_api_wc_gateway_paymill_gateway', array($this,'process_payment_paypal'));
 					add_action('woocommerce_before_checkout_form', function(){ echo '<div class="paymill_payment_errors" id="paymill_payment_errors"></div>'; });
 				
 					$this->has_fields = true;
@@ -533,12 +570,13 @@
 						'subscription_cancellation',
 						'subscription_suspension',
 						'subscription_reactivation',
-						/*'multiple_subscriptions',
-						'subscription_amount_changes',
-						'subscription_date_changes',
-						'subscription_payment_method_change'*/
+						//'multiple_subscriptions',
+						//'subscription_amount_changes',
+						//'subscription_date_changes',
+						//'subscription_payment_method_change'
 					);
 				}
+				/*
 				public function prepare_payment_paypal(){
 					$GLOBALS['paymill_loader']->request_checksum->setClient($this->clientClass->getCurrentClientID());
 					$GLOBALS['paymill_loader']->request_checksum->setChecksumType('paypal');
@@ -613,22 +651,8 @@
 						$GLOBALS['paymill_loader']->request_checksum->setReusablePaymentDescription(__('Automatically pay invoices using this account.','paymill'));
 					}
 					
-					/*
-					$GLOBALS['paymill_loader']->paymill_errors->setError(var_export($GLOBALS['paymill_loader']->request_checksum,true));
-					if($GLOBALS['paymill_loader']->paymill_errors->status()){
-						$GLOBALS['paymill_loader']->paymill_errors->getErrors();
-					}
-					return false;
-					*/
 					$checksumData			= $GLOBALS['paymill_loader']->request->create($GLOBALS['paymill_loader']->request_checksum); // Use this for further payment processing, too
 					
-/*
-					$GLOBALS['paymill_loader']->paymill_errors->setError(var_export($checksumData,true));
-					if($GLOBALS['paymill_loader']->paymill_errors->status()){
-						$GLOBALS['paymill_loader']->paymill_errors->getErrors();
-						return false;
-					}
-					*/
 					error_log("\n\n### Paypal processing: Client ID ".$this->clientClass->getCurrentClientID()." for checksum object ".$checksumData->getId()." \n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
 
 					try{
@@ -723,6 +747,7 @@
 						error_log("\n\n".__('PayPal via Paymill: No order ID found. If this payment should be paid via Paymill-PayPal-Feature, something went wrong. Otherwise ignore this message.','paymill')."\n\n", 3, PAYMILL_DIR.'lib/debug/debug.log');
 					}
 				}
+				*/
 				public function get_icon() {
 					global $woocommerce;
 					
@@ -1035,9 +1060,9 @@
 					// get the totals for pre authorization
 					//$this->getTotals();
 					
-					if(isset($_POST['paypal_via_paymill']) && $_POST['paypal_via_paymill'] == 1){
+					/*if(isset($_POST['paypal_via_paymill']) && $_POST['paypal_via_paymill'] == 1){
 						return $this->prepare_payment_paypal();
-					}else{
+					}else{*/
 						// create payment object and preauthorization
 						// update v1.10.7: preauth deactivated
 						require_once(PAYMILL_DIR.'lib/integration/payment.inc.php');
@@ -1068,12 +1093,13 @@
 							}
 							return false;
 						}
-					}
+					//}
 				}
 				public function validate_fields(){
 					global $woocommerce;
 					// check Paymill payment
-					if(empty($_POST['paymillToken']) && !isset($_POST['paypal_via_paymill'])){
+					//if(empty($_POST['paymillToken']) && !isset($_POST['paypal_via_paymill'])){
+					if(empty($_POST['paymillToken'])){
 						$GLOBALS['paymill_loader']->paymill_errors->setError(__('Token not Found','paymill'));
 						if($GLOBALS['paymill_loader']->paymill_errors->status()){
 							$GLOBALS['paymill_loader']->paymill_errors->getErrors();
@@ -1112,7 +1138,6 @@
 						paymill_form_checkout_submit_id = "'.$submit_id.'";
 						paymill_shop_name = "woocommerce";
 						paymill_pcidss3 = '.((empty($GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3']) || $GLOBALS['paymill_settings']->paymill_general_settings['pci_dss_3'] != '1') ? 1 : 0).';
-						paymill_pcidss3_lang = "'.substr(apply_filters('plugin_locale', get_locale(), 'paymill'),0,2).'";
 						</script>';
 						
 						
