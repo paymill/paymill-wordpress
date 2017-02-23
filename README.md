@@ -7,7 +7,7 @@ PAYMILL for WordPress
 * Tags: paymill, creditcard, payment, woocommerce, paybutton, ecommerce, debitcard, subscriptions
 * Requires at least: 4.8
 * Tested up to: 4.8
-* Stable tag: 1.11
+* Stable tag: 1.12
 * License: [GPLv3 or later](http://www.gnu.org/licenses/gpl-3.0.html)
 
 With PAYMILL you are able to provide credit card and SEPA based payments for your customers.

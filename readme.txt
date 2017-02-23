@@ -2,9 +2,9 @@
 Contributors: Matthias Reuter
 Donate link: 
 Tags: paymill, creditcard, sepa, payment, woocommerce, paybutton, shopp, shopplugin, marketpress, magic members, magicmembers, mgm, cart66, ecommerce, debitcard, subscriptions
-Requires at least: 4.8
+Requires at least: 4.7
 Tested up to: 4.8
-Stable tag: 1.11
+Stable tag: 1.12
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -159,6 +159,9 @@ Subscriptions fee cannot be changed, even through coupons. Please be aware that 
 6. Cart66 lite Payment Form
 
 == Changelog ==
+
+= 1.12 =
+* WooCommerce: several bugs fixed
 
 = 1.11 =
 * WooCommerce: bug fixed: checkout submit action error
@@ -416,6 +419,13 @@ Pay Button added
 WooCommerce support added
 
 == Upgrade Notice ==
+
+= 1.12 =
+* WooCommerce: several bugs fixed
+
+= 1.11 =
+* WooCommerce: bug fixed: checkout submit action error
+* Bridge: compatibility to new standard
 
 = 1.10.9 =
 

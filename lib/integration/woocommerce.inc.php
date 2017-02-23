@@ -4,7 +4,7 @@
 	 * @param $msg
 	 * @param $replacement,...
 	 */
-	function paymill_log_debug($msg, $replacement) {
+	function paymill_log_debug($msg, $replacement=false) {
 		$args = func_get_args();
 		$msg = array_shift($args);
 		// PATRICK printf tends to misbehave => suppress error
@@ -83,10 +83,14 @@
 		){
 			// explode if format is e.g. "Subscription#sub_dc11f28692123a0d8b0c woo_5874_194ee562f973a7fddb14565e8ef4bd84"
 			preg_match_all("/#(\d+)/", $event_json['event']['event_resource']['description'], $paymill_sub_desc);
-			$woo_offer_id				= $paymill_sub_desc[1][0];
-			$paymill_sub_customer_id	= $paymill_sub_desc[1][1];
-			
-			$subscription = function_exists('wcs_get_subscription') ? wcs_get_subscription($woo_offer_id) : false;
+			if(isset($paymill_sub_desc[1][0]) && isset($paymill_sub_desc[1][1])){
+				$woo_offer_id				= $paymill_sub_desc[1][0];
+				$paymill_sub_customer_id	= $paymill_sub_desc[1][1];
+				
+				$subscription = function_exists('wcs_get_subscription') ? wcs_get_subscription($woo_offer_id) : false;
+			}else{
+				$subscription = false;
+			}
 			
 			// since WC-Subscriptions v2.0, they subscription key is deprecated, instead, subscription id will be used
 			if(!$subscription){ // still subscription key
@@ -100,14 +104,14 @@
 						 $wpdb->update(
 							$wpdb->prefix.'paymill_subscriptions',
 							array('woo_offer_id'	=> $subscription->id),
-							array('paymill_sub_id'	=> $paymill_sub_id),
-							'%d',
-							'%s'
+							//array('paymill_sub_id'	=> $paymill_sub_id),
+							'%d'
+							//'%s'
 						);
 					}
 				}
 				catch(Exception $e) {
-					error_log("\n\n".$e->getMessage()."\n\n".'Subscription could not be loaded via wcs_get_subscription_from_key, submitted key: '.$woo_offer_id.', retrieved by subid '.$paymill_sub_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
+					error_log("\n\n".$e->getMessage()."\n\n".'Subscription could not be loaded via wcs_get_subscription_from_key, submitted key: '.$woo_offer_id, 3, PAYMILL_DIR.'lib/debug/debug.log');
 				}
 			}
 			
@@ -487,7 +491,7 @@
 
 			if(!isset($client_cache['paymill_sub_id'])){
 				$subscription->add_order_note(__('Subscription not paused in Paymill - not found in cache table. Please perform that action manually in Paymill Dashboard.','paymill'));
-			}elseif($order->status == 'on-hold'){
+			}elseif($subscription->get_status() == 'on-hold'){
 				return; // all subs begin by being on-hold, so don't pause them again
 			}else{
 				$subscriptions		= new paymill_subscriptions('woocommerce');

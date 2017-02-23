@@ -2,6 +2,11 @@
 
 Changelog
 =========
+
+1.12
+-----
+* WooCommerce: several bugs fixed
+
 1.11
 -----
 * WooCommerce: bug fixed: checkout submit action error
