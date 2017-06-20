@@ -1147,7 +1147,7 @@
 						
 						echo '<a href="https://www.paymill.com/" target="_blank"><img src="' . WC_HTTPS::force_https_url( $this->logo_small ) . '" alt="' . $this->title . '" /></a>';
 						
-						echo '<p class="paymill_payment_description">'.$this->settings['description'].'</p>';
+						echo '<p class="paymill_payment_description">'.$this->get_description().'</p>';
 			
 						require_once(PAYMILL_DIR.'lib/tpl/checkout_form.php');
 					}else{
